@@ -41,6 +41,10 @@ make web-dev
 Open `http://localhost:5173`. The default `BRANCHSHIFT_MODE=mock` runs a
 deterministic replay and never calls the network.
 
+The public source repository is
+[jsdhwfmax/branchshift-ai](https://github.com/jsdhwfmax/branchshift-ai), and the
+controlled Pydantic v1 migration target lives under `fixtures/pydantic-v1-app`.
+
 ## Safety boundary
 
 - Only public HTTPS GitHub repository URLs are accepted.

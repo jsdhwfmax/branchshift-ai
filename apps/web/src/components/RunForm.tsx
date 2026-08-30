@@ -4,7 +4,7 @@ interface RunFormProps {
   onSubmit: (repoUrl: string) => Promise<void>
 }
 
-const DEFAULT_REPOSITORY = 'https://github.com/pydantic/pydantic'
+const DEFAULT_REPOSITORY = 'https://github.com/jsdhwfmax/branchshift-ai'
 
 export default function RunForm({ onSubmit }: RunFormProps) {
   const [repoUrl, setRepoUrl] = useState(DEFAULT_REPOSITORY)
@@ -45,7 +45,7 @@ export default function RunForm({ onSubmit }: RunFormProps) {
           />
         </div>
         <p id="repo-help" className="field-help">
-          Replay uses a bounded Pydantic v1 fixture snapshot; live repository execution stays sandboxed.
+          The default repository contains our bounded Pydantic v1 fixture; live execution stays sandboxed.
         </p>
         {error && <p id="repo-error" className="field-error" role="alert">{error}</p>}
       </div>
@@ -60,4 +60,3 @@ export default function RunForm({ onSubmit }: RunFormProps) {
     </form>
   )
 }
-
