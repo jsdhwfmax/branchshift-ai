@@ -10,7 +10,7 @@ from app.domain.models import BranchResult, BranchStatus, MigrationStrategy
 from app.orchestrator.patches import PatchStats, UnsafePatch, build_apply_command
 from app.orchestrator.patches import validate_unified_diff as validate_patch
 from app.orchestrator.planner import RepositoryEvidence
-from app.providers.base import CommandResult, ModelProvider, SandboxProvider, SandboxState
+from app.providers.base import ModelProvider, SandboxProvider, SandboxState
 
 
 class PatchProposal(BaseModel):
@@ -43,8 +43,7 @@ class BranchRunner:
         diagnostics = "No previous attempt."
         elapsed = 0.0
         last_patch: str | None = None
-        last_stats: PatchStats | None = None
-        last_command: CommandResult | None = None
+        last_result: BranchResult | None = None
         for _attempt in range(1, self._max_attempts + 1):
             proposal = await self._model.complete_json(
                 system=self._system_prompt(),
@@ -53,44 +52,32 @@ class BranchRunner:
             )
             last_patch = proposal.patch
             try:
-                last_stats = validate_patch(
+                result = await self.validate_existing_patch(
+                    parent,
+                    strategy,
                     proposal.patch,
-                    allowed_files=set(strategy.target_files),
+                    workdir=workdir,
                 )
             except UnsafePatch as exc:
                 diagnostics = f"Patch safety validation failed: {exc}"
                 continue
-
-            command = self._validation_command(workdir, proposal.patch)
-            last_command = await self._sandbox.run(
-                parent,
-                command,
-                timeout_seconds=self._timeout_seconds,
-            )
-            elapsed += last_command.elapsed_seconds
-            if last_command.exit_code != 0:
+            elapsed += result.elapsed_seconds
+            last_result = result
+            if not result.patch_applicable:
                 diagnostics = (
                     "git apply validation failed. Bounded output:\n"
-                    + (last_command.stdout + "\n" + last_command.stderr)[-2_000:]
+                    "The patch did not apply cleanly to the baseline checkpoint."
                 )
                 continue
-
-            metrics = _parse_validation_output(last_command.stdout)
-            if metrics.tests_failed == 0 and metrics.test_exit == 0 and metrics.pip_exit == 0:
-                return _branch_result(
-                    strategy,
-                    BranchStatus.PASSED,
-                    metrics,
-                    last_stats,
-                    elapsed,
-                    last_patch,
-                )
+            if result.status is BranchStatus.PASSED:
+                return result.model_copy(update={"elapsed_seconds": elapsed})
             diagnostics = (
-                "Validation failed. Repair only the declared files. Bounded output:\n"
-                + last_command.stdout[-2_000:]
+                "Validation failed. Repair only the declared files. "
+                f"tests={result.tests_passed}/{result.tests_collected}, "
+                f"pip_check={result.pip_check_passed}, lint_findings={result.lint_findings}."
             )
 
-        if last_command is None or last_stats is None:
+        if last_result is None:
             return BranchResult(
                 strategy_id=strategy.id,
                 status=BranchStatus.FAILED,
@@ -105,14 +92,41 @@ class BranchRunner:
                 patch_applicable=False,
                 patch=last_patch,
             )
-        metrics = _parse_validation_output(last_command.stdout)
+        return last_result.model_copy(
+            update={"status": BranchStatus.FAILED, "elapsed_seconds": elapsed}
+        )
+
+    async def validate_existing_patch(
+        self,
+        parent: SandboxState,
+        strategy: MigrationStrategy,
+        patch: str,
+        *,
+        workdir: str = "/workspace/repo",
+    ) -> BranchResult:
+        stats = validate_patch(patch, allowed_files=set(strategy.target_files))
+        command = self._validation_command(workdir, patch)
+        completed = await self._sandbox.run(
+            parent,
+            command,
+            timeout_seconds=self._timeout_seconds,
+        )
+        metrics = _parse_validation_output(completed.stdout)
+        passed = (
+            completed.exit_code == 0
+            and metrics.test_exit == 0
+            and metrics.tests_failed == 0
+            and metrics.tests_passed > 0
+            and metrics.pip_exit == 0
+        )
         return _branch_result(
             strategy,
-            BranchStatus.FAILED,
+            BranchStatus.PASSED if passed else BranchStatus.FAILED,
             metrics,
-            last_stats,
-            elapsed,
-            last_patch or "",
+            stats,
+            completed.elapsed_seconds,
+            patch,
+            patch_applicable=completed.exit_code == 0,
         )
 
     @staticmethod
@@ -199,6 +213,8 @@ def _branch_result(
     stats: PatchStats,
     elapsed: float,
     patch: str,
+    *,
+    patch_applicable: bool = True,
 ) -> BranchResult:
     return BranchResult(
         strategy_id=strategy.id,
@@ -211,6 +227,6 @@ def _branch_result(
         changed_files=len(stats.files),
         changed_lines=stats.changed_lines,
         elapsed_seconds=elapsed,
-        patch_applicable=True,
+        patch_applicable=patch_applicable,
         patch=patch,
     )

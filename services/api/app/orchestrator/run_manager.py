@@ -419,6 +419,21 @@ class RunManager:
                 await asyncio.gather(*(execute_branch(strategy) for strategy in strategies))
             )
 
+            winner, fully_verified = rank_results(results)
+            if winner is None or not fully_verified or not winner.patch:
+                raise RuntimeError("No live branch passed the deterministic verification gate")
+            winner_strategy = next(
+                strategy for strategy in strategies if strategy.id == winner.strategy_id
+            )
+            final_verification = await runner.validate_existing_patch(
+                baseline.state,
+                winner_strategy,
+                winner.patch,
+                workdir=repository_workdir(summary.repo_url),
+            )
+            if final_verification.status is not BranchStatus.PASSED:
+                raise RuntimeError("Winner patch failed clean baseline revalidation")
+
         summary = await self._repository.require_run(run_id)
         summary.branches = results
         await self._repository.save_run(summary)
@@ -427,9 +442,6 @@ class RunManager:
             RunStatus.EVALUATING,
             "Ranking branches from deterministic test and patch metrics",
         )
-        winner, fully_verified = rank_results(results)
-        if winner is None or not fully_verified:
-            raise RuntimeError("No live branch passed the deterministic verification gate")
         summary = await self._repository.require_run(run_id)
         summary.winner_id = winner.strategy_id
         summary.patch = winner.patch

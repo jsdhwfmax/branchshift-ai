@@ -134,3 +134,27 @@ async def test_retry_exhaustion_preserves_failed_evidence():
     assert result.tests_failed == 1
     assert result.lint_findings == 1
     assert result.patch_applicable is True
+
+
+async def test_existing_winner_patch_is_revalidated_from_baseline():
+    parent = SandboxState(checkpoint_id="baseline")
+    sandbox = FakeSandbox([(validation_output(passed=13), 0)])
+    runner = BranchRunner(FakeModel([]), sandbox)
+    result = await runner.validate_existing_patch(
+        parent,
+        strategy(),
+        VALID_PATCH,
+        workdir="/workspace/repo/fixtures/pydantic-v1-app",
+    )
+    assert result.status is BranchStatus.PASSED
+    assert result.tests_passed == 13
+    assert sandbox.parents == [parent]
+
+
+async def test_revalidation_marks_non_applicable_patch():
+    sandbox = FakeSandbox([("git apply failed", 1)])
+    result = await BranchRunner(FakeModel([]), sandbox).validate_existing_patch(
+        SandboxState(checkpoint_id="baseline"), strategy(), VALID_PATCH
+    )
+    assert result.status is BranchStatus.FAILED
+    assert result.patch_applicable is False
