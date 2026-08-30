@@ -17,6 +17,9 @@
 - A unified-diff safety gate that rejects path traversal, Git metadata changes,
   binary content, oversized patches, duplicate file sections, and files that
   were not declared by the selected migration strategy.
+- A bounded branch runner that sends safe patch payloads to Sandbox without
+  shell interpolation, reruns pytest/pip-check/Ruff, and retries from the same
+  immutable parent checkpoint while preserving failed evidence.
 - Judge-facing React control room with desktop and mobile layouts, keyboard
   focus treatment, reduced-motion handling, live event ledger, evidence table,
   citations, and unified-diff viewer.
@@ -26,7 +29,7 @@
 
 ## Verification evidence
 
-- API: 30 tests passing.
+- API: 34 tests passing.
 - Pydantic v1 fixture: 13 tests passing in its own pinned environment.
 - Web: 2 component tests passing; TypeScript clean; production Vite build clean.
 - Python: Ruff clean; strict mypy clean across 22 source files.
