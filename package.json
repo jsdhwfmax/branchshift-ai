@@ -1,0 +1,13 @@
+{
+  "name": "branchshift",
+  "private": true,
+  "packageManager": "pnpm@11.19.0",
+  "scripts": {
+    "web:dev": "pnpm --dir apps/web dev",
+    "web:test": "pnpm --dir apps/web test",
+    "web:build": "pnpm --dir apps/web build",
+    "web:lint": "pnpm --dir apps/web lint",
+    "api:dev": ".venv/bin/uvicorn app.main:app --reload --app-dir services/api",
+    "api:test": ".venv/bin/pytest services/api/tests -q"
+  }
+}
