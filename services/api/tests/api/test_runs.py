@@ -44,3 +44,27 @@ def test_health_never_exposes_secret(tmp_path):
     assert "do-not-return-me" not in response.text
     assert response.json()["integrations"]["nemotron"]["configured"] is True
 
+
+def test_live_run_without_credentials_fails_safely(tmp_path):
+    config = Settings(
+        mode="live",
+        database_url=f"sqlite:///{tmp_path / 'live-missing.db'}",
+        nebius_api_key="",
+        tavily_api_key="",
+    )
+    with TestClient(create_app(config)) as client:
+        created = client.post(
+            "/api/runs",
+            json={"repo_url": "https://github.com/jsdhwfmax/branchshift-ai"},
+        )
+        run_id = created.json()["id"]
+        deadline = time.monotonic() + 2
+        summary = created.json()
+        while summary["status"] == "queued" and time.monotonic() < deadline:
+            summary = client.get(f"/api/runs/{run_id}").json()
+            time.sleep(0.01)
+
+    assert summary["status"] == "failed"
+    assert summary["failure_reason"] == (
+        "Live mode requires configured Nebius and Tavily credentials"
+    )

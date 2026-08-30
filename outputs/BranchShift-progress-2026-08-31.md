@@ -20,6 +20,9 @@
 - A bounded branch runner that sends safe patch payloads to Sandbox without
   shell interpolation, reruns pytest/pip-check/Ruff, and retries from the same
   immutable parent checkpoint while preserving failed evidence.
+- A live run path that clones and installs only inside Contree, records the
+  exact Git commit and passing baseline, retrieves grounded strategies, starts
+  all three patch loops concurrently, and applies the deterministic ranker.
 - Judge-facing React control room with desktop and mobile layouts, keyboard
   focus treatment, reduced-motion handling, live event ledger, evidence table,
   citations, and unified-diff viewer.
@@ -29,7 +32,7 @@
 
 ## Verification evidence
 
-- API: 34 tests passing.
+- API: 41 tests passing.
 - Pydantic v1 fixture: 13 tests passing in its own pinned environment.
 - Web: 2 component tests passing; TypeScript clean; production Vite build clean.
 - Python: Ruff clean; strict mypy clean across 22 source files.
@@ -68,7 +71,7 @@ make web-dev
 1. Redeem the emailed hackathon promo code and create a Nebius Token Factory
    API key with Sandbox access; store it only in the local `.env`.
 2. Run `.venv/bin/python -m app.cli.sandbox_spike` and save redacted evidence.
-3. Wire the live run manager to Tavily retrieval, schema-valid Nemotron plans,
-   bounded patch repair, and the real three-way Contree execution.
-4. Publish the controlled fixture to the eventual public GitHub repository,
-   then replace the homepage replay URL.
+3. Run the credentialed live path three times and record latency, operation IDs,
+   model token use, branch metrics, and any SDK errors.
+4. Add final-winner patch reapplication, request quotas, deployment packaging,
+   and the Devpost demo assets.

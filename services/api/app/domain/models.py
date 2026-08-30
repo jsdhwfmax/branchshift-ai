@@ -57,8 +57,8 @@ class CreateRunRequest(BaseModel):
             raise ValueError("Only public HTTPS GitHub repositories are supported")
         if parsed.username or parsed.password or parsed.port not in {None, 443}:
             raise ValueError("Credentials and custom ports are not allowed")
-        if parsed.fragment:
-            raise ValueError("Repository fragments are not allowed")
+        if parsed.query or parsed.fragment:
+            raise ValueError("Repository query strings and fragments are not allowed")
         parts = [part for part in parsed.path.split("/") if part]
         if len(parts) != 2:
             raise ValueError("Use a repository root URL such as https://github.com/owner/repo")
@@ -129,7 +129,7 @@ class RunSummary(BaseModel):
 
 
 ALLOWED_TRANSITIONS: dict[RunStatus, set[RunStatus]] = {
-    RunStatus.QUEUED: {RunStatus.PREPARING, RunStatus.CANCELLED},
+    RunStatus.QUEUED: {RunStatus.PREPARING, RunStatus.FAILED, RunStatus.CANCELLED},
     RunStatus.PREPARING: {RunStatus.PLANNING, RunStatus.FAILED, RunStatus.CANCELLED},
     RunStatus.PLANNING: {RunStatus.BRANCHING, RunStatus.FAILED, RunStatus.CANCELLED},
     RunStatus.BRANCHING: {RunStatus.EVALUATING, RunStatus.FAILED, RunStatus.CANCELLED},
