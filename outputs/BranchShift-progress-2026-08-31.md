@@ -14,6 +14,9 @@
 - A grounded live research/planning boundary: only allowlisted official sources
   survive retrieval, every Nemotron strategy must cite retained evidence, and
   generated plans can reference only repository files observed by BranchShift.
+- A unified-diff safety gate that rejects path traversal, Git metadata changes,
+  binary content, oversized patches, duplicate file sections, and files that
+  were not declared by the selected migration strategy.
 - Judge-facing React control room with desktop and mobile layouts, keyboard
   focus treatment, reduced-motion handling, live event ledger, evidence table,
   citations, and unified-diff viewer.
@@ -23,12 +26,14 @@
 
 ## Verification evidence
 
-- API: 22 tests passing.
+- API: 30 tests passing.
 - Pydantic v1 fixture: 13 tests passing in its own pinned environment.
 - Web: 2 component tests passing; TypeScript clean; production Vite build clean.
 - Python: Ruff clean; strict mypy clean across 22 source files.
 - Browser: complete repository-to-winner replay confirmed; mobile viewport
   `390px`, document width `390px` (no horizontal overflow).
+- Public source: `https://github.com/jsdhwfmax/branchshift-ai`; GitHub Actions CI
+  passed the same full quality gate on a clean Ubuntu runner.
 
 Run the full local gate with:
 

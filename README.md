@@ -1,5 +1,7 @@
 # BranchShift
 
+[![CI](https://github.com/jsdhwfmax/branchshift-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/jsdhwfmax/branchshift-ai/actions/workflows/ci.yml)
+
 BranchShift is an evidence-first dependency migration agent. It asks NVIDIA
 Nemotron on Nebius Token Factory for three distinct migration strategies,
 runs each from the same Token Factory Sandbox checkpoint, and selects the
@@ -51,6 +53,8 @@ controlled Pydantic v1 migration target lives under `fixtures/pydantic-v1-app`.
 - Untrusted repository code is designed to execute only inside Contree.
 - Model output never selects the winner; stored test and patch metrics do.
 - Secrets are redacted before provider output reaches the event ledger.
+- Generated diffs are rejected if they escape the repository, touch undeclared
+  files or Git metadata, contain binary data, or exceed configured limits.
 - Live mode will enforce bounded runtime, output, retries, and concurrency.
 
 ## Hackathon technology
