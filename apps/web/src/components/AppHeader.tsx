@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-export default function AppHeader({ mode = 'mock' }: { mode?: 'mock' | 'live' }) {
+export default function AppHeader({ mode }: { mode?: 'mock' | 'live' }) {
   return (
     <header className="app-header">
       <Link className="wordmark" to="/" aria-label="BranchShift home">
@@ -9,7 +9,7 @@ export default function AppHeader({ mode = 'mock' }: { mode?: 'mock' | 'live' })
       </Link>
       <div className="header-status">
         <span className={`mode-dot mode-${mode}`} aria-hidden="true" />
-        {mode === 'mock' ? 'deterministic replay' : 'live providers'}
+        {mode === 'mock' ? 'sample · deterministic replay' : mode === 'live' ? 'live execution' : 'execution mode pending'}
       </div>
       <a className="header-link" href="https://docs.tokenfactory.nebius.com/sandboxes/overview" target="_blank" rel="noreferrer">
         built on Nebius <span aria-hidden="true">↗</span>
@@ -17,4 +17,3 @@ export default function AppHeader({ mode = 'mock' }: { mode?: 'mock' | 'live' })
     </header>
   )
 }
-

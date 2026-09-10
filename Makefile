@@ -1,15 +1,19 @@
 .PHONY: install dev api-dev web-dev test lint build check
 
+PYTHON ?= python3.13
+API_VENV ?= .venv
+FIXTURE_VENV ?= fixtures/pydantic-v1-app/.venv
+
 install:
-	python3.13 -m venv .venv
-	.venv/bin/python -m pip install -U pip
-	.venv/bin/python -m pip install -e 'services/api[dev,contree]'
-	python3.13 -m venv fixtures/pydantic-v1-app/.venv
-	fixtures/pydantic-v1-app/.venv/bin/python -m pip install -e 'fixtures/pydantic-v1-app[test]'
+	$(PYTHON) -m venv $(API_VENV)
+	$(API_VENV)/bin/python -m pip install -U pip
+	$(API_VENV)/bin/python -m pip install -e 'services/api[dev,contree]'
+	$(PYTHON) -m venv $(FIXTURE_VENV)
+	$(FIXTURE_VENV)/bin/python -m pip install -e 'fixtures/pydantic-v1-app[test]'
 	pnpm install
 
 api-dev:
-	.venv/bin/uvicorn app.main:app --reload --app-dir services/api --port 8000
+	$(API_VENV)/bin/uvicorn app.main:app --reload --app-dir services/api --port 8000
 
 web-dev:
 	pnpm --dir apps/web dev
@@ -18,13 +22,13 @@ dev:
 	@echo "Run 'make api-dev' and 'make web-dev' in separate terminals."
 
 test:
-	.venv/bin/pytest services/api/tests -q
-	fixtures/pydantic-v1-app/.venv/bin/pytest fixtures/pydantic-v1-app/tests -q
+	$(API_VENV)/bin/python -m pytest services/api/tests -q
+	$(FIXTURE_VENV)/bin/python -m pytest fixtures/pydantic-v1-app/tests -q
 	pnpm --dir apps/web exec vitest run
 
 lint:
-	.venv/bin/ruff check services/api/app services/api/tests
-	.venv/bin/python -m mypy services/api/app
+	$(API_VENV)/bin/ruff check services/api/app services/api/tests
+	$(API_VENV)/bin/python -m mypy services/api/app
 	pnpm --dir apps/web lint
 
 build:

@@ -1,0 +1,33 @@
+# Allow only the files required by Containerfile into the build context.
+**
+!Containerfile
+!package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+!apps/
+!apps/web/
+!apps/web/**
+!services/
+!services/api/
+!services/api/pyproject.toml
+!services/api/app/
+!services/api/app/**
+
+# Exclude local output and credentials even inside the allowed source trees.
+**/node_modules
+**/dist
+**/__pycache__
+**/*.py[cod]
+**/*.egg-info
+**/*.tsbuildinfo
+**/.env
+**/.env.*
+**/*.db
+**/*.db-*
+**/*.sqlite3
+**/*.sqlite3-*
+**/*.pem
+**/*.key
+**/.DS_Store
+apps/web/vite.config.js
+apps/web/vite.config.d.ts

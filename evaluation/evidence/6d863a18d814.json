@@ -1,0 +1,205 @@
+{
+  "id": "6d863a18d814",
+  "repo_url": "https://github.com/jsdhwfmax/branchshift-ai",
+  "target": "pydantic-v2",
+  "project_path": "fixtures/pydantic-v1-app",
+  "mode": "live",
+  "status": "completed",
+  "created_at": "2026-09-10T04:47:00.895215Z",
+  "updated_at": "2026-09-10T04:48:30.237977Z",
+  "strategies": [
+    {
+      "id": "minimal",
+      "title": "Minimal v1\u2192v2 migration",
+      "rationale": "Smallest complete migration: update dependency pin, replace deprecated decorators and config, map renamed methods, keep public API surface identical.",
+      "ordered_steps": [
+        "Update pyproject.toml pydantic pin to >=2,<3",
+        "Replace @validator with @field_validator and @root_validator with @model_validator in models.py",
+        "Convert Config inner class to model_config dict with renamed keys (allow_population_by_field_name\u2192populate_by_name, anystr_strip_whitespace\u2192str_strip_whitespace, orm_mode\u2192from_attributes)",
+        "Change User.parse_obj to User.model_validate, user.dict to user.model_dump, Project.parse_raw to Project.model_validate_json in api.py"
+      ],
+      "source_urls": [
+        "https://pydantic.dev/docs/validation/latest/get-started/migration/#validator-and-root_validator-are-deprecated",
+        "https://pydantic.dev/docs/validation/latest/get-started/migration/#changes-to-config",
+        "https://pydantic.dev/docs/validation/latest/get-started/migration/#changes-to-pydanticbasemodel"
+      ],
+      "target_files": [
+        "pyproject.toml",
+        "src/sample_app/models.py",
+        "src/sample_app/api.py"
+      ]
+    },
+    {
+      "id": "compatibility",
+      "title": "Compatibility-layer migration",
+      "rationale": "Preserve v1 method names via thin wrappers so existing callers (including tests) see no signature change; internally delegate to v2 native methods.",
+      "ordered_steps": [
+        "Update pyproject.toml pydantic pin to >=2,<3",
+        "In models.py: replace @validator/@root_validator with @field_validator/@model_validator; convert Config to model_config with renamed keys",
+        "Add classmethods parse_obj=model_validate, parse_raw=model_validate_json, and instance method dict=model_dump on User and Project for backward compatibility",
+        "Leave api.py unchanged (it continues to call parse_obj, dict, parse_raw which now exist as compatibility aliases)"
+      ],
+      "source_urls": [
+        "https://pydantic.dev/docs/validation/latest/get-started/migration/#validator-and-root_validator-are-deprecated",
+        "https://pydantic.dev/docs/validation/latest/get-started/migration/#changes-to-config",
+        "https://pydantic.dev/docs/validation/latest/get-started/migration/#changes-to-pydanticbasemodel"
+      ],
+      "target_files": [
+        "pyproject.toml",
+        "src/sample_app/models.py"
+      ]
+    },
+    {
+      "id": "refactor",
+      "title": "Full refactor to native v2 patterns",
+      "rationale": "Adopt v2 idioms throughout: native decorators, config dict, serialization decorators, and modern validation signatures; update callers accordingly.",
+      "ordered_steps": [
+        "Update pyproject.toml pydantic pin to >=2,<3",
+        "Replace @validator with @field_validator(mode='before') and @root_validator with @model_validator(mode='after') in models.py",
+        "Convert Config to model_config dict with renamed keys (populate_by_name, str_strip_whitespace, from_attributes)",
+        "Remove deprecated orm_mode and anystr_strip_whitespace settings",
+        "Replace parse_obj with model_validate, dict with model_dump, parse_raw with model_validate_json in api.py",
+        "Adjust validator signatures to use ValidationInfo (info.field_name, info.config) instead of removed config/field args",
+        "Ensure root validator handles both dict and model instance per v2 model_validator contract",
+        "Run full test suite to verify behavior parity"
+      ],
+      "source_urls": [
+        "https://pydantic.dev/docs/validation/latest/get-started/migration/#validator-and-root_validator-are-deprecated",
+        "https://pydantic.dev/docs/validation/latest/get-started/migration/#changes-to-config",
+        "https://pydantic.dev/docs/validation/latest/get-started/migration/#changes-to-pydanticbasemodel"
+      ],
+      "target_files": [
+        "pyproject.toml",
+        "src/sample_app/models.py",
+        "src/sample_app/api.py"
+      ]
+    }
+  ],
+  "branches": [
+    {
+      "strategy_id": "minimal",
+      "status": "failed",
+      "tests_collected": 2,
+      "tests_passed": 0,
+      "tests_failed": 2,
+      "pip_check_passed": true,
+      "lint_findings": 0,
+      "changed_files": 3,
+      "changed_lines": 40,
+      "elapsed_seconds": 20.327220541992574,
+      "patch_applicable": true,
+      "patch": "diff --git a/pyproject.toml b/pyproject.toml\n--- a/pyproject.toml\n+++ b/pyproject.toml\n@@ -6,7 +6,7 @@\n name = \"branchshift-pydantic-v1-fixture\"\n version = \"0.1.0\"\n requires-python = \">=3.10\"\n-dependencies = [\"pydantic>=1.10,<2\"]\n+dependencies = [\"pydantic>=2,<3\"]\n \n [project.optional-dependencies]\n test = [\"pytest>=8\"]\ndiff --git a/src/sample_app/models.py b/src/sample_app/models.py\n--- a/src/sample_app/models.py\n+++ b/src/sample_app/models.py\n@@ -1,36 +1,36 @@\n from datetime import datetime\n-from typing import Optional\n \n-from pydantic import BaseModel, Field, root_validator, validator\n+from pydantic import BaseModel, Field, field_validator, model_validator\n \n \n class User(BaseModel):\n-    user_id: int = Field(alias=\"id\")\n+    user_id: int = Field(alias='id')\n     name: str\n     email: str\n-    nickname: Optional[str] = None\n+    nickname: str | None = None\n     created_at: datetime = Field(default_factory=datetime.utcnow)\n \n-    @validator(\"name\")\n+    @field_validator('name')\n     def name_must_not_be_blank(cls, value: str) -> str:\n         if not value.strip():\n-            raise ValueError(\"name must not be blank\")\n+            raise ValueError('name must not be blank')\n         return value.strip()\n \n-    @validator(\"email\")\n+    @field_validator('email')\n     def normalize_email(cls, value: str) -> str:\n         return value.strip().lower()\n \n-    @root_validator(skip_on_failure=True)\n+    @model_validator()\n     def nickname_differs_from_name(cls, values):\n-        if values.get(\"nickname\") == values.get(\"name\"):\n-            raise ValueError(\"nickname must differ from name\")\n+        if values.get('nickname') == values.get('name'):\n+            raise ValueError('nickname must differ from name')\n         return values\n \n-    class Config:\n-        allow_population_by_field_name = True\n-        anystr_strip_whitespace = True\n-        orm_mode = True\n+    model_config = {\n+        'populate_by_name': True,\n+        'str_strip_whitespace': True,\n+        'from_attributes': True\n+    }\n \n \n class Project(BaseModel):\n@@ -38,8 +38,8 @@\n     owner: User\n     archived: bool = False\n \n-    @validator(\"slug\")\n+    @field_validator('slug')\n     def slug_is_lowercase(cls, value: str) -> str:\n         if value != value.lower():\n-            raise ValueError(\"slug must be lowercase\")\n+            raise ValueError('slug must be lowercase')\n         return value\ndiff --git a/src/sample_app/api.py b/src/sample_app/api.py\n--- a/src/sample_app/api.py\n+++ b/src/sample_app/api.py\n@@ -2,13 +2,13 @@\n \n \n def parse_user(payload: dict) -> User:\n-    return User.parse_obj(payload)\n+    return User.model_validate(payload)\n \n \n def serialize_user(user: User) -> dict:\n-    return user.dict(by_alias=True, exclude_none=True)\n+    return user.model_dump(by_alias=True, exclude_none=True)\n \n \n def parse_project_json(payload: str) -> Project:\n-    return Project.parse_raw(payload)\n+    return Project.model_validate_json(payload)\n \n",
+      "diagnostics": "Validation failed. Repair only the declared files. tests=0/2, pip_check=True, lint_findings=0, pydantic_major=2, reason=Test execution failed; inspect the test diagnostic.\nTest failure \u2014 ::tests.test_api: collection failure\n\n==================================== ERRORS ====================================\n______________________ ERROR collecting tests/test_api.py ______________________\ntests/test_api.py:1: in <module>\n    from sample_app.api import parse_project_json, parse_user, serialize_user\nsrc/sample_app/api.py:1: in <module>\n    from .models import Project, User\nsrc/sample_app/models.py:6: in <module>\n    class User(BaseModel):\nsrc/sample_app/models.py:23: in User\n    @model_validator()\n     ^^^^^^^^^^^^^^^^^\nE   TypeError: model_validator() missing 1 required keyword-only argument: 'mode'\n____________________ ERROR collecting tests/test_models.py _____________________\ntests/test_models.py:4: in <module>\n    from sample_app.models import Project, User\nsrc/sample_app/models.py:6: in <module>\n    class User(BaseModel):\nsrc/sample_app/models.py:23: in User\n    @model_validator()\n     ^^^^^^^^^^^^^^^^^\nE   TypeError: model_validator() missing 1 required keyword-only argument: 'mode'\n=========================== short test summary info ============================\nERROR tests/test_api.py - TypeError: model_validator() missing 1 required key...\nERROR tests/test_models.py - TypeError: model_validator() missing 1 required ...\n!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!\n2 errors in 0.15s",
+      "failure_reason": "Test execution failed; inspect the test diagnostic",
+      "pydantic_major": 2,
+      "test_exit_code": 2,
+      "pip_exit_code": 0,
+      "test_contract_preserved": true,
+      "checkpoint_id": "84041fa4-a384-4cd4-bc75-268531a718fe"
+    },
+    {
+      "strategy_id": "compatibility",
+      "status": "passed",
+      "tests_collected": 13,
+      "tests_passed": 13,
+      "tests_failed": 0,
+      "pip_check_passed": true,
+      "lint_findings": 1,
+      "changed_files": 2,
+      "changed_lines": 71,
+      "elapsed_seconds": 14.302906958007952,
+      "patch_applicable": true,
+      "patch": "diff --git a/pyproject.toml b/pyproject.toml\n--- a/pyproject.toml\n+++ b/pyproject.toml\n@@ -6,7 +6,7 @@\n name = \"branchshift-pydantic-v1-fixture\"\n version = \"0.1.0\"\n requires-python = \">=3.10\"\n-dependencies = [\"pydantic>=1.10,<2\"]\n+dependencies = [\"pydantic>=2,<3\"]\n \n [project.optional-dependencies]\n test = [\"pytest>=8\"]\ndiff --git a/src/sample_app/models.py b/src/sample_app/models.py\n--- a/src/sample_app/models.py\n+++ b/src/sample_app/models.py\n@@ -1,36 +1,57 @@\n from datetime import datetime\n from typing import Optional\n \n-from pydantic import BaseModel, Field, root_validator, validator\n+from pydantic import BaseModel, Field, field_validator, model_validator\n \n \n class User(BaseModel):\n-    user_id: int = Field(alias=\"id\")\n+    user_id: int = Field(alias='id')\n     name: str\n     email: str\n-    nickname: Optional[str] = None\n+    nickname: str | None = None\n     created_at: datetime = Field(default_factory=datetime.utcnow)\n \n-    @validator(\"name\")\n+    @field_validator('name')\n+    @classmethod\n     def name_must_not_be_blank(cls, value: str) -> str:\n         if not value.strip():\n-            raise ValueError(\"name must not be blank\")\n+            raise ValueError('name must not be blank')\n         return value.strip()\n \n-    @validator(\"email\")\n+    @field_validator('email')\n+    @classmethod\n     def normalize_email(cls, value: str) -> str:\n         return value.strip().lower()\n \n-    @root_validator(skip_on_failure=True)\n+    @model_validator(mode='after')\n+    @classmethod\n     def nickname_differs_from_name(cls, values):\n-        if values.get(\"nickname\") == values.get(\"name\"):\n-            raise ValueError(\"nickname must differ from name\")\n+        if isinstance(values, dict):\n+            nickname = values.get('nickname')\n+            name = values.get('name')\n+        else:\n+            nickname = getattr(values, 'nickname', None)\n+            name = getattr(values, 'name', None)\n+        if nickname == name:\n+            raise ValueError('nickname must differ from name')\n         return values\n \n-    class Config:\n-        allow_population_by_field_name = True\n-        anystr_strip_whitespace = True\n-        orm_mode = True\n+    model_config = {\n+        'populate_by_name': True,\n+        'str_strip_whitespace': True,\n+        'from_attributes': True,\n+    }\n+\n+    @classmethod\n+    def parse_obj(cls, obj):\n+        return cls.model_validate(obj)\n+\n+    @classmethod\n+    def parse_raw(cls, data):\n+        return cls.model_validate_json(data)\n+\n+    def dict(self, **kwargs):\n+        return self.model_dump(**kwargs)\n \n \n class Project(BaseModel):\n@@ -38,8 +59,26 @@\n     owner: User\n     archived: bool = False\n \n-    @validator(\"slug\")\n+    @field_validator('slug')\n+    @classmethod\n     def slug_is_lowercase(cls, value: str) -> str:\n         if value != value.lower():\n-            raise ValueError(\"slug must be lowercase\")\n+            raise ValueError('slug must be lowercase')\n         return value\n+\n+    model_config = {\n+        'populate_by_name': True,\n+        'str_strip_whitespace': True,\n+        'from_attributes': True,\n+    }\n+\n+    @classmethod\n+    def parse_obj(cls, obj):\n+        return cls.model_validate(obj)\n+\n+    @classmethod\n+    def parse_raw(cls, data):\n+        return cls.model_validate_json(data)\n+\n+    def dict(self, **kwargs):\n+        return self.model_dump(**kwargs)\n",
+      "diagnostics": ".............                                                            [100%]\n13 passed, 14 warnings in 0.10s\nF401 [*] `typing.Optional` imported but unused\n --> src/sample_app/models.py:2:20\n  |\n1 | from datetime import datetime\n2 | from typing import Optional\n  |                    ^^^^^^^^\n3 |\n4 | from pydantic import BaseModel, Field, field_validator, model_validator\n  |\nhelp: Remove unused import: `typing.Optional`\n  |\n1 | from datetime import datetime\n  - from typing import Optional\n2 |\n  |\n\nFound 1 error.\n[*] 1 fixable with the `--fix` option.",
+      "failure_reason": null,
+      "pydantic_major": 2,
+      "test_exit_code": 0,
+      "pip_exit_code": 0,
+      "test_contract_preserved": true,
+      "checkpoint_id": "182b7575-a8f9-4106-ae73-e6ec891879fb"
+    },
+    {
+      "strategy_id": "refactor",
+      "status": "passed",
+      "tests_collected": 13,
+      "tests_passed": 13,
+      "tests_failed": 0,
+      "pip_check_passed": true,
+      "lint_findings": 2,
+      "changed_files": 3,
+      "changed_lines": 57,
+      "elapsed_seconds": 7.363864166996791,
+      "patch_applicable": true,
+      "patch": "diff --git a/pyproject.toml b/pyproject.toml\n--- a/pyproject.toml\n+++ b/pyproject.toml\n@@ -6,7 +6,7 @@\n name = \"branchshift-pydantic-v1-fixture\"\n version = \"0.1.0\"\n requires-python = \">=3.10\"\n-dependencies = [\"pydantic>=1.10,<2\"]\n+dependencies = [\"pydantic>=2,<3\"]\n \n [project.optional-dependencies]\n test = [\"pytest>=8\"]\ndiff --git a/src/sample_app/models.py b/src/sample_app/models.py\n--- a/src/sample_app/models.py\n+++ b/src/sample_app/models.py\n@@ -1,36 +1,46 @@\n from datetime import datetime\n-from typing import Optional\n+from typing import Optional, Union\n \n-from pydantic import BaseModel, Field, root_validator, validator\n+from pydantic import BaseModel, Field, field_validator, model_validator, ValidationInfo\n \n \n class User(BaseModel):\n-    user_id: int = Field(alias=\"id\")\n+    user_id: int = Field(alias='id')\n     name: str\n     email: str\n     nickname: Optional[str] = None\n     created_at: datetime = Field(default_factory=datetime.utcnow)\n \n-    @validator(\"name\")\n-    def name_must_not_be_blank(cls, value: str) -> str:\n+    @field_validator('name', mode='before')\n+    @classmethod\n+    def name_must_not_be_blank(cls, value: str, info: ValidationInfo) -> str:\n         if not value.strip():\n-            raise ValueError(\"name must not be blank\")\n+            raise ValueError('name must not be blank')\n         return value.strip()\n \n-    @validator(\"email\")\n-    def normalize_email(cls, value: str) -> str:\n+    @field_validator('email', mode='before')\n+    @classmethod\n+    def normalize_email(cls, value: str, info: ValidationInfo) -> str:\n         return value.strip().lower()\n \n-    @root_validator(skip_on_failure=True)\n-    def nickname_differs_from_name(cls, values):\n-        if values.get(\"nickname\") == values.get(\"name\"):\n-            raise ValueError(\"nickname must differ from name\")\n+    @model_validator(mode='after')\n+    @classmethod\n+    def nickname_differs_from_name(cls, values: Union[dict, 'User']) -> Union[dict, 'User']:\n+        if isinstance(values, dict):\n+            nickname = values.get('nickname')\n+            name = values.get('name')\n+        else:\n+            nickname = values.nickname\n+            name = values.name\n+        if nickname == name:\n+            raise ValueError('nickname must differ from name')\n         return values\n \n-    class Config:\n-        allow_population_by_field_name = True\n-        anystr_strip_whitespace = True\n-        orm_mode = True\n+    model_config = {\n+        'populate_by_name': True,\n+        'str_strip_whitespace': True,\n+        'from_attributes': True,\n+    }\n \n \n class Project(BaseModel):\n@@ -38,8 +48,9 @@\n     owner: User\n     archived: bool = False\n \n-    @validator(\"slug\")\n-    def slug_is_lowercase(cls, value: str) -> str:\n+    @field_validator('slug', mode='before')\n+    @classmethod\n+    def slug_is_lowercase(cls, value: str, info: ValidationInfo) -> str:\n         if value != value.lower():\n-            raise ValueError(\"slug must be lowercase\")\n+            raise ValueError('slug must be lowercase')\n         return value\ndiff --git a/src/sample_app/api.py b/src/sample_app/api.py\n--- a/src/sample_app/api.py\n+++ b/src/sample_app/api.py\n@@ -2,13 +2,13 @@\n \n \n def parse_user(payload: dict) -> User:\n-    return User.parse_obj(payload)\n+    return User.model_validate(payload)\n \n \n def serialize_user(user: User) -> dict:\n-    return user.dict(by_alias=True, exclude_none=True)\n+    return user.model_dump(by_alias=True, exclude_none=True)\n \n \n def parse_project_json(payload: str) -> Project:\n-    return Project.parse_raw(payload)\n+    return Project.model_validate_json(payload)\n \n",
+      "diagnostics": ".............                                                            [100%]\n13 passed, 25 warnings in 0.10s\nme\n2 | | from typing import Optional, Union\n3 | |\n4 | | from pydantic import BaseModel, Field, field_validator, model_validator, ValidationInfo\n  | |_______________________________________________________________________________________^\nhelp: Organize imports\n  |\n3 |\n  - from pydantic import BaseModel, Field, field_validator, model_validator, ValidationInfo\n4 + from pydantic import BaseModel, Field, ValidationInfo, field_validator, model_validator\n5 |\n  |\n\nUP045 [*] Use `X | None` for type annotations\n  --> src/sample_app/models.py:11:15\n   |\n 9 |     name: str\n10 |     email: str\n11 |     nickname: Optional[str] = None\n   |               ^^^^^^^^^^^^^\n12 |     created_at: datetime = Field(default_factory=datetime.utcnow)\n   |\nhelp: Convert to `X | None`\n   |\n10 |     email: str\n   -     nickname: Optional[str] = None\n11 +     nickname: str | None = None\n12 |     created_at: datetime = Field(default_factory=datetime.utcnow)\n   |\n\nFound 2 errors.\n[*] 2 fixable with the `--fix` option.",
+      "failure_reason": null,
+      "pydantic_major": 2,
+      "test_exit_code": 0,
+      "pip_exit_code": 0,
+      "test_contract_preserved": true,
+      "checkpoint_id": "264e2ad4-77fb-4c80-a9ad-da7dedd17f99"
+    }
+  ],
+  "citations": [
+    {
+      "title": "@validator and @root_validator are deprecated",
+      "url": "https://pydantic.dev/docs/validation/latest/get-started/migration/#validator-and-root_validator-are-deprecated",
+      "evidence": "@validator and @root_validator are deprecated @validator has been deprecated, and should be replaced with @field_validator , which provides various new features and improvements. The new @field_validator decorator does not have the each_item keyword argument; validators you want to apply to items within a generic container should be added by annotating the type argument. See validators in Annotated metadata for details. This looks like list[Annotated[int, Field(ge=0)]] Even if you keep using the deprecated @validator decorator, you can no longer add the field or config arguments to the signature of validator functions. If you need access to these, you\u2019ll need to migrate to @field_validator \u2014 see the next section for more details. If you use the always=True keyword argument to a validator function, note that standard validators for the annotated type will also be applied even to defaults, not just the custom validators. For example, despite the fact that the validator below will never error, the following code raises a ValidationError : from pydantic import BaseModel, validator class Model(BaseModel): x: str = 1 @validator('x', always=True) @classmethod def validate_x(cls, v): return v Model() @root_validator has been deprecated, and should be replaced with @model_validator , which also provides new features and improvements. Be aware that the allowed signatures have changed (see the relevant documentation ). Under some circumstances (such as assignment when model_config['validate_assignment'] is True ), the @model_validator decorator will receive an instance of the model, not a dict of values. You may need to be careful to handle this case. Even if you keep using the deprecated @root_validator decorator, due to refactors in validation logic, you can no longer run with skip_on_failure=False (which is the default value of this keyword argument, so must be set explicitly to True )."
+    },
+    {
+      "title": "Changes to config",
+      "url": "https://pydantic.dev/docs/validation/latest/get-started/migration/#changes-to-config",
+      "evidence": "Changes to config In Pydantic V2, to specify config on a model, you should set a class attribute called model_config to be a dict with the key/value pairs you want to be used as the config. The Pydantic V1 behavior to create a class called Config in the namespace of the parent BaseModel subclass is now deprecated. When subclassing a model, the model_config attribute is inherited. This is helpful in the case where you\u2019d like to use a base class with a given configuration for many models. Note, if you inherit from multiple BaseModel subclasses, like class MyModel(Model1, Model2) , the non-default settings in the model_config attribute from the two models will be merged, and for any settings defined in both, those from Model2 will override those from Model1 . The following config settings have been removed: allow_mutation \u2014 this has been removed. You should be able to use frozen equivalently (inverse of current use). error_msg_templates fields \u2014 this was the source of various bugs, so has been removed. You should be able to use Annotated on fields to modify them as desired. getter_dict \u2014 orm_mode has been removed, and this implementation detail is no longer necessary. smart_union - the default union_mode in Pydantic V2 is 'smart' . underscore_attrs_are_private \u2014 the Pydantic V2 behavior is now the same as if this was always set to True in Pydantic V1. json_loads json_dumps copy_on_model_validation post_init_call The following config settings have been renamed: allow_population_by_field_name \u2192 populate_by_name (or validate_by_name starting in v2.11) anystr_lower \u2192 str_to_lower anystr_strip_whitespace \u2192 str_strip_whitespace anystr_upper \u2192 str_to_upper keep_untouched \u2192 ignored_types max_anystr_length \u2192 str_max_length min_anystr_length \u2192 str_min_length orm_mode \u2192 from_attributes schema_extra \u2192 json_schema_extra validate_all \u2192 validate_default See the ConfigDict API reference for more details."
+    },
+    {
+      "title": "Changes to pydantic.BaseModel",
+      "url": "https://pydantic.dev/docs/validation/latest/get-started/migration/#changes-to-pydanticbasemodel",
+      "evidence": "Changes to pydantic.BaseModel Various method names have been changed; all non-deprecated BaseModel methods now have names matching either the format model_.* or __.*pydantic.*__ . Where possible, we have retained the deprecated methods with their old names to help ease migration, but calling them will emit DeprecationWarning s. Pydantic V1 Pydantic V2 __fields__ model_fields __private_attributes__ __pydantic_private__ __validators__ __pydantic_validator__ construct() model_construct() copy() model_copy() dict() model_dump() json_schema() model_json_schema() json() model_dump_json() parse_obj() model_validate() update_forward_refs() model_rebuild() Some of the built-in data-loading functionality has been slated for removal. In particular, parse_raw and parse_file are now deprecated. In Pydantic V2, model_validate_json works like parse_raw . Otherwise, you should load the data and then pass it to model_validate . The from_orm method has been deprecated; you can now just use model_validate (equivalent to parse_obj from Pydantic V1) to achieve something similar, as long as you\u2019ve set from_attributes=True in the model config. The __eq__ method has changed for models. Models can only be equal to other BaseModel instances. For two model instances to be equal, they must have the same: Type (or, in the case of generic models, non-parametrized generic origin type) Field values Extra values (only relevant when model_config['extra'] == 'allow' ) Private attribute values; models with different values of private attributes are no longer equal. Models are no longer equal to the dicts containing their data. Non-generic models of different types are never equal. Generic models with different origin types are never equal. We don\u2019t require exact type equality so that, for example, instances of MyGenericModel[Any] could be equal to instances of MyGenericModel[int] . We have replaced the use of the __root__ field to specify a \u201ccustom root model\u201d with a new type called RootModel which is intended to replace the functionality of using a field called __root__ in Pydantic V1. Note, RootModel types no longer support the arbitrary_types_allowed config setting. See this issue comment for an explanation. We have significantly expanded Pydantic\u2019s capabilities related to customizing serialization. In particular, we have added the @field_serializer , @model_serializer , and @computed_field decorators, which each address various shortcomings from Pydantic V1. See Custom serializers for the usage docs of these new decorators. Due to performance overhead and implementation complexity, we have now deprecated support for specifying json_encoders in the model config. This functionality was originally added for the purpose of achieving custom serialization logic, and we think the new serialization decorators are a better choice in most common scenarios. We have changed the behavior related to serializing subclasses of models when they occur as nested fields in a parent model. In V1, w"
+    },
+    {
+      "title": "Migration Guide | Pydantic Docs",
+      "url": "https://pydantic.dev/docs/validation/latest/get-started/migration",
+      "evidence": "Some of the built-in data-loading functionality has been slated for removal. In particular, `parse_raw` and `parse_file` are now deprecated. In Pydantic V2, `model_validate_json` works like `parse_raw`. Otherwise, you should load the data and then pass it to `model_validate`. The `from_orm` method has been deprecated; you can now just use `model_validate` (equivalent to `parse_obj` from Pydantic V1) to achieve something similar, as long as you\u2019ve set `from_attributes=True` in the model config. The `__eq__` method has changed for models. + Models can only be equal to other `BaseModel` instances. + For two model instances to be equal, they must have the same: - Type (or, in the case of generic models, non-parametrized generic origin type) - Field values [...] #### Changes to `@validator`\u2019s allowed signatures In Pydantic V1, functions wrapped by `@validator` could receive keyword arguments with metadata about what was being validated. Some of these arguments have been removed from `@field_validator` in Pydantic V2: `config`: Pydantic V2\u2019s config is now a dictionary instead of a class, which means this argument is no longer backwards compatible. If you need to access the configuration you should migrate to `@field_validator` and use `info.config`. `field`: this argument used to be a `ModelField` object, which was a quasi-internal class that no longer exists in Pydantic V2. Most of this information can still be accessed by using the field name from `info.field_name` to index into"
+    }
+  ],
+  "winner_id": "compatibility",
+  "patch": "diff --git a/pyproject.toml b/pyproject.toml\n--- a/pyproject.toml\n+++ b/pyproject.toml\n@@ -6,7 +6,7 @@\n name = \"branchshift-pydantic-v1-fixture\"\n version = \"0.1.0\"\n requires-python = \">=3.10\"\n-dependencies = [\"pydantic>=1.10,<2\"]\n+dependencies = [\"pydantic>=2,<3\"]\n \n [project.optional-dependencies]\n test = [\"pytest>=8\"]\ndiff --git a/src/sample_app/models.py b/src/sample_app/models.py\n--- a/src/sample_app/models.py\n+++ b/src/sample_app/models.py\n@@ -1,36 +1,57 @@\n from datetime import datetime\n from typing import Optional\n \n-from pydantic import BaseModel, Field, root_validator, validator\n+from pydantic import BaseModel, Field, field_validator, model_validator\n \n \n class User(BaseModel):\n-    user_id: int = Field(alias=\"id\")\n+    user_id: int = Field(alias='id')\n     name: str\n     email: str\n-    nickname: Optional[str] = None\n+    nickname: str | None = None\n     created_at: datetime = Field(default_factory=datetime.utcnow)\n \n-    @validator(\"name\")\n+    @field_validator('name')\n+    @classmethod\n     def name_must_not_be_blank(cls, value: str) -> str:\n         if not value.strip():\n-            raise ValueError(\"name must not be blank\")\n+            raise ValueError('name must not be blank')\n         return value.strip()\n \n-    @validator(\"email\")\n+    @field_validator('email')\n+    @classmethod\n     def normalize_email(cls, value: str) -> str:\n         return value.strip().lower()\n \n-    @root_validator(skip_on_failure=True)\n+    @model_validator(mode='after')\n+    @classmethod\n     def nickname_differs_from_name(cls, values):\n-        if values.get(\"nickname\") == values.get(\"name\"):\n-            raise ValueError(\"nickname must differ from name\")\n+        if isinstance(values, dict):\n+            nickname = values.get('nickname')\n+            name = values.get('name')\n+        else:\n+            nickname = getattr(values, 'nickname', None)\n+            name = getattr(values, 'name', None)\n+        if nickname == name:\n+            raise ValueError('nickname must differ from name')\n         return values\n \n-    class Config:\n-        allow_population_by_field_name = True\n-        anystr_strip_whitespace = True\n-        orm_mode = True\n+    model_config = {\n+        'populate_by_name': True,\n+        'str_strip_whitespace': True,\n+        'from_attributes': True,\n+    }\n+\n+    @classmethod\n+    def parse_obj(cls, obj):\n+        return cls.model_validate(obj)\n+\n+    @classmethod\n+    def parse_raw(cls, data):\n+        return cls.model_validate_json(data)\n+\n+    def dict(self, **kwargs):\n+        return self.model_dump(**kwargs)\n \n \n class Project(BaseModel):\n@@ -38,8 +59,26 @@\n     owner: User\n     archived: bool = False\n \n-    @validator(\"slug\")\n+    @field_validator('slug')\n+    @classmethod\n     def slug_is_lowercase(cls, value: str) -> str:\n         if value != value.lower():\n-            raise ValueError(\"slug must be lowercase\")\n+            raise ValueError('slug must be lowercase')\n         return value\n+\n+    model_config = {\n+        'populate_by_name': True,\n+        'str_strip_whitespace': True,\n+        'from_attributes': True,\n+    }\n+\n+    @classmethod\n+    def parse_obj(cls, obj):\n+        return cls.model_validate(obj)\n+\n+    @classmethod\n+    def parse_raw(cls, data):\n+        return cls.model_validate_json(data)\n+\n+    def dict(self, **kwargs):\n+        return self.model_dump(**kwargs)\n",
+  "report": "Compatibility won at commit afb82d4fdeac: 13/13 tests, 1 lint findings, 71 changed lines.",
+  "failure_reason": null,
+  "baseline_commit_sha": "afb82d4fdeace940e0054895c73a0ddca2ff55c3",
+  "baseline_checkpoint_id": "8aeb6eae-f919-4bf1-b83c-268602aa8e22",
+  "baseline_tests_collected": 13,
+  "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "provider_usage": {
+    "requests": 8,
+    "input_tokens": 35389,
+    "output_tokens": 15952
+  },
+  "baseline_test_contract_digest": "425a9c3c2f3a1a564707e77d054b359cf5e4459f59d9c2fa38cdeceed616948f",
+  "revalidated_checkpoint_id": "f2bc6d99-a123-4a01-988c-a548763e21f2",
+  "revalidation": {
+    "strategy_id": "compatibility",
+    "status": "passed",
+    "tests_collected": 13,
+    "tests_passed": 13,
+    "tests_failed": 0,
+    "pip_check_passed": true,
+    "lint_findings": 1,
+    "changed_files": 2,
+    "changed_lines": 71,
+    "elapsed_seconds": 6.184743874997366,
+    "patch_applicable": true,
+    "patch": "diff --git a/pyproject.toml b/pyproject.toml\n--- a/pyproject.toml\n+++ b/pyproject.toml\n@@ -6,7 +6,7 @@\n name = \"branchshift-pydantic-v1-fixture\"\n version = \"0.1.0\"\n requires-python = \">=3.10\"\n-dependencies = [\"pydantic>=1.10,<2\"]\n+dependencies = [\"pydantic>=2,<3\"]\n \n [project.optional-dependencies]\n test = [\"pytest>=8\"]\ndiff --git a/src/sample_app/models.py b/src/sample_app/models.py\n--- a/src/sample_app/models.py\n+++ b/src/sample_app/models.py\n@@ -1,36 +1,57 @@\n from datetime import datetime\n from typing import Optional\n \n-from pydantic import BaseModel, Field, root_validator, validator\n+from pydantic import BaseModel, Field, field_validator, model_validator\n \n \n class User(BaseModel):\n-    user_id: int = Field(alias=\"id\")\n+    user_id: int = Field(alias='id')\n     name: str\n     email: str\n-    nickname: Optional[str] = None\n+    nickname: str | None = None\n     created_at: datetime = Field(default_factory=datetime.utcnow)\n \n-    @validator(\"name\")\n+    @field_validator('name')\n+    @classmethod\n     def name_must_not_be_blank(cls, value: str) -> str:\n         if not value.strip():\n-            raise ValueError(\"name must not be blank\")\n+            raise ValueError('name must not be blank')\n         return value.strip()\n \n-    @validator(\"email\")\n+    @field_validator('email')\n+    @classmethod\n     def normalize_email(cls, value: str) -> str:\n         return value.strip().lower()\n \n-    @root_validator(skip_on_failure=True)\n+    @model_validator(mode='after')\n+    @classmethod\n     def nickname_differs_from_name(cls, values):\n-        if values.get(\"nickname\") == values.get(\"name\"):\n-            raise ValueError(\"nickname must differ from name\")\n+        if isinstance(values, dict):\n+            nickname = values.get('nickname')\n+            name = values.get('name')\n+        else:\n+            nickname = getattr(values, 'nickname', None)\n+            name = getattr(values, 'name', None)\n+        if nickname == name:\n+            raise ValueError('nickname must differ from name')\n         return values\n \n-    class Config:\n-        allow_population_by_field_name = True\n-        anystr_strip_whitespace = True\n-        orm_mode = True\n+    model_config = {\n+        'populate_by_name': True,\n+        'str_strip_whitespace': True,\n+        'from_attributes': True,\n+    }\n+\n+    @classmethod\n+    def parse_obj(cls, obj):\n+        return cls.model_validate(obj)\n+\n+    @classmethod\n+    def parse_raw(cls, data):\n+        return cls.model_validate_json(data)\n+\n+    def dict(self, **kwargs):\n+        return self.model_dump(**kwargs)\n \n \n class Project(BaseModel):\n@@ -38,8 +59,26 @@\n     owner: User\n     archived: bool = False\n \n-    @validator(\"slug\")\n+    @field_validator('slug')\n+    @classmethod\n     def slug_is_lowercase(cls, value: str) -> str:\n         if value != value.lower():\n-            raise ValueError(\"slug must be lowercase\")\n+            raise ValueError('slug must be lowercase')\n         return value\n+\n+    model_config = {\n+        'populate_by_name': True,\n+        'str_strip_whitespace': True,\n+        'from_attributes': True,\n+    }\n+\n+    @classmethod\n+    def parse_obj(cls, obj):\n+        return cls.model_validate(obj)\n+\n+    @classmethod\n+    def parse_raw(cls, data):\n+        return cls.model_validate_json(data)\n+\n+    def dict(self, **kwargs):\n+        return self.model_dump(**kwargs)\n",
+    "diagnostics": ".............                                                            [100%]\n13 passed, 14 warnings in 0.10s\nF401 [*] `typing.Optional` imported but unused\n --> src/sample_app/models.py:2:20\n  |\n1 | from datetime import datetime\n2 | from typing import Optional\n  |                    ^^^^^^^^\n3 |\n4 | from pydantic import BaseModel, Field, field_validator, model_validator\n  |\nhelp: Remove unused import: `typing.Optional`\n  |\n1 | from datetime import datetime\n  - from typing import Optional\n2 |\n  |\n\nFound 1 error.\n[*] 1 fixable with the `--fix` option.",
+    "failure_reason": null,
+    "pydantic_major": 2,
+    "test_exit_code": 0,
+    "pip_exit_code": 0,
+    "test_contract_preserved": true,
+    "checkpoint_id": "f2bc6d99-a123-4a01-988c-a548763e21f2"
+  },
+  "orchestrator_revision": "afb82d4fdeace940e0054895c73a0ddca2ff55c3",
+  "orchestrator_digest": "0c6e4aacb893fd2b8df981f1b55f433911ef6ef9802c99500a353efa726514f0",
+  "orchestrator_dirty": true,
+  "runtime_config_digest": "451b932c6baf67bb6b5ae8ff38b506e75a9724caca366df8dfdf7d8da5b2b8f4"
+}

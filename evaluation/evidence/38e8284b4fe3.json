@@ -1,0 +1,174 @@
+{
+  "id": "38e8284b4fe3",
+  "repo_url": "https://github.com/jsdhwfmax/branchshift-ai",
+  "target": "pydantic-v2",
+  "mode": "live",
+  "status": "failed",
+  "created_at": "2026-09-10T03:53:03.482035Z",
+  "updated_at": "2026-09-10T03:53:59.671668Z",
+  "strategies": [
+    {
+      "id": "minimal",
+      "title": "Minimal API migration",
+      "rationale": "Only modify src files to adopt Pydantic V2 APIs while keeping test expectations valid without changes.",
+      "ordered_steps": [
+        "Replace User.parse_obj with User.model_validate in src/sample_app/api.py",
+        "Replace user.dict(by_alias=True, exclude_none=True) with user.model_dump(by_alias=True, exclude_none=True) in src/sample_app/api.py",
+        "Replace Project.parse_raw with Project.model_validate_json in src/sample_app/api.py",
+        "Update pyproject.toml dependency from \"pydantic>=1.10,<2\" to \"pydantic>=2,<3\""
+      ],
+      "source_urls": [
+        "https://docs.pydantic.dev/latest/migration#removed-in-pydantic-v2"
+      ],
+      "target_files": [
+        "src/sample_app/api.py",
+        "pyproject.toml"
+      ]
+    },
+    {
+      "id": "compatibility",
+      "title": "Compatibility layer migration",
+      "rationale": "Introduce pydantic.v1 import aliases to keep V1-style calls functional under V2 while migrating src files incrementally.",
+      "ordered_steps": [
+        "Add import `from pydantic.v1 import BaseModel, validator, root_validator` at top of src/sample_app/models.py",
+        "Replace direct pydantic imports with pydantic.v1 equivalents in src/sample_app/models.py",
+        "Update src/sample_app/api.py to use new model_validate/model_dump calls while preserving alias behavior",
+        "Pin pyproject.toml to \"pydantic>=2,<3\" and add pydantic-compat extra if needed"
+      ],
+      "source_urls": [
+        "https://docs.pydantic.dev/latest/migration#using-pydantic-v1-features-in-a-v1v2-environment"
+      ],
+      "target_files": [
+        "src/sample_app/models.py",
+        "src/sample_app/api.py",
+        "pyproject.toml"
+      ]
+    },
+    {
+      "id": "refactor",
+      "title": "Full refactor to Pydantic V2 idioms",
+      "rationale": "Leverage V2 improvements: replace validators with field constraints, remove root_validator, use model_config, and adopt model_dump by default.",
+      "ordered_steps": [
+        "Rewrite src/sample_app/models.py using Pydantic V2 syntax: replace validators with Field constraints, replace root_validator with model_validator, update Config to model_config",
+        "Update src/sample_app/api.py to use model_validate and model_dump without by_alias where alias= Field(alias=...) handles it",
+        "Migrate test expectations in tests/test_api.py and tests/test_models.py to use model_dump instead of dict(by_alias=True) \u2014 note: test files are read-only; this strategy assumes tests already align with V2 or will be updated separately per migration plan",
+        "Pin pyproject.toml to \"pydantic>=2,<3\""
+      ],
+      "source_urls": [
+        "https://docs.pydantic.dev/latest/migration#changes-to-handling-of-standard-types"
+      ],
+      "target_files": [
+        "src/sample_app/models.py",
+        "src/sample_app/api.py",
+        "pyproject.toml"
+      ]
+    }
+  ],
+  "branches": [
+    {
+      "strategy_id": "minimal",
+      "status": "failed",
+      "tests_collected": 0,
+      "tests_passed": 0,
+      "tests_failed": 0,
+      "pip_check_passed": true,
+      "lint_findings": 1,
+      "changed_files": 2,
+      "changed_lines": 25,
+      "elapsed_seconds": 9.717801749007776,
+      "patch_applicable": true,
+      "patch": "diff --git a/src/sample_app/api.py b/src/sample_app/api.py\n--- a/src/sample_app/api.py\n+++ b/src/sample_app/api.py\n@@ -2,13 +2,13 @@\n \n \n def parse_user(payload: dict) -> User:\n-    return User.parse_obj(payload)\n+    return User.model_validate(payload)\n \n \n def serialize_user(user: User) -> dict:\n-    return user.dict(by_alias=True, exclude_none=True)\n+    return user.model_dump(by_alias=True, exclude_none=True)\n \n \n def parse_project_json(payload: str) -> Project:\n-    return Project.parse_raw(payload)\n+    return Project.model_validate_json(payload)\n \ndiff --git a/pyproject.toml b/pyproject.toml\n--- a/pyproject.toml\n+++ b/pyproject.toml\n@@ -1,19 +1,18 @@\n [build-system]\n-requires = [\"setuptools>=68\"]\n-build-backend = \"setuptools.build_meta\"\n+requires = [setuptools>=68]\n+build-backend = setuptools.build_meta\n \n [project]\n-name = \"branchshift-pydantic-v1-fixture\"\n-version = \"0.1.0\"\n-requires-python = \">=3.10\"\n-dependencies = [\"pydantic>=1.10,<2\"]\n+name = branchshift-pydantic-v1-fixture\n+version = 0.1.0\n+requires-python = >=3.10\n+dependencies = [pydantic>=2,<3]\n \n [project.optional-dependencies]\n-test = [\"pytest>=8\"]\n+test = pytest>=8\n \n [tool.setuptools.packages.find]\n-where = [\"src\"]\n+where = [src]\n \n [tool.pytest.ini_options]\n-testpaths = [\"tests\"]\n-\n+testpaths = tests\n",
+      "diagnostics": "^\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 649, in parse_value\n    raise suffixed_err(src, pos, \"Invalid value\")\ntomllib.TOMLDecodeError: Invalid value (at line 2, column 13)\nERROR: /workspace/repo/fixtures/pydantic-v1-app/pyproject.toml: Invalid value (at line 2, column 13)\n\nNo broken requirements found.\nruff failed\n  Cause: Failed to parse /workspace/repo/fixtures/pydantic-v1-app/pyproject.toml\n  Cause: TOML parse error at line 2, column 24\n  |\n2 | requires = [setuptools>=68]\n  |                        ^\nunexpected `=` in array, expected value, `]`\n\n\n__BRANCHSHIFT_TEST_EXIT=4\n__BRANCHSHIFT_PIP_EXIT=0\n__BRANCHSHIFT_RUFF_EXIT=2\n__BRANCHSHIFT_INSTALL_EXIT=2\n__BRANCHSHIFT_PYDANTIC_MAJOR=1\n\nTraceback (most recent call last):\n  File \"<string>\", line 25, in <module>\n    parsed = tomllib.loads(manifest.read_text())\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 102, in loads\n    pos = key_value_rule(src, pos, out, header, parse_float)\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 326, in key_value_rule\n    pos, key, value = parse_key_value_pair(src, pos, parse_float)\n                      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 369, in parse_key_value_pair\n    pos, value = parse_value(src, pos, parse_float)\n                 ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 616, in parse_value\n    return parse_array(src, pos, parse_float)\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 420, in parse_array\n    pos, val = parse_value(src, pos, parse_float)\n               ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 649, in parse_value\n    raise suffixed_err(src, pos, \"Invalid value\")\ntomllib.TOMLDecodeError: Invalid value (at line 2, column 13)\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import xml.etree.ElementTree as ET; root=ET.parse('/tmp/branchshift-pytest.xml').getroot(); cases=list(root.iter('testcase')); failed=sum(c.find('failure') is not None or c.find('error') is not None for c in cases); skipped=sum(c.find('skipped') is not None for c in cases); print('__BRANCHSHIFT_TESTS_COLLECTED='+str(len(cases))); print('__BRANCHSHIFT_TESTS_PASSED='+str(len(cases)-failed-skipped)); print('__BRANCHSHIFT_TESTS_FAILED='+str(failed))\n                                             ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/xml/etree/ElementTree.py\", line 1210, in parse\n    tree.parse(source, parser)\n    ~~~~~~~~~~^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/xml/etree/ElementTree.py\", line 562, in parse\n    source = open(source, \"rb\")\nFileNotFoundError: [Errno 2] No such file or directory: '/tmp/branchshift-pytest.xml'\nTraceback (most recent call last):\n  File \"<string>\", line 25, in <module>\n    parsed = tomllib.loads(manifest.read_text())\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 102, in loads\n    pos = key_value_rule(src, pos, out, header, parse_float)\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 326, in key_value_rule\n    pos, key, value = parse_key_value_pair(src, pos, parse_float)\n                      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 369, in parse_key_value_pair\n    pos, value = parse_value(src, pos, parse_float)\n                 ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 616, in parse_value\n    return parse_array(src, pos, parse_float)\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 420, in parse_array\n    pos, val = parse_value(src, pos, parse_float)\n               ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 649, in parse_value\n    raise suffixed_err(src, pos, \"Invalid value\")\ntomllib.TOMLDecodeError: Invalid value (at line 2, column 13)\n",
+      "failure_reason": "Original test files or pytest configuration changed",
+      "pydantic_major": 1,
+      "test_exit_code": -1,
+      "pip_exit_code": 0,
+      "test_contract_preserved": false,
+      "checkpoint_id": "347d8f80-6904-4c13-83b9-c36cf5e96517"
+    },
+    {
+      "strategy_id": "compatibility",
+      "status": "failed",
+      "tests_collected": 0,
+      "tests_passed": 0,
+      "tests_failed": 0,
+      "pip_check_passed": true,
+      "lint_findings": 1,
+      "changed_files": 3,
+      "changed_lines": 42,
+      "elapsed_seconds": 9.072355291005806,
+      "patch_applicable": true,
+      "patch": "diff --git a/src/sample_app/models.py b/src/sample_app/models.py\n--- a/src/sample_app/models.py\n+++ b/src/sample_app/models.py\n@@ -1,30 +1,30 @@\n from datetime import datetime\n from typing import Optional\n \n-from pydantic import BaseModel, Field, root_validator, validator\n+from pydantic.v1 import BaseModel, Field, root_validator, validator\n \n \n class User(BaseModel):\n-    user_id: int = Field(alias=\"id\")\n+    user_id: int = Field(alias='id')\n     name: str\n     email: str\n     nickname: Optional[str] = None\n     created_at: datetime = Field(default_factory=datetime.utcnow)\n \n-    @validator(\"name\")\n+    @validator('name')\n     def name_must_not_be_blank(cls, value: str) -> str:\n         if not value.strip():\n-            raise ValueError(\"name must not be blank\")\n+            raise ValueError('name must not be blank')\n         return value.strip()\n \n-    @validator(\"email\")\n+    @validator('email')\n     def normalize_email(cls, value: str) -> str:\n         return value.strip().lower()\n \n     @root_validator(skip_on_failure=True)\n     def nickname_differs_from_name(cls, values):\n-        if values.get(\"nickname\") == values.get(\"name\"):\n-            raise ValueError(\"nickname must differ from name\")\n+        if values.get('nickname') == values.get('name'):\n+            raise ValueError('nickname must differ from name')\n         return values\n \n     class Config:\n@@ -38,8 +38,8 @@\n     owner: User\n     archived: bool = False\n \n-    @validator(\"slug\")\n+    @validator('slug')\n     def slug_is_lowercase(cls, value: str) -> str:\n         if value != value.lower():\n-            raise ValueError(\"slug must be lowercase\")\n+            raise ValueError('slug must be lowercase')\n         return value\ndiff --git a/src/sample_app/api.py b/src/sample_app/api.py\n--- a/src/sample_app/api.py\n+++ b/src/sample_app/api.py\n@@ -2,13 +2,13 @@\n \n \n def parse_user(payload: dict) -> User:\n-    return User.parse_obj(payload)\n+    return User.model_validate(payload)\n \n \n def serialize_user(user: User) -> dict:\n-    return user.dict(by_alias=True, exclude_none=True)\n+    return user.model_dump(by_alias=True, exclude_none=True)\n \n \n def parse_project_json(payload: str) -> Project:\n-    return Project.parse_raw(payload)\n+    return Project.model_validate_json(payload)\n \ndiff --git a/pyproject.toml b/pyproject.toml\n--- a/pyproject.toml\n+++ b/pyproject.toml\n@@ -1,19 +1,19 @@\n [build-system]\n-requires = [\"setuptools>=68\"]\n-build-backend = \"setuptools.build_meta\"\n+requires = [setuptools>=68]\n+build-backend = setuptools.build_meta\n \n [project]\n-name = \"branchshift-pydantic-v1-fixture\"\n-version = \"0.1.0\"\n-requires-python = \">=3.10\"\n-dependencies = [\"pydantic>=1.10,<2\"]\n+name = branchshift-pydantic-v1-fixture\n+version = 0.1.0\n+requires-python = >=3.10\n+dependencies = [pydantic>=2,<3]\n \n [project.optional-dependencies]\n-test = [\"pytest>=8\"]\n+test = [pytest>=8, pydantic-compat]\n \n [tool.setuptools.packages.find]\n-where = [\"src\"]\n+where = [src]\n \n [tool.pytest.ini_options]\n-testpaths = [\"tests\"]\n+testpaths = tests\n \n",
+      "diagnostics": "^\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 649, in parse_value\n    raise suffixed_err(src, pos, \"Invalid value\")\ntomllib.TOMLDecodeError: Invalid value (at line 2, column 13)\nERROR: /workspace/repo/fixtures/pydantic-v1-app/pyproject.toml: Invalid value (at line 2, column 13)\n\nNo broken requirements found.\nruff failed\n  Cause: Failed to parse /workspace/repo/fixtures/pydantic-v1-app/pyproject.toml\n  Cause: TOML parse error at line 2, column 24\n  |\n2 | requires = [setuptools>=68]\n  |                        ^\nunexpected `=` in array, expected value, `]`\n\n\n__BRANCHSHIFT_TEST_EXIT=4\n__BRANCHSHIFT_PIP_EXIT=0\n__BRANCHSHIFT_RUFF_EXIT=2\n__BRANCHSHIFT_INSTALL_EXIT=2\n__BRANCHSHIFT_PYDANTIC_MAJOR=1\n\nTraceback (most recent call last):\n  File \"<string>\", line 25, in <module>\n    parsed = tomllib.loads(manifest.read_text())\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 102, in loads\n    pos = key_value_rule(src, pos, out, header, parse_float)\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 326, in key_value_rule\n    pos, key, value = parse_key_value_pair(src, pos, parse_float)\n                      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 369, in parse_key_value_pair\n    pos, value = parse_value(src, pos, parse_float)\n                 ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 616, in parse_value\n    return parse_array(src, pos, parse_float)\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 420, in parse_array\n    pos, val = parse_value(src, pos, parse_float)\n               ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 649, in parse_value\n    raise suffixed_err(src, pos, \"Invalid value\")\ntomllib.TOMLDecodeError: Invalid value (at line 2, column 13)\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import xml.etree.ElementTree as ET; root=ET.parse('/tmp/branchshift-pytest.xml').getroot(); cases=list(root.iter('testcase')); failed=sum(c.find('failure') is not None or c.find('error') is not None for c in cases); skipped=sum(c.find('skipped') is not None for c in cases); print('__BRANCHSHIFT_TESTS_COLLECTED='+str(len(cases))); print('__BRANCHSHIFT_TESTS_PASSED='+str(len(cases)-failed-skipped)); print('__BRANCHSHIFT_TESTS_FAILED='+str(failed))\n                                             ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/xml/etree/ElementTree.py\", line 1210, in parse\n    tree.parse(source, parser)\n    ~~~~~~~~~~^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/xml/etree/ElementTree.py\", line 562, in parse\n    source = open(source, \"rb\")\nFileNotFoundError: [Errno 2] No such file or directory: '/tmp/branchshift-pytest.xml'\nTraceback (most recent call last):\n  File \"<string>\", line 25, in <module>\n    parsed = tomllib.loads(manifest.read_text())\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 102, in loads\n    pos = key_value_rule(src, pos, out, header, parse_float)\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 326, in key_value_rule\n    pos, key, value = parse_key_value_pair(src, pos, parse_float)\n                      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 369, in parse_key_value_pair\n    pos, value = parse_value(src, pos, parse_float)\n                 ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 616, in parse_value\n    return parse_array(src, pos, parse_float)\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 420, in parse_array\n    pos, val = parse_value(src, pos, parse_float)\n               ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 649, in parse_value\n    raise suffixed_err(src, pos, \"Invalid value\")\ntomllib.TOMLDecodeError: Invalid value (at line 2, column 13)\n",
+      "failure_reason": "Original test files or pytest configuration changed",
+      "pydantic_major": 1,
+      "test_exit_code": -1,
+      "pip_exit_code": 0,
+      "test_contract_preserved": false,
+      "checkpoint_id": "c0655e3e-62e2-4a94-aae6-66cb583e6345"
+    },
+    {
+      "strategy_id": "refactor",
+      "status": "failed",
+      "tests_collected": 0,
+      "tests_passed": 0,
+      "tests_failed": 0,
+      "pip_check_passed": true,
+      "lint_findings": 1,
+      "changed_files": 3,
+      "changed_lines": 70,
+      "elapsed_seconds": 9.769007375005458,
+      "patch_applicable": true,
+      "patch": "diff --git a/src/sample_app/models.py b/src/sample_app/models.py\n--- a/src/sample_app/models.py\n+++ b/src/sample_app/models.py\n@@ -1,45 +1,44 @@\n from datetime import datetime\n from typing import Optional\n \n-from pydantic import BaseModel, Field, root_validator, validator\n+from pydantic import BaseModel, Field\n \n \n class User(BaseModel):\n-    user_id: int = Field(alias=\"id\")\n-    name: str\n-    email: str\n+    user_id: int = Field(alias='id')\n+    name: str = Field(default='')\n+    email: str = Field(default='')\n     nickname: Optional[str] = None\n     created_at: datetime = Field(default_factory=datetime.utcnow)\n \n-    @validator(\"name\")\n+    @field_validator('name')\n+    @classmethod\n     def name_must_not_be_blank(cls, value: str) -> str:\n         if not value.strip():\n-            raise ValueError(\"name must not be blank\")\n+            raise ValueError('name must not be blank')\n         return value.strip()\n \n-    @validator(\"email\")\n+    @field_validator('email')\n+    @classmethod\n     def normalize_email(cls, value: str) -> str:\n         return value.strip().lower()\n \n-    @root_validator(skip_on_failure=True)\n-    def nickname_differs_from_name(cls, values):\n-        if values.get(\"nickname\") == values.get(\"name\"):\n-            raise ValueError(\"nickname must differ from name\")\n-        return values\n+    @model_validator(mode='after')\n+    def nickname_differs_from_name(self):\n+        if self.nickname == self.name:\n+            raise ValueError('nickname must differ from name')\n+        return self\n \n-    class Config:\n-        allow_population_by_field_name = True\n-        anystr_strip_whitespace = True\n-        orm_mode = True\n-\n+    model_config = {'allow_population_by_field_name': True, 'anystr_strip_whitespace': True, 'validate_by_name': True}\n \n class Project(BaseModel):\n-    slug: str\n+    slug: str = Field(default='')\n     owner: User\n     archived: bool = False\n \n-    @validator(\"slug\")\n+    @field_validator('slug')\n+    @classmethod\n     def slug_is_lowercase(cls, value: str) -> str:\n         if value != value.lower():\n-            raise ValueError(\"slug must be lowercase\")\n+            raise ValueError('slug must be lowercase')\n         return value\ndiff --git a/src/sample_app/api.py b/src/sample_app/api.py\n--- a/src/sample_app/api.py\n+++ b/src/sample_app/api.py\n@@ -2,13 +2,13 @@\n \n \n def parse_user(payload: dict) -> User:\n-    return User.parse_obj(payload)\n+    return User.model_validate(payload)\n \n \n def serialize_user(user: User) -> dict:\n-    return user.dict(by_alias=True, exclude_none=True)\n+    return user.model_dump()\n \n \n def parse_project_json(payload: str) -> Project:\n-    return Project.parse_raw(payload)\n+    return Project.model_validate_json(payload)\n \ndiff --git a/pyproject.toml b/pyproject.toml\n--- a/pyproject.toml\n+++ b/pyproject.toml\n@@ -1,19 +1,26 @@\n [build-system]\n-requires = [\"setuptools>=68\"]\n-build-backend = \"setuptools.build_meta\"\n+requires = [setuptools>=\n+68]\n+build-backend = \n+setuptools.build_meta\n \n [project]\n-name = \"branchshift-pydantic-v1-fixture\"\n-version = \"0.1.0\"\n-requires-python = \">=3.10\"\n-dependencies = [\"pydantic>=1.10,<2\"]\n+name = \n+branchshift-pydantic-v1-fixture\n+version = \n+0.1.0\n+requires-python = \n+>=3.10\n+dependencies = [pydantic>=\n+2,<3]\n \n [project.optional-dependencies]\n-test = [\"pytest>=8\"]\n+test = [pytest>=\n+8]\n \n [tool.setuptools.packages.find]\n-where = [\"src\"]\n+where = [src]\n \n [tool.pytest.ini_options]\n-testpaths = [\"tests\"]\n+testpaths = [tests]\n \n",
+      "diagnostics": "umn 13)\n\nNo broken requirements found.\nruff failed\n  Cause: Failed to parse /workspace/repo/fixtures/pydantic-v1-app/pyproject.toml\n  Cause: TOML parse error at line 2, column 24\n  |\n2 | requires = [setuptools>=\n  |                        ^\nunexpected `=` in array, expected value, `]`\n\n\n__BRANCHSHIFT_TEST_EXIT=4\n__BRANCHSHIFT_PIP_EXIT=0\n__BRANCHSHIFT_RUFF_EXIT=2\n__BRANCHSHIFT_INSTALL_EXIT=2\n__BRANCHSHIFT_PYDANTIC_MAJOR=1\n\n/tmp/branchshift.patch:98: trailing whitespace.\nbuild-backend = \n/tmp/branchshift.patch:106: trailing whitespace.\nname = \n/tmp/branchshift.patch:108: trailing whitespace.\nversion = \n/tmp/branchshift.patch:110: trailing whitespace.\nrequires-python = \nwarning: 4 lines add whitespace errors.\nTraceback (most recent call last):\n  File \"<string>\", line 25, in <module>\n    parsed = tomllib.loads(manifest.read_text())\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 102, in loads\n    pos = key_value_rule(src, pos, out, header, parse_float)\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 326, in key_value_rule\n    pos, key, value = parse_key_value_pair(src, pos, parse_float)\n                      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 369, in parse_key_value_pair\n    pos, value = parse_value(src, pos, parse_float)\n                 ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 616, in parse_value\n    return parse_array(src, pos, parse_float)\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 420, in parse_array\n    pos, val = parse_value(src, pos, parse_float)\n               ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 649, in parse_value\n    raise suffixed_err(src, pos, \"Invalid value\")\ntomllib.TOMLDecodeError: Invalid value (at line 2, column 13)\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import xml.etree.ElementTree as ET; root=ET.parse('/tmp/branchshift-pytest.xml').getroot(); cases=list(root.iter('testcase')); failed=sum(c.find('failure') is not None or c.find('error') is not None for c in cases); skipped=sum(c.find('skipped') is not None for c in cases); print('__BRANCHSHIFT_TESTS_COLLECTED='+str(len(cases))); print('__BRANCHSHIFT_TESTS_PASSED='+str(len(cases)-failed-skipped)); print('__BRANCHSHIFT_TESTS_FAILED='+str(failed))\n                                             ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/xml/etree/ElementTree.py\", line 1210, in parse\n    tree.parse(source, parser)\n    ~~~~~~~~~~^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/xml/etree/ElementTree.py\", line 562, in parse\n    source = open(source, \"rb\")\nFileNotFoundError: [Errno 2] No such file or directory: '/tmp/branchshift-pytest.xml'\nTraceback (most recent call last):\n  File \"<string>\", line 25, in <module>\n    parsed = tomllib.loads(manifest.read_text())\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 102, in loads\n    pos = key_value_rule(src, pos, out, header, parse_float)\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 326, in key_value_rule\n    pos, key, value = parse_key_value_pair(src, pos, parse_float)\n                      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 369, in parse_key_value_pair\n    pos, value = parse_value(src, pos, parse_float)\n                 ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 616, in parse_value\n    return parse_array(src, pos, parse_float)\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 420, in parse_array\n    pos, val = parse_value(src, pos, parse_float)\n               ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/tomllib/_parser.py\", line 649, in parse_value\n    raise suffixed_err(src, pos, \"Invalid value\")\ntomllib.TOMLDecodeError: Invalid value (at line 2, column 13)\n",
+      "failure_reason": "Original test files or pytest configuration changed",
+      "pydantic_major": 1,
+      "test_exit_code": -1,
+      "pip_exit_code": 0,
+      "test_contract_preserved": false,
+      "checkpoint_id": "8f5c5471-c643-47e9-ad2c-e620490d73dc"
+    }
+  ],
+  "citations": [
+    {
+      "title": "Migration Guide - Pydantic Validation",
+      "url": "https://docs.pydantic.dev/latest/migration#using-pydantic-v1-features-in-a-v1v2-environment",
+      "evidence": "Title: Migration Guide - Pydantic Validation important changes to help you migrate your code from Pydantic V1 to Pydantic V2. by importing through `pydantic.v1`. For example, you can use the `BaseModel` class from Pydantic V1 instead of the. Pydantic V2 `pydantic.BaseModel` class:. `from pydantic.v1 import BaseModel`. `from pydantic.v1.fields import ModelFie"
+    },
+    {
+      "title": "Pydantic-v2-alpha | Pydantic Docs",
+      "url": "https://docs.pydantic.dev/1.10/blog/pydantic-v2-alpha",
+      "evidence": "BaseModel - the core of validation in Pydantic V1 remains, albeit with new method names. Dataclasses - Pydantic dataclasses are improved and ready to test. Serialization - dumping/serialization/marshalling is significantly more flexible, and ready to test. Strict mode - one of the biggest additions in Pydantic V2 is strict mode, which is ready to test. JSON"
+    },
+    {
+      "title": "Migration Guide | Pydantic Docs",
+      "url": "https://docs.pydantic.dev/latest/migration#changes-to-handling-of-standard-types",
+      "evidence": "`BaseSettings` `pydantic-settings` Also, the `parse_env_var` classmethod has been removed. So, you need to customise settings sources to have your own parsing function. `parse_env_var` ### Color and Payment Card Numbers moved to `pydantic-extra-types` `pydantic-extra-types` The following special-use types have been moved to the Pydantic Extra Types package,"
+    },
+    {
+      "title": "Migration Guide | Pydantic Docs",
+      "url": "https://docs.pydantic.dev/latest/migration#removed-in-pydantic-v2",
+      "evidence": "Some of the built-in data-loading functionality has been slated for removal. In particular, `parse_raw` and `parse_file` are now deprecated. In Pydantic V2, `model_validate_json` works like `parse_raw`. Otherwise, you should load the data and then pass it to `model_validate`. The `from_orm` method has been deprecated; you can now just use `model_validate` (e"
+    },
+    {
+      "title": "Migration Guide | Pydantic Docs",
+      "url": "https://docs.pydantic.dev/latest/migration#moved-in-pydantic-v2",
+      "evidence": "Some of the built-in data-loading functionality has been slated for removal. In particular, `parse_raw` and `parse_file` are now deprecated. In Pydantic V2, `model_validate_json` works like `parse_raw`. Otherwise, you should load the data and then pass it to `model_validate`. The `from_orm` method has been deprecated; you can now just use `model_validate` (e"
+    }
+  ],
+  "winner_id": null,
+  "patch": null,
+  "report": null,
+  "failure_reason": "No live branch passed the deterministic verification gate",
+  "baseline_commit_sha": "afb82d4fdeace940e0054895c73a0ddca2ff55c3",
+  "baseline_checkpoint_id": "6ef446d9-c9e9-404c-a143-17ccd7894889",
+  "baseline_tests_collected": 13,
+  "model_id": "nvidia/Nemotron-3_5-Lightning",
+  "provider_usage": {
+    "requests": 11,
+    "input_tokens": 25632,
+    "output_tokens": 6511
+  },
+  "baseline_test_contract_digest": "425a9c3c2f3a1a564707e77d054b359cf5e4459f59d9c2fa38cdeceed616948f",
+  "revalidated_checkpoint_id": null
+}

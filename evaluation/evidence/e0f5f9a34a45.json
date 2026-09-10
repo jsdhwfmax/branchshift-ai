@@ -1,0 +1,175 @@
+{
+  "id": "e0f5f9a34a45",
+  "repo_url": "https://github.com/jsdhwfmax/branchshift-ai",
+  "target": "pydantic-v2",
+  "mode": "live",
+  "status": "failed",
+  "created_at": "2026-09-10T03:47:05.032922Z",
+  "updated_at": "2026-09-10T03:48:05.006634Z",
+  "strategies": [
+    {
+      "id": "minimal",
+      "title": "Minimal Pydantic v2 Migration",
+      "rationale": "Keep core functionality in-place while updating the pydantic dependency pin and making the smallest possible API change to adapt parse_obj/parse_raw/dict calls.",
+      "ordered_steps": [
+        "Update pyproject.toml pydantic pin to >=2,<3.",
+        "Replace `User.parse_obj(payload)` in api.py with `User.model_validate(payload)`.",
+        "Replace `Project.parse_raw(payload)` in api.py with `Project.model_validate_json(payload)`.",
+        "Replace `user.dict(by_alias=True, exclude_none=True)` in api.py with `user.model_dump(by_alias=True, exclude_none=True)`.",
+        "Add Pydantic V2 compatibility wrappers for validator/root_validator in models.py."
+      ],
+      "source_urls": [
+        "https://docs.pydantic.dev/latest/migration#removed-in-pydantic-v2",
+        "https://docs.pydantic.dev/latest/migration#moved-in-pydantic-v2"
+      ],
+      "target_files": [
+        "pyproject.toml",
+        "src/sample_app/api.py",
+        "src/sample_app/models.py"
+      ]
+    },
+    {
+      "id": "compatibility",
+      "title": "Backwards Compatibility Layer",
+      "rationale": "Introduce pydantic.v1 shims so existing tests continue to pass without changing source logic.",
+      "ordered_steps": [
+        "Update pyproject.toml pydantic pin to >=2,<3.",
+        "Add a compatibility module that re-exports pydantic.v1 BaseModel, validator, root_validator.",
+        "Import compatibility module in models.py and api.py instead of pydantic directly.",
+        "Keep test files untouched; compatibility shims bridge v1 API to v2 internals."
+      ],
+      "source_urls": [
+        "https://docs.pydantic.dev/latest/migration#using-pydantic-v1-features-in-a-v1v2-environment"
+      ],
+      "target_files": [
+        "pyproject.toml",
+        "src/sample_app/models.py",
+        "src/sample_app/api.py"
+      ]
+    },
+    {
+      "id": "refactor",
+      "title": "Full Refactor to Pydantic v2 Idioms",
+      "rationale": "Remove all v1-specific APIs and adopt v2 model_validate/model_dump patterns, drop deprecated validators where equivalent exists natively.",
+      "ordered_steps": [
+        "Update pyproject.toml pydantic pin to >=2,<3.",
+        "Replace `from pydantic import ...` with `from pydantic.v1 import ...` in models.py if any v1-only features remain, otherwise use native v2.",
+        "Replace all `parse_obj` calls with `model_validate`, `parse_raw` with `model_validate_json`, `dict(...)` with `model_dump(...)`.",
+        "Update Config class to v2 syntax (add model_config with appropriate fields).",
+        "Remove any v1-only validators that have native v2 equivalents or can be simplified."
+      ],
+      "source_urls": [
+        "https://docs.pydantic.dev/latest/migration#changes-to-handling-of-standard-types",
+        "https://docs.pydantic.dev/latest/migration#moved-in-pydantic-v2"
+      ],
+      "target_files": [
+        "pyproject.toml",
+        "src/sample_app/models.py",
+        "src/sample_app/api.py"
+      ]
+    }
+  ],
+  "branches": [
+    {
+      "strategy_id": "minimal",
+      "status": "failed",
+      "tests_collected": 0,
+      "tests_passed": 0,
+      "tests_failed": 0,
+      "pip_check_passed": false,
+      "lint_findings": 0,
+      "changed_files": 0,
+      "changed_lines": 0,
+      "elapsed_seconds": 0.0,
+      "patch_applicable": false,
+      "patch": "diff --git a/pyproject.toml b/pyproject.toml--- a/pyproject.toml+++ b/pyproject.toml-[build-system]requires = [setuptools>=68]build-backend = setuptools.build_meta-[project]name = branchshift-pydantic-v1-fixtureversion = 0.1.0requires-python = >=3.10dependencies = [pydantic>=2,<3][project.optional-dependencies]test = [pytest>=8][tool.setuptools.packages.find]where = [src][tool.pytest.ini_options]testpaths = testsdiff --git a/src/sample_app/api.py b/src/sample_app/api.py--- a/src/sample_app/api.py+++ b/src/sample_app/api.py+from .models import Project, User+from pydantic import validate_arguments+  # noqa: F401 (kept for API compatibility shim if needed)+  # noqa: F401 (kept for API compatibility shim if needed)+++ +++ b/src/sample_app/api.py+++ from .models import Project, User +++ +++ b/src/sample_app/api.py+++ def parse_user(payload: dict) -> User:+    return User.model_validate(payload)+++ +++ b/src/sample_app/api.py+++ def serialize_user(user: User) -> dict:+    return user.model_dump(by_alias=True, exclude_none=True)+++ +++ b/src/sample_app/api.py+++ def parse_project_json(payload: str) -> Project:+    return Project.model_validate_json(payload)+++ diff --git a/src/sample_app/models.py b/src/sample_app/models.py--- a/src/sample_app/models.py+++ b/src/sample_app/models.py+from pydantic import BaseModel, Field, root_validator, validator+  # noqa: F401 deprecated wrappers for V1\u2192V2 migration+  # noqa: F401 deprecated wrappers for V1\u2192V2 migration+++ +++ b/src/sample_app/models.py+++ from pydantic import BaseModel, Field+  # type: ignore[var-annotated] +++ +++ b/src/sample_app/models.py+++ class User(BaseModel):+    user_id: int = Field(alias=",
+      "diagnostics": null,
+      "failure_reason": null,
+      "pydantic_major": null,
+      "test_exit_code": null,
+      "pip_exit_code": null,
+      "test_contract_preserved": null
+    },
+    {
+      "strategy_id": "refactor",
+      "status": "failed",
+      "tests_collected": 0,
+      "tests_passed": 0,
+      "tests_failed": 0,
+      "pip_check_passed": false,
+      "lint_findings": 0,
+      "changed_files": 0,
+      "changed_lines": 0,
+      "elapsed_seconds": 0.0,
+      "patch_applicable": false,
+      "patch": "--- a/pyproject.toml+++ b/pyproject.toml@@ -1,5 +1,5 @@ [build-system]requires = [setuptools>=68]build-backend = setuptools.build_meta[project]name = branchshift-pydantic-v1-fixtureversion = 0.1.0requires-python = >=3.10dependencies = pydantic>=2,<3[project.optional-dependencies]test = pytest>=8[tool.setuptools.packages.find]where = src[tool.pytest.ini_options]testpaths = tests--- a/src/sample_app/models.py+++ b/src/sample_app/models.py@@ -1,34 +1,32 @@ from datetime import datetime from typing import Optional-from pydantic import BaseModel, Field-import re-class User(BaseModel):-    user_id: int = Field(alias id)-    name: str -email: str -nickname: Optional[str] = None -created_at: datetime = Field(default factory datetime.utcnow)+    user_id: int = Field(alias=id)+    name: str+    email: str+    nickname: Optional[str] = None+    created_at: datetime = Field(default_factory=datetime.utcnow)++    model_config = ConfigDict(alias_priority=1, populate_by_name=True, str_strip_whitespace=True, from_attributes=True)+ +    @field_validator(",
+      "diagnostics": null,
+      "failure_reason": null,
+      "pydantic_major": null,
+      "test_exit_code": null,
+      "pip_exit_code": null,
+      "test_contract_preserved": null
+    },
+    {
+      "strategy_id": "compatibility",
+      "status": "failed",
+      "tests_collected": 0,
+      "tests_passed": 0,
+      "tests_failed": 0,
+      "pip_check_passed": false,
+      "lint_findings": 0,
+      "changed_files": 0,
+      "changed_lines": 0,
+      "elapsed_seconds": 0.0,
+      "patch_applicable": false,
+      "patch": "diff --git a/pyproject.toml b/pyproject.toml --- a/pyproject.toml +++ b/pyproject.toml @@ -1,8 +1,8 @@ [build-system] requires = [setuptools>=68] build-backend = setuptools.build_meta [project] name = branchshift-pydantic-v1-fixture version = 0.1.0 requires-python = >=3.10 dependencies = pydantic>=2,<3 test = pytest>=8 [project.optional-dependencies] test = [pytest>=8] [tool.setuptools.packages.find] where = src [tool.pytest.ini_options] testpaths = tests",
+      "diagnostics": null,
+      "failure_reason": null,
+      "pydantic_major": null,
+      "test_exit_code": null,
+      "pip_exit_code": null,
+      "test_contract_preserved": null
+    }
+  ],
+  "citations": [
+    {
+      "title": "Migration Guide - Pydantic Validation",
+      "url": "https://docs.pydantic.dev/latest/migration#using-pydantic-v1-features-in-a-v1v2-environment",
+      "evidence": "Title: Migration Guide - Pydantic Validation important changes to help you migrate your code from Pydantic V1 to Pydantic V2. by importing through `pydantic.v1`. For example, you can use the `BaseModel` class from Pydantic V1 instead of the. Pydantic V2 `pydantic.BaseModel` class:. `from pydantic.v1 import BaseModel`. `from pydantic.v1.fields import ModelFie"
+    },
+    {
+      "title": "Pydantic-v2-alpha | Pydantic Docs",
+      "url": "https://docs.pydantic.dev/1.10/blog/pydantic-v2-alpha",
+      "evidence": "BaseModel - the core of validation in Pydantic V1 remains, albeit with new method names. Dataclasses - Pydantic dataclasses are improved and ready to test. Serialization - dumping/serialization/marshalling is significantly more flexible, and ready to test. Strict mode - one of the biggest additions in Pydantic V2 is strict mode, which is ready to test. JSON"
+    },
+    {
+      "title": "Migration Guide | Pydantic Docs",
+      "url": "https://docs.pydantic.dev/latest/migration#changes-to-handling-of-standard-types",
+      "evidence": "`BaseSettings` `pydantic-settings` Also, the `parse_env_var` classmethod has been removed. So, you need to customise settings sources to have your own parsing function. `parse_env_var` ### Color and Payment Card Numbers moved to `pydantic-extra-types` `pydantic-extra-types` The following special-use types have been moved to the Pydantic Extra Types package,"
+    },
+    {
+      "title": "Migration Guide | Pydantic Docs",
+      "url": "https://docs.pydantic.dev/latest/migration#removed-in-pydantic-v2",
+      "evidence": "Some of the built-in data-loading functionality has been slated for removal. In particular, `parse_raw` and `parse_file` are now deprecated. In Pydantic V2, `model_validate_json` works like `parse_raw`. Otherwise, you should load the data and then pass it to `model_validate`. The `from_orm` method has been deprecated; you can now just use `model_validate` (e"
+    },
+    {
+      "title": "Migration Guide | Pydantic Docs",
+      "url": "https://docs.pydantic.dev/latest/migration#moved-in-pydantic-v2",
+      "evidence": "Some of the built-in data-loading functionality has been slated for removal. In particular, `parse_raw` and `parse_file` are now deprecated. In Pydantic V2, `model_validate_json` works like `parse_raw`. Otherwise, you should load the data and then pass it to `model_validate`. The `from_orm` method has been deprecated; you can now just use `model_validate` (e"
+    }
+  ],
+  "winner_id": null,
+  "patch": null,
+  "report": null,
+  "failure_reason": "No live branch passed the deterministic verification gate",
+  "baseline_commit_sha": "afb82d4fdeace940e0054895c73a0ddca2ff55c3",
+  "baseline_checkpoint_id": "5d4b7273-3558-4880-80fd-69056b875d15",
+  "baseline_tests_collected": 13,
+  "model_id": "nvidia/Nemotron-3_5-Lightning",
+  "provider_usage": {
+    "requests": 11,
+    "input_tokens": 24694,
+    "output_tokens": 9289
+  },
+  "baseline_test_contract_digest": "425a9c3c2f3a1a564707e77d054b359cf5e4459f59d9c2fa38cdeceed616948f"
+}

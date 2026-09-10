@@ -48,3 +48,18 @@ async def test_research_requires_pydantic_official_source():
         assert "Pydantic" in str(exc)
     else:
         raise AssertionError("Expected missing Pydantic evidence to fail closed")
+
+
+async def test_research_excludes_outdated_alpha_guidance_and_retains_useful_detail():
+    evidence = "Preserve validator behavior. " * 40
+    current = Citation(
+        title="Migration guide", url=http_url("https://docs.pydantic.dev/latest/migration/"),
+        evidence=evidence,
+    )
+    old = Citation(
+        title="V2 alpha", url=http_url("https://docs.pydantic.dev/1.10/blog/pydantic-v2-alpha"),
+        evidence="Old experimental API",
+    )
+    result = await MigrationResearch(FakeResearchProvider([old, current])).collect()
+    assert len(result) == 1
+    assert result[0].evidence == evidence.strip()

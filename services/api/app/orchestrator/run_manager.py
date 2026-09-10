@@ -23,6 +23,7 @@ from app.orchestrator.branch_runner import BranchRunner
 from app.orchestrator.evaluator import rank_results
 from app.orchestrator.planner import MigrationPlanner
 from app.orchestrator.research import MigrationResearch
+from app.provenance import runtime_config_digest, source_provenance
 from app.providers.contree import ContreeSandboxProvider
 from app.providers.nebius import NebiusModelProvider
 from app.providers.redaction import redact
@@ -143,7 +144,9 @@ class RunManager:
     def __init__(self, repository: RunRepository, settings: Settings) -> None:
         self._repository = repository
         self._settings = settings
-        self._tasks: set[asyncio.Task[None]] = set()
+        self._source_provenance = source_provenance()
+        self._tasks: dict[str, asyncio.Task[None]] = {}
+        self._usage: dict[str, dict[str, int]] = {}
         self._semaphore = asyncio.Semaphore(settings.max_concurrent_runs)
 
     async def create(self, request: CreateRunRequest) -> RunSummary:
@@ -151,34 +154,77 @@ class RunManager:
             id=uuid4().hex[:12],
             repo_url=request.repo_url,
             target=request.target,
+            project_path=request.project_path,
             mode="mock" if self._settings.is_mock else "live",
+            **self._source_provenance,
+            runtime_config_digest=runtime_config_digest(self._settings),
         )
         await self._repository.create_run(summary)
         task = asyncio.create_task(self._execute_guarded(summary.id))
-        self._tasks.add(task)
-        task.add_done_callback(self._tasks.discard)
+        self._tasks[summary.id] = task
+        task.add_done_callback(lambda _: self._tasks.pop(summary.id, None))
         return summary
 
+    async def shutdown(self) -> None:
+        tasks = dict(self._tasks)
+        for task in tasks.values():
+            task.cancel()
+        await asyncio.gather(*tasks.values(), return_exceptions=True)
+        # A task cancelled before its coroutine starts cannot execute its own handler.
+        for run_id in tasks:
+            await self._cancel_interrupted(run_id)
+
+    async def wait(self, run_id: str) -> None:
+        task = self._tasks.get(run_id)
+        if task is not None:
+            await asyncio.shield(task)
+
+    async def recover_interrupted(self) -> None:
+        """Called once at startup; deployments use one worker per evidence database."""
+        for run_id in await self._repository.unfinished_run_ids():
+            await self._cancel_interrupted(run_id)
+
+    async def _cancel_interrupted(self, run_id: str) -> None:
+        summary = await self._repository.require_run(run_id)
+        if summary.status not in TERMINAL_RUN_STATUSES:
+            summary.failure_reason = "Server stopped before this run finished"
+            await self._repository.save_run(summary)
+            await self._repository.set_status(
+                run_id, RunStatus.CANCELLED, "Server stopped; partial evidence retained"
+            )
+
     async def _execute_guarded(self, run_id: str) -> None:
-        async with self._semaphore:
-            try:
+        try:
+            async with self._semaphore:
                 await asyncio.wait_for(
                     self._execute(run_id), timeout=self._settings.run_timeout_seconds
                 )
-            except Exception as exc:  # noqa: BLE001 - background task must persist failure
+        except asyncio.CancelledError:
+            await self._cancel_interrupted(run_id)
+            raise
+        except Exception as exc:  # noqa: BLE001 - background task must persist failure
+            summary = await self._repository.require_run(run_id)
+            if summary.status not in TERMINAL_RUN_STATUSES:
+                summary.failure_reason = redact(
+                    str(exc) or (
+                        "Run exceeded its configured time limit"
+                        if isinstance(exc, TimeoutError) else type(exc).__name__
+                    ),
+                    [self._settings.nebius_api_key, self._settings.tavily_api_key],
+                )[:500]
+                await self._repository.save_run(summary)
+                await self._repository.set_status(run_id, RunStatus.FAILED, "Run failed safely")
+                await self._repository.append_event(
+                    run_id,
+                    EVENTS.RUN_FAILED,
+                    "The run stopped; partial evidence is preserved.",
+                )
+        finally:
+            usage = self._usage.pop(run_id, None)
+            if usage is not None:
                 summary = await self._repository.require_run(run_id)
-                if summary.status not in TERMINAL_RUN_STATUSES:
-                    summary.failure_reason = redact(
-                        str(exc),
-                        [self._settings.nebius_api_key, self._settings.tavily_api_key],
-                    )[:500]
-                    await self._repository.save_run(summary)
-                    await self._repository.set_status(run_id, RunStatus.FAILED, "Run failed safely")
-                    await self._repository.append_event(
-                        run_id,
-                        EVENTS.RUN_FAILED,
-                        "The run stopped; partial evidence is preserved.",
-                    )
+                summary.provider_usage = dict(usage)
+                await self._repository.save_run(summary)
 
     async def _step(self) -> None:
         if self._settings.mock_step_delay_seconds > 0:
@@ -307,17 +353,28 @@ class RunManager:
         )
 
     async def _execute_live(self, run_id: str) -> None:
-        if not self._settings.nebius_api_key or not self._settings.tavily_api_key:
-            raise RuntimeError("Live mode requires configured Nebius and Tavily credentials")
+        if (
+            not self._settings.nebius_api_key
+            or not self._settings.nebius_project_id
+            or not self._settings.tavily_api_key
+        ):
+            raise RuntimeError(
+                "Live mode requires configured Nebius key, project, and Tavily credentials"
+            )
         summary = await self._repository.require_run(run_id)
+        summary.model_id = self._settings.nemotron_model
+        await self._repository.save_run(summary)
         model = NebiusModelProvider(
             self._settings.nebius_api_key,
             self._settings.nebius_base_url,
             self._settings.nemotron_model,
+            enable_thinking=self._settings.nemotron_enable_thinking,
         )
+        self._usage[run_id] = model.usage
         research = MigrationResearch(TavilyResearchProvider(self._settings.tavily_api_key))
         async with ContreeSandboxProvider(
             token=self._settings.nebius_api_key,
+            project_id=self._settings.nebius_project_id,
             base_url=self._settings.contree_api_url,
         ) as sandbox:
             await self._repository.set_status(
@@ -328,7 +385,14 @@ class RunManager:
             baseline = await BaselineRunner(sandbox).prepare(
                 self._settings.contree_image,
                 summary.repo_url,
+                project_path=summary.project_path,
             )
+            summary = await self._repository.require_run(run_id)
+            summary.baseline_commit_sha = baseline.commit_sha
+            summary.baseline_checkpoint_id = baseline.state.checkpoint_id
+            summary.baseline_tests_collected = baseline.tests_collected
+            summary.baseline_test_contract_digest = baseline.evidence.test_contract_digest
+            await self._repository.save_run(summary)
             await self._repository.append_event(
                 run_id,
                 EVENTS.BRANCH_PROGRESS,
@@ -342,6 +406,9 @@ class RunManager:
                 "Retrieving official guidance and requesting grounded Nemotron strategies",
             )
             citations = await research.collect()
+            summary = await self._repository.require_run(run_id)
+            summary.citations = citations
+            await self._repository.save_run(summary)
             await self._repository.append_event(
                 run_id,
                 EVENTS.RESEARCH_READY,
@@ -380,20 +447,15 @@ class RunManager:
                         baseline.state,
                         strategy,
                         baseline.evidence,
-                        workdir=repository_workdir(summary.repo_url),
+                        workdir=repository_workdir(summary.repo_url, summary.project_path),
+                        citations=citations,
                     )
                 except Exception as exc:  # noqa: BLE001 - preserve sibling branch evidence
                     message = redact(
                         str(exc),
                         [self._settings.nebius_api_key, self._settings.tavily_api_key],
                     )[:500]
-                    await self._repository.append_event(
-                        run_id,
-                        EVENTS.BRANCH_COMPLETED,
-                        f"Branch failed safely: {message}",
-                        branch_id=strategy.id,
-                    )
-                    return BranchResult(
+                    result = BranchResult(
                         strategy_id=strategy.id,
                         status=BranchStatus.FAILED,
                         tests_collected=0,
@@ -405,11 +467,14 @@ class RunManager:
                         changed_lines=0,
                         elapsed_seconds=0,
                         patch_applicable=False,
+                        failure_reason=message or type(exc).__name__,
                     )
+                await self._repository.save_branch_result(run_id, result)
                 await self._repository.append_event(
                     run_id,
                     EVENTS.BRANCH_COMPLETED,
-                    f"{result.tests_passed}/{result.tests_collected} tests passed",
+                    (f"Branch failed safely: {result.failure_reason}" if result.failure_reason
+                     else f"{result.tests_passed}/{result.tests_collected} tests passed"),
                     branch_id=strategy.id,
                     payload={"result": result.model_dump(mode="json")},
                 )
@@ -417,6 +482,12 @@ class RunManager:
 
             results = list(
                 await asyncio.gather(*(execute_branch(strategy) for strategy in strategies))
+            )
+
+            await self._repository.set_status(
+                run_id,
+                RunStatus.EVALUATING,
+                "Ranking branch evidence and revalidating the candidate on a clean baseline",
             )
 
             winner, fully_verified = rank_results(results)
@@ -429,7 +500,9 @@ class RunManager:
                 baseline.state,
                 winner_strategy,
                 winner.patch,
-                workdir=repository_workdir(summary.repo_url),
+                workdir=repository_workdir(summary.repo_url, summary.project_path),
+                minimum_tests=baseline.tests_collected,
+                test_contract_digest=baseline.evidence.test_contract_digest,
             )
             if final_verification.status is not BranchStatus.PASSED:
                 raise RuntimeError("Winner patch failed clean baseline revalidation")
@@ -437,11 +510,6 @@ class RunManager:
         summary = await self._repository.require_run(run_id)
         summary.branches = results
         await self._repository.save_run(summary)
-        await self._repository.set_status(
-            run_id,
-            RunStatus.EVALUATING,
-            "Ranking branches from deterministic test and patch metrics",
-        )
         summary = await self._repository.require_run(run_id)
         summary.winner_id = winner.strategy_id
         summary.patch = winner.patch
@@ -450,6 +518,8 @@ class RunManager:
             f"{winner.tests_passed}/{winner.tests_collected} tests, "
             f"{winner.lint_findings} lint findings, {winner.changed_lines} changed lines."
         )
+        summary.revalidated_checkpoint_id = final_verification.checkpoint_id
+        summary.revalidation = final_verification
         await self._repository.save_run(summary)
         await self._repository.append_event(
             run_id,

@@ -3,11 +3,19 @@ from __future__ import annotations
 import re
 import shlex
 from dataclasses import dataclass
+from pathlib import PurePosixPath
 
 from pydantic import HttpUrl
 
-from app.domain.models import CreateRunRequest
+from app.domain.models import CreateRunRequest, validate_project_path
 from app.orchestrator.planner import RepositoryEvidence
+from app.orchestrator.verification import (
+    junit_metrics_command,
+    marker_int,
+    marker_text,
+    runtime_version_command,
+    test_contract_command,
+)
 from app.providers.base import SandboxProvider, SandboxState
 
 CONTROLLED_REPOSITORY = "https://github.com/jsdhwfmax/branchshift-ai"
@@ -36,9 +44,14 @@ class BaselineRunner:
         self,
         image: str,
         repo_url: HttpUrl | str,
+        *,
+        project_path: str | None = None,
     ) -> BaselineOutcome:
-        validated_url = CreateRunRequest.model_validate({"repo_url": repo_url}).repo_url
-        workdir = repository_workdir(validated_url)
+        request = CreateRunRequest.model_validate(
+            {"repo_url": repo_url, "project_path": project_path}
+        )
+        validated_url = request.repo_url
+        workdir = repository_workdir(validated_url, request.project_path)
         base = await self._sandbox.create_base(
             image,
             build_setup_command(validated_url, workdir),
@@ -53,10 +66,11 @@ class BaselineRunner:
                 "Baseline command could not complete safely: "
                 + (checked.stdout + "\n" + checked.stderr)[-1_500:]
             )
-        test_exit = _marker_int(checked.stdout, "TEST_EXIT")
-        passed = _last_int(checked.stdout, r"(\d+) passed")
-        failed = _last_int(checked.stdout, r"(\d+) failed")
-        if test_exit != 0 or failed or passed == 0:
+        test_exit = marker_int(checked.stdout, "TEST_EXIT")
+        collected = marker_int(checked.stdout, "TESTS_COLLECTED")
+        passed = marker_int(checked.stdout, "TESTS_PASSED")
+        failed = marker_int(checked.stdout, "TESTS_FAILED")
+        if test_exit != 0 or failed != 0 or passed <= 0 or collected < passed:
             raise BaselineError(
                 "Repository baseline must pass at least one test: " + checked.stdout[-1_500:]
             )
@@ -68,23 +82,54 @@ class BaselineRunner:
         matches = _section(checked.stdout, "SYMBOL_MATCHES")[:200]
         if not python_files or not manifests:
             raise BaselineError("Only Python repositories with a supported manifest are accepted")
+        if marker_int(checked.stdout, "PYDANTIC_MAJOR") != 1:
+            raise BaselineError("The baseline must use Pydantic v1 before migration")
+        contract = marker_text(checked.stdout, "CONTRACT_BEFORE")
+        if (
+            not re.fullmatch(r"[0-9a-f]{64}", contract)
+            or marker_text(checked.stdout, "CONTRACT_AFTER") != contract
+        ):
+            raise BaselineError("Baseline tests changed their immutable test contract")
+        file_contents: dict[str, str] = {}
+        total_bytes = 0
+        for name in [*manifests, *python_files]:
+            path = PurePosixPath(name)
+            if path.is_absolute() or ".." in path.parts or path.as_posix() != name:
+                raise BaselineError("Repository evidence contains an unsafe file path")
+            if len(file_contents) >= 40:
+                break
+            raw = await self._sandbox.read(checked.state, f"{workdir}/{name}")
+            if len(raw) > 25_000 or total_bytes + len(raw) > 100_000:
+                if name in manifests:
+                    raise BaselineError("Dependency manifest exceeds the source evidence limit")
+                continue
+            try:
+                file_contents[name] = raw.decode("utf-8")
+            except UnicodeDecodeError as exc:
+                raise BaselineError("Only UTF-8 repository source files are supported") from exc
+            total_bytes += len(raw)
         evidence = RepositoryEvidence(
             repo_url=validated_url,
             dependency_manifests=manifests,
             python_files=python_files,
             symbol_matches=matches,
-            baseline_summary=f"{passed + failed} tests collected; {passed} passed; {failed} failed",
+            baseline_summary=f"{collected} tests collected; {passed} passed; {failed} failed",
+            baseline_tests_collected=collected,
+            file_contents=file_contents,
+            test_contract_digest=contract,
         )
         return BaselineOutcome(
             state=checked.state,
             evidence=evidence,
             commit_sha=commit_sha,
-            tests_collected=passed + failed,
+            tests_collected=collected,
             tests_passed=passed,
         )
 
 
-def repository_workdir(repo_url: HttpUrl) -> str:
+def repository_workdir(repo_url: HttpUrl, project_path: str | None = None) -> str:
+    if project_path is not None:
+        return f"{REPOSITORY_ROOT}/{validate_project_path(project_path)}"
     normalized = str(repo_url).removesuffix("/").removesuffix(".git")
     if normalized == CONTROLLED_REPOSITORY:
         return f"{REPOSITORY_ROOT}/fixtures/pydantic-v1-app"
@@ -93,25 +138,33 @@ def repository_workdir(repo_url: HttpUrl) -> str:
 
 def build_setup_command(repo_url: HttpUrl, workdir: str) -> str:
     url = shlex.quote(str(repo_url))
-    directory = shlex.quote(workdir)
     return (
         "set -eu; "
+        "if ! command -v git >/dev/null 2>&1; then "
+        "apt-get update -qq && apt-get install -y --no-install-recommends git ca-certificates; fi; "
         f"git clone --depth 1 --filter=blob:none --single-branch -- {url} {REPOSITORY_ROOT}; "
-        f"cd {directory}; "
-        "test -f pyproject.toml; "
+        + project_guard_command(workdir) + "; "
+        +
         "python -m venv .venv; "
         ".venv/bin/python -m pip install --disable-pip-version-check -e '.[test]' ruff"
     )
 
 
 def build_baseline_command(workdir: str) -> str:
-    directory = shlex.quote(workdir)
     return (
         "set -u; "
-        f"cd {directory}; "
-        ".venv/bin/python -m pytest -q > /tmp/branchshift-baseline.out 2>&1; test_exit=$?; "
+        + project_guard_command(workdir) + "; "
+        + test_contract_command("CONTRACT_BEFORE") + "; "
+        +
+        "rm -f /tmp/branchshift-baseline.xml; "
+        ".venv/bin/python -m pytest -q --junitxml=/tmp/branchshift-baseline.xml "
+        "> /tmp/branchshift-baseline.out 2>&1; test_exit=$?; "
         "cat /tmp/branchshift-baseline.out; "
         "printf '\\n__BRANCHSHIFT_TEST_EXIT=%s\\n' \"$test_exit\"; "
+        + junit_metrics_command("/tmp/branchshift-baseline.xml") + "; "
+        + runtime_version_command() + "; "
+        + test_contract_command("CONTRACT_AFTER") + "; "
+        +
         f"printf '__BRANCHSHIFT_COMMIT=%s\\n' \"$(git -C {REPOSITORY_ROOT} rev-parse HEAD)\"; "
         "printf '__BRANCHSHIFT_PYTHON_FILES_BEGIN\\n'; "
         "find . -type f -name '*.py' -not -path './.venv/*' -print | "
@@ -129,19 +182,31 @@ def build_baseline_command(workdir: str) -> str:
     )
 
 
-def _marker_int(output: str, name: str) -> int:
-    value = _marker_text(output, name)
-    return int(value) if value.isdigit() else -1
+def project_guard_command(workdir: str) -> str:
+    path = PurePosixPath(workdir)
+    if (
+        path.as_posix() != workdir
+        or ".." in path.parts
+        or not (workdir == REPOSITORY_ROOT or workdir.startswith(f"{REPOSITORY_ROOT}/"))
+    ):
+        raise ValueError("Project workdir must remain inside the sandbox repository")
+    directory = shlex.quote(workdir)
+    root = shlex.quote(REPOSITORY_ROOT)
+    return (
+        f"if [ ! -d {directory} ]; then "
+        "printf '%s\\n' 'Selected project path does not exist in the repository' >&2; exit 1; fi; "
+        f"cd {directory}; "
+        f"case \"$(pwd -P)\" in {root}|{root}/*) ;; *) "
+        "printf '%s\\n' 'Selected project path resolves outside the repository' >&2; "
+        "exit 1;; esac; "
+        "if [ ! -f pyproject.toml ]; then "
+        "printf '%s\\n' 'Selected project path has no pyproject.toml' >&2; exit 1; fi"
+    )
 
 
 def _marker_text(output: str, name: str) -> str:
     matches = re.findall(rf"__BRANCHSHIFT_{re.escape(name)}=([^\n]+)", output)
     return matches[-1].strip() if matches else ""
-
-
-def _last_int(output: str, pattern: str) -> int:
-    matches = re.findall(pattern, output)
-    return int(matches[-1]) if matches else 0
 
 
 def _section(output: str, name: str) -> list[str]:

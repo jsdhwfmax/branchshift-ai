@@ -10,13 +10,21 @@ export const EVENT_TYPES = [
   'winner.selected',
   'run.completed',
   'run.failed',
+  'run.cancelled',
 ] as const
 
 export function parseRunEvent(raw: MessageEvent<string>): RunEvent | null {
   try {
-    return JSON.parse(raw.data) as RunEvent
+    const value: unknown = JSON.parse(raw.data)
+    if (!value || typeof value !== 'object') return null
+    const event = value as RunEvent
+    if (!Number.isInteger(event.id) || event.id < 1 || typeof event.run_id !== 'string'
+      || typeof event.type !== 'string' || typeof event.message !== 'string'
+      || typeof event.created_at !== 'string' || !Number.isFinite(Date.parse(event.created_at))
+      || (event.branch_id !== null && typeof event.branch_id !== 'string')
+      || !event.payload || typeof event.payload !== 'object' || Array.isArray(event.payload)) return null
+    return event
   } catch {
     return null
   }
 }
-

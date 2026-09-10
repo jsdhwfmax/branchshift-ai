@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from collections.abc import AsyncIterator
 
 from fastapi import APIRouter, Header, HTTPException, Request, Response, status
 from fastapi.responses import PlainTextResponse, StreamingResponse
@@ -12,12 +13,13 @@ router = APIRouter(prefix="/api/runs", tags=["runs"])
 
 @router.post("", response_model=RunSummary, status_code=status.HTTP_202_ACCEPTED)
 async def create_run(payload: CreateRunRequest, request: Request) -> RunSummary:
-    return await request.app.state.manager.create(payload)
+    summary: RunSummary = await request.app.state.manager.create(payload)
+    return summary
 
 
 @router.get("/{run_id}", response_model=RunSummary)
 async def get_run(run_id: str, request: Request) -> RunSummary:
-    summary = await request.app.state.repository.get_run(run_id)
+    summary: RunSummary | None = await request.app.state.repository.get_run(run_id)
     if summary is None:
         raise HTTPException(status_code=404, detail="Run not found")
     return summary
@@ -36,6 +38,25 @@ async def get_patch(run_id: str, request: Request) -> Response:
     )
 
 
+@router.get("/{run_id}/report")
+async def get_report(run_id: str, request: Request) -> Response:
+    summary = await request.app.state.repository.get_run(run_id)
+    if summary is None:
+        raise HTTPException(status_code=404, detail="Run not found")
+    events = await request.app.state.repository.list_events(run_id)
+    report = {
+        "schema_version": 1,
+        "evidence_scope": "live providers" if summary.mode == "live" else "illustrative sample",
+        "run": summary.model_dump(mode="json"),
+        "events": [event.model_dump(mode="json") for event in events],
+    }
+    return Response(
+        json.dumps(report, indent=2),
+        media_type="application/json",
+        headers={"Content-Disposition": f'attachment; filename="{run_id}-evidence.json"'},
+    )
+
+
 @router.get("/{run_id}/events")
 async def stream_events(
     run_id: str,
@@ -50,7 +71,7 @@ async def stream_events(
     except ValueError:
         after = 0
 
-    async def event_source():
+    async def event_source() -> AsyncIterator[str]:
         cursor = after
         while True:
             if await request.is_disconnected():
@@ -73,4 +94,3 @@ async def stream_events(
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
-

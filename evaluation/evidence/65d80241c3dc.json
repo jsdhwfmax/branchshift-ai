@@ -1,0 +1,161 @@
+{
+  "id": "65d80241c3dc",
+  "repo_url": "https://github.com/jsdhwfmax/branchshift-ai",
+  "target": "pydantic-v2",
+  "project_path": "fixtures/pydantic-v1-app",
+  "mode": "live",
+  "status": "failed",
+  "created_at": "2026-09-10T04:29:40.376859Z",
+  "updated_at": "2026-09-10T04:31:26.786125Z",
+  "strategies": [
+    {
+      "id": "minimal",
+      "title": "Minimal v2 Migration",
+      "rationale": "Smallest complete migration updating dependency pin, model config, validators, and serialization/parsing methods to v2 equivalents while preserving all public behavior.",
+      "ordered_steps": [
+        "Update pyproject.toml pydantic dependency to >=2,<3",
+        "Convert models.py Config class to model_config dict with from_attributes=True, replace anystr_strip_whitespace with str_strip_whitespace, change Field(alias=) to Field(validation_alias=)",
+        "Replace @validator with @field_validator and @root_validator with @model_validator, update signatures to use ValidationInfo",
+        "Replace parse_obj with model_validate, parse_raw with model_validate_json, dict() with model_dump() in api.py"
+      ],
+      "source_urls": [
+        "https://pydantic.dev/docs/validation/latest/get-started/migration"
+      ],
+      "target_files": [
+        "pyproject.toml",
+        "src/sample_app/models.py",
+        "src/sample_app/api.py"
+      ]
+    },
+    {
+      "id": "compatibility",
+      "title": "Compatibility Layer Migration",
+      "rationale": "Maintains v1 method aliases (parse_obj, parse_raw, dict) alongside v2 natives, wraps ValidationError for test compatibility, and uses dual-config pattern for gradual adoption.",
+      "ordered_steps": [
+        "Update pyproject.toml pydantic dependency to >=2,<3",
+        "In models.py: define model_config dict with from_attributes=True and str_strip_whitespace=True; keep Config class as deprecated alias; use Field(validation_alias=) with alias= deprecated param",
+        "Decorate validators with @field_validator/@model_validator but also attach v1-style @validator wrappers that delegate to new validators for backward compatibility",
+        "In api.py: keep parse_user/serialize_user/parse_project_json signatures but implement via model_validate/model_validate_json/model_dump; add try/except to re-raise ValidationError from pydantic_core if needed"
+      ],
+      "source_urls": [
+        "https://pydantic.dev/docs/validation/latest/get-started/migration"
+      ],
+      "target_files": [
+        "pyproject.toml",
+        "src/sample_app/models.py",
+        "src/sample_app/api.py"
+      ]
+    },
+    {
+      "id": "refactor",
+      "title": "Full Refactor to v2 Idioms",
+      "rationale": "Adopts v2-native patterns: Annotated fields for validation, model_config as dict, @field_validator/@model_validator with ValidationInfo, and removes all v1-isms for cleaner long-term maintenance.",
+      "ordered_steps": [
+        "Update pyproject.toml pydantic dependency to >=2,<3",
+        "Rewrite models.py: replace Field with Annotated[Type, Field(...)] for alias/validation_alias; model_config = {'from_attributes': True, 'str_strip_whitespace': True}; validators use @field_validator(mode='before')/@model_validator with info: ValidationInfo",
+        "Remove Config class entirely; convert root_validator to @model_validator with skip_on_failure via info.context",
+        "In api.py: rename parse_user -> validate_user, serialize_user -> dump_user, parse_project_json -> validate_project_json; implement directly with model_validate/model_validate_json/model_dump; update type hints to v2 BaseModel"
+      ],
+      "source_urls": [
+        "https://pydantic.dev/docs/validation/latest/get-started/migration"
+      ],
+      "target_files": [
+        "pyproject.toml",
+        "src/sample_app/models.py",
+        "src/sample_app/api.py"
+      ]
+    }
+  ],
+  "branches": [
+    {
+      "strategy_id": "compatibility",
+      "status": "failed",
+      "tests_collected": 0,
+      "tests_passed": 0,
+      "tests_failed": 0,
+      "pip_check_passed": false,
+      "lint_findings": 0,
+      "changed_files": 0,
+      "changed_lines": 0,
+      "elapsed_seconds": 0.0,
+      "patch_applicable": false,
+      "patch": null,
+      "diagnostics": "Patch safety validation failed: pyproject.toml: invalid TOML: Invalid value (at line 2, column 13). Preserve quotes around strings and brackets around arrays; copy unchanged original lines exactly.",
+      "failure_reason": "No safe applicable patch was produced after 3 attempts",
+      "pydantic_major": null,
+      "test_exit_code": null,
+      "pip_exit_code": null,
+      "test_contract_preserved": null,
+      "checkpoint_id": null
+    },
+    {
+      "strategy_id": "minimal",
+      "status": "failed",
+      "tests_collected": 0,
+      "tests_passed": 0,
+      "tests_failed": 0,
+      "pip_check_passed": false,
+      "lint_findings": 0,
+      "changed_files": 0,
+      "changed_lines": 0,
+      "elapsed_seconds": 0.0,
+      "patch_applicable": false,
+      "patch": null,
+      "diagnostics": "Patch safety validation failed: pyproject.toml: invalid TOML: Invalid value (at line 2, column 13). Preserve quotes around strings and brackets around arrays; copy unchanged original lines exactly.",
+      "failure_reason": "No safe applicable patch was produced after 3 attempts",
+      "pydantic_major": null,
+      "test_exit_code": null,
+      "pip_exit_code": null,
+      "test_contract_preserved": null,
+      "checkpoint_id": null
+    },
+    {
+      "strategy_id": "refactor",
+      "status": "failed",
+      "tests_collected": 0,
+      "tests_passed": 0,
+      "tests_failed": 0,
+      "pip_check_passed": false,
+      "lint_findings": 0,
+      "changed_files": 0,
+      "changed_lines": 0,
+      "elapsed_seconds": 0.0,
+      "patch_applicable": false,
+      "patch": null,
+      "diagnostics": "Patch safety validation failed: pyproject.toml: invalid TOML: Invalid value (at line 2, column 13). Preserve quotes around strings and brackets around arrays; copy unchanged original lines exactly.",
+      "failure_reason": "No safe applicable patch was produced after 3 attempts",
+      "pydantic_major": null,
+      "test_exit_code": null,
+      "pip_exit_code": null,
+      "test_contract_preserved": null,
+      "checkpoint_id": null
+    }
+  ],
+  "citations": [
+    {
+      "title": "Migration Guide | Pydantic Docs",
+      "url": "https://pydantic.dev/docs/validation/latest/get-started/migration",
+      "evidence": "Some of the built-in data-loading functionality has been slated for removal. In particular, `parse_raw` and `parse_file` are now deprecated. In Pydantic V2, `model_validate_json` works like `parse_raw`. Otherwise, you should load the data and then pass it to `model_validate`. The `from_orm` method has been deprecated; you can now just use `model_validate` (equivalent to `parse_obj` from Pydantic V1) to achieve something similar, as long as you\u2019ve set `from_attributes=True` in the model config. The `__eq__` method has changed for models. + Models can only be equal to other `BaseModel` instances. + For two model instances to be equal, they must have the same: - Type (or, in the case of generic models, non-parametrized generic origin type) - Field values [...] #### Changes to `@validator`\u2019s allowed signatures In Pydantic V1, functions wrapped by `@validator` could receive keyword arguments with metadata about what was being validated. Some of these arguments have been removed from `@field_validator` in Pydantic V2: `config`: Pydantic V2\u2019s config is now a dictionary instead of a class, which means this argument is no longer backwards compatible. If you need to access the configuration you should migrate to `@field_validator` and use `info.config`. `field`: this argument used to be a `ModelField` object, which was a quasi-internal class that no longer exists in Pydantic V2. Most of this information can still be accessed by using the field name from `info.field_name` to index into"
+    }
+  ],
+  "winner_id": null,
+  "patch": null,
+  "report": null,
+  "failure_reason": "No live branch passed the deterministic verification gate",
+  "baseline_commit_sha": "afb82d4fdeace940e0054895c73a0ddca2ff55c3",
+  "baseline_checkpoint_id": "450240f9-2eaa-4e9f-9cb3-99eb79d5827c",
+  "baseline_tests_collected": 13,
+  "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "provider_usage": {
+    "requests": 10,
+    "input_tokens": 21690,
+    "output_tokens": 58335
+  },
+  "baseline_test_contract_digest": "425a9c3c2f3a1a564707e77d054b359cf5e4459f59d9c2fa38cdeceed616948f",
+  "revalidated_checkpoint_id": null,
+  "revalidation": null,
+  "orchestrator_revision": "afb82d4fdeace940e0054895c73a0ddca2ff55c3",
+  "orchestrator_digest": "8d16e0df4e658867e1261e5eed0ce5c74b3df759bd0af7ee69527ca56836f887",
+  "orchestrator_dirty": true,
+  "runtime_config_digest": "451b932c6baf67bb6b5ae8ff38b506e75a9724caca366df8dfdf7d8da5b2b8f4"
+}

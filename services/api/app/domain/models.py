@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+import re
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
 from urllib.parse import urlparse
 
-from pydantic import BaseModel, Field, HttpUrl, TypeAdapter, field_validator
+from pydantic import AfterValidator, BaseModel, Field, HttpUrl, TypeAdapter, field_validator
 
 
 def utc_now() -> datetime:
@@ -45,9 +46,28 @@ TERMINAL_RUN_STATUSES = {
 }
 
 
+def validate_project_path(value: str) -> str:
+    if (
+        not 1 <= len(value) <= 200
+        or not re.fullmatch(r"[A-Za-z0-9._-]+(?:/[A-Za-z0-9._-]+)*", value)
+        or any(part in {".", ".."} for part in value.split("/"))
+    ):
+        raise ValueError(
+            "Project path must be a repository-relative path of at most 200 characters, "
+            "using letters, digits, dots, underscores and hyphens without empty or dot segments"
+        )
+    return value
+
+
+ProjectPath = Annotated[
+    str, Field(min_length=1, max_length=200), AfterValidator(validate_project_path)
+]
+
+
 class CreateRunRequest(BaseModel):
     repo_url: HttpUrl
     target: Literal["pydantic-v2"] = "pydantic-v2"
+    project_path: ProjectPath | None = None
 
     @field_validator("repo_url")
     @classmethod
@@ -77,7 +97,7 @@ class MigrationStrategy(BaseModel):
     rationale: str
     ordered_steps: list[str]
     source_urls: list[HttpUrl]
-    target_files: list[str] = Field(default_factory=list)
+    target_files: list[str] = Field(min_length=1, max_length=40)
 
 
 class BranchResult(BaseModel):
@@ -93,6 +113,13 @@ class BranchResult(BaseModel):
     elapsed_seconds: float = Field(ge=0)
     patch_applicable: bool = True
     patch: str | None = None
+    diagnostics: str | None = Field(default=None, max_length=4_000)
+    failure_reason: str | None = Field(default=None, max_length=500)
+    pydantic_major: int | None = Field(default=None, ge=0)
+    test_exit_code: int | None = None
+    pip_exit_code: int | None = None
+    test_contract_preserved: bool | None = None
+    checkpoint_id: str | None = None
 
     @property
     def pass_ratio(self) -> float:
@@ -115,6 +142,7 @@ class RunSummary(BaseModel):
     id: str
     repo_url: HttpUrl
     target: Literal["pydantic-v2"] = "pydantic-v2"
+    project_path: ProjectPath | None = None
     mode: Literal["mock", "live"] = "mock"
     status: RunStatus = RunStatus.QUEUED
     created_at: datetime = Field(default_factory=utc_now)
@@ -126,6 +154,18 @@ class RunSummary(BaseModel):
     patch: str | None = None
     report: str | None = None
     failure_reason: str | None = None
+    baseline_commit_sha: str | None = None
+    baseline_checkpoint_id: str | None = None
+    baseline_tests_collected: int | None = Field(default=None, ge=1)
+    model_id: str | None = None
+    provider_usage: dict[str, int] = Field(default_factory=dict)
+    baseline_test_contract_digest: str | None = None
+    revalidated_checkpoint_id: str | None = None
+    revalidation: BranchResult | None = None
+    orchestrator_revision: str | None = None
+    orchestrator_digest: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+    orchestrator_dirty: bool | None = None
+    runtime_config_digest: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
 
 
 ALLOWED_TRANSITIONS: dict[RunStatus, set[RunStatus]] = {

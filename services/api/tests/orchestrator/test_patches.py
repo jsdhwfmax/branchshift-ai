@@ -1,4 +1,5 @@
 import base64
+import subprocess
 
 import pytest
 
@@ -62,3 +63,35 @@ def test_apply_command_transports_patch_without_shell_interpolation():
     assert "`id`" not in command
     payload = command.split("'")[3]
     assert base64.b64decode(payload).decode() == dangerous
+
+
+@pytest.mark.parametrize("path", ["tests/test_models.py", "conftest.py", "src/test_api.py"])
+def test_test_files_are_protected_even_if_model_declares_them(path):
+    with pytest.raises(UnsafePatch, match="protected test"):
+        validate_unified_diff(
+            VALID_PATCH.replace("src/app/models.py", path), allowed_files={path}
+        )
+
+
+@pytest.mark.parametrize("nested", [False, True])
+def test_git_actually_applies_project_relative_patch(tmp_path, nested):
+    subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)
+    project = tmp_path / "fixtures" / "target" if nested else tmp_path
+    target = project / "src" / "app" / "models.py"
+    target.parent.mkdir(parents=True)
+    target.write_text("from pydantic import validator\nclass User: ...\n")
+    # Only the deterministic patch is executed; no repository code is run on the host.
+    applied = subprocess.run(
+        ["sh", "-c", build_apply_command(VALID_PATCH).replace(
+            "/tmp/branchshift.patch", str(tmp_path / "candidate.patch")
+        )], cwd=project,
+        capture_output=True, text=True,
+    )
+    assert applied.returncode == 0, applied.stderr
+    assert target.read_text() == "from pydantic import field_validator\nclass User: ...\n"
+
+
+def test_mismatched_patch_headers_cannot_hide_changed_file():
+    patch = VALID_PATCH.replace("+++ b/src/app/models.py", "+++ b/src/app/other.py")
+    with pytest.raises(UnsafePatch, match="headers disagree"):
+        validate_unified_diff(patch, allowed_files={"src/app/models.py", "src/app/other.py"})

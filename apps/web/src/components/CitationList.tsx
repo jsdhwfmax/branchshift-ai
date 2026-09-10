@@ -1,8 +1,8 @@
 import type { Citation } from '../lib/api'
 
-export default function CitationList({ citations }: { citations: Citation[] }) {
+export default function CitationList({ citations, terminal = false }: { citations: Citation[]; terminal?: boolean }) {
   if (!citations.length) {
-    return <p className="empty-state">Official sources are retained before planning begins.</p>
+    return <p className="empty-state">{terminal ? 'No research sources were retained for this run.' : 'Official sources will appear after research completes.'}</p>
   }
   return (
     <ol className="citation-list">
@@ -18,4 +18,3 @@ export default function CitationList({ citations }: { citations: Citation[] }) {
     </ol>
   )
 }
-

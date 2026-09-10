@@ -1,0 +1,148 @@
+name: Build and optionally publish BranchShift image
+
+"on":
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish the tested commit image to GHCR (requires publication approval)
+        type: boolean
+        required: true
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: branchshift-image-${{ github.sha }}
+  cancel-in-progress: false
+
+env:
+  IMAGE: ghcr.io/jsdhwfmax/branchshift-ai
+  IMAGE_SHA: ${{ github.sha }}
+
+jobs:
+  image:
+    if: github.repository == 'jsdhwfmax/branchshift-ai'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Check out the selected commit
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Build the Linux CPU image without publishing
+        shell: bash
+        run: |
+          docker build --pull --platform linux/amd64 \
+            --file Containerfile --tag "${IMAGE}:${IMAGE_SHA}" \
+            --label "org.opencontainers.image.source=https://github.com/jsdhwfmax/branchshift-ai" \
+            --label "org.opencontainers.image.revision=${IMAGE_SHA}" .
+
+      - name: Check runtime dependencies and nonroot user
+        shell: bash
+        run: |
+          docker run --rm --entrypoint python "${IMAGE}:${IMAGE_SHA}" -c \
+            'import os, contree_sdk, fastapi, httpx, tavily; assert os.getuid() == 10001'
+
+      - name: Check same-origin UI, mock run and retained ledger after container replacement
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          import subprocess
+          import time
+          import urllib.error
+          import urllib.request
+
+          image = f"{os.environ['IMAGE']}:{os.environ['IMAGE_SHA']}"
+          data = Path(os.environ['RUNNER_TEMP']) / 'branchshift-image-smoke'
+          data.mkdir()
+          subprocess.run(['sudo', 'chown', '10001:10001', str(data)], check=True)
+          name = 'branchshift-image-smoke'
+          base = 'http://127.0.0.1:8000'
+
+          def fetch(path, body=None):
+              request = urllib.request.Request(
+                  base + path,
+                  data=json.dumps(body).encode() if body is not None else None,
+                  headers={'Content-Type': 'application/json'},
+              )
+              with urllib.request.urlopen(request, timeout=5) as response:
+                  return response.read()
+
+          def start():
+              subprocess.run([
+                  'docker', 'run', '--detach', '--name', name,
+                  '--publish', '127.0.0.1:8000:8000',
+                  '--mount', f'type=bind,src={data},dst=/data',
+                  '--env', 'BRANCHSHIFT_MODE=mock',
+                  '--env', 'MOCK_STEP_DELAY_SECONDS=0.01', image,
+              ], check=True)
+              deadline = time.monotonic() + 30
+              while True:
+                  try:
+                      health = json.loads(fetch('/api/health/integrations'))
+                      assert health['mode'] == 'mock' and health['ready']
+                      return
+                  except (urllib.error.URLError, TimeoutError):
+                      if time.monotonic() >= deadline:
+                          raise
+                      time.sleep(0.25)
+
+          try:
+              start()
+              index = fetch('/')
+              assert b'<html' in index.lower() and b'/assets/' in index
+              run = json.loads(fetch('/api/runs', {
+                  'repo_url': 'https://github.com/jsdhwfmax/branchshift-ai',
+                  'target': 'pydantic-v2',
+              }))
+              run_id = run['id']
+              deadline = time.monotonic() + 30
+              while run['status'] not in ('completed', 'failed', 'cancelled'):
+                  assert time.monotonic() < deadline, 'Mock run did not finish'
+                  time.sleep(0.1)
+                  run = json.loads(fetch(f'/api/runs/{run_id}'))
+              assert run['status'] == 'completed', run
+              assert len(run['branches']) == 3 and run['patch']
+              assert fetch(f'/runs/{run_id}') == index
+              assert fetch(f'/api/runs/{run_id}/patch')
+              assert json.loads(fetch(f'/api/runs/{run_id}/report'))['run']['id'] == run_id
+              subprocess.run(['docker', 'stop', name], check=True)
+              subprocess.run(['docker', 'rm', name], check=True)
+              start()
+              retained = json.loads(fetch(f'/api/runs/{run_id}'))
+              assert retained['status'] == 'completed'
+              assert retained['patch'] == run['patch']
+              assert (data / 'runs.db').exists()
+              print('Image smoke passed: mock only; local bind retention verified.')
+          finally:
+              subprocess.run(['docker', 'logs', name], check=False)
+              subprocess.run(['docker', 'rm', '--force', name], check=False)
+          PY
+
+      - name: Publish the tested SHA tag only when explicitly requested
+        if: inputs.publish
+        shell: bash
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_USER: ${{ github.actor }}
+        run: |
+          trap 'docker logout ghcr.io >/dev/null 2>&1 || true' EXIT
+          printf '%s' "$GHCR_TOKEN" | docker login ghcr.io --username "$GHCR_USER" --password-stdin
+          if docker manifest inspect "${IMAGE}:${IMAGE_SHA}" > /dev/null 2> "$RUNNER_TEMP/manifest-error"; then
+            echo 'This SHA tag already exists. Use its recorded digest; do not overwrite it.' >&2
+            exit 1
+          fi
+          if ! grep -Eq 'manifest unknown|no such manifest' "$RUNNER_TEMP/manifest-error"; then
+            cat "$RUNNER_TEMP/manifest-error" >&2
+            exit 1
+          fi
+          docker push "${IMAGE}:${IMAGE_SHA}"
+          docker image inspect "${IMAGE}:${IMAGE_SHA}" --format '{{join .RepoDigests "\n"}}' >> "$GITHUB_STEP_SUMMARY"

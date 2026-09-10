@@ -4,6 +4,8 @@ import base64
 from dataclasses import dataclass
 from pathlib import PurePosixPath
 
+from app.orchestrator.planner import is_test_path
+
 
 class UnsafePatch(ValueError):
     pass
@@ -33,6 +35,7 @@ def validate_unified_diff(
 
     files: list[str] = []
     changed_lines = 0
+    current_file: str | None = None
     for line in patch.splitlines():
         if line.startswith("diff --git "):
             parts = line.split()
@@ -46,6 +49,7 @@ def validate_unified_diff(
             if new_path in files:
                 raise UnsafePatch("Patch contains duplicate file sections")
             files.append(new_path)
+            current_file = new_path
             if len(files) > max_files:
                 raise UnsafePatch("Patch changes too many files")
         elif line.startswith(("+++ ", "--- ")):
@@ -55,6 +59,10 @@ def validate_unified_diff(
             if not path.startswith(("a/", "b/")):
                 raise UnsafePatch("Malformed patch path")
             _validate_patch_path(path[2:], allowed_files)
+            if path[2:] != current_file:
+                raise UnsafePatch("Patch headers disagree about the changed file")
+        elif line.startswith(("old mode ", "new mode ", "new file mode ", "deleted file mode ")):
+            raise UnsafePatch("Patch cannot change file modes or create/delete files")
         elif line.startswith(("+", "-")):
             changed_lines += 1
 
@@ -70,8 +78,13 @@ def build_apply_command(patch: str) -> str:
         "printf '%s' '"
         + payload
         + "' | base64 -d > /tmp/branchshift.patch; "
-        "git apply --check /tmp/branchshift.patch; "
-        "git apply /tmp/branchshift.patch"
+        "repo_root=$(git rev-parse --show-toplevel); "
+        "repo_prefix=$(git rev-parse --show-prefix); "
+        "if [ -n \"$repo_prefix\" ]; then "
+        "git -C \"$repo_root\" apply --check --directory=\"${repo_prefix%/}\" "
+        "/tmp/branchshift.patch; "
+        "git -C \"$repo_root\" apply --directory=\"${repo_prefix%/}\" /tmp/branchshift.patch; "
+        "else git apply --check /tmp/branchshift.patch; git apply /tmp/branchshift.patch; fi"
     )
 
 
@@ -84,5 +97,7 @@ def _validate_patch_path(path: str, allowed_files: set[str]) -> None:
     normalized = candidate.as_posix()
     if normalized == ".git" or normalized.startswith(".git/"):
         raise UnsafePatch("Patch cannot modify Git metadata")
+    if is_test_path(normalized):
+        raise UnsafePatch("Patch cannot modify protected test files")
     if normalized not in allowed_files:
         raise UnsafePatch(f"Patch changes an undeclared file: {normalized}")

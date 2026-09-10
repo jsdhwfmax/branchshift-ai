@@ -1,4 +1,4 @@
-# Provider interface audit — 31 August 2026
+# Provider interface audit — updated 10 September 2026
 
 ## Sources checked
 
@@ -21,11 +21,16 @@
 
 ## SDK packaging gap found
 
-The current documentation and the `main` branch construct a
+The documentation examples reviewed on 31 August construct a
 `contree_client.httpx.ContreeAsyncClient` and pass it to `Contree`. The newest
 installable PyPI artifact discovered during setup, `contree-sdk==0.4.0.dev5`,
-still exposes the older `Contree(token=..., base_url=...)` constructor
-internally. The provider adapter detects the installed surface and supports
-both forms. A credentialed Sandbox branching spike remains mandatory before
-live mode is enabled.
+uses `Contree(ContreeConfig(auth=IAMAuth(token=..., project_id=...)))` in the
+verified installed environment. The adapter is pinned to that explicit surface;
+it does not claim support for untested alternate constructors.
 
+The credentialed branching spike passed on 10 September (see
+[Sandbox evidence](sandbox-spike.md)). Real baseline preparation also cloned
+the public repository and passed all 13 fixture tests in a Sandbox. The first
+full migration attempt then failed closed when Nemotron omitted target file
+names. These are separate evidence gates; Sandbox availability alone is not
+proof that a generated migration works.

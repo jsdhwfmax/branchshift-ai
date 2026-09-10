@@ -14,47 +14,41 @@ class ContreeSandboxProvider:
     identifiers and can only branch by executing from a known parent state.
     """
 
-    def __init__(self, token: str, base_url: str) -> None:
+    def __init__(self, token: str, project_id: str, base_url: str) -> None:
         if not token:
             raise ProviderUnavailable("NEBIUS_API_KEY is required for Contree")
+        if not project_id:
+            raise ProviderUnavailable("NEBIUS_PROJECT_ID is required for Contree")
         self._token = token
+        self._project_id = project_id
         self._base_url = base_url
-        self._api_client: Any = None
         self._sdk: Any = None
-        self._sdk_owns_transport = False
         self._states: dict[str, Any] = {}
 
     async def __aenter__(self) -> ContreeSandboxProvider:
         try:
-            from contree_client.httpx import ContreeAsyncClient
-            from contree_client.runtime import RetryPolicy
             from contree_sdk import Contree  # type: ignore[import-untyped]
+            from contree_sdk.auth import IAMAuth  # type: ignore[import-untyped]
+            from contree_sdk.config import ContreeConfig  # type: ignore[import-untyped]
         except ImportError as exc:
             raise ProviderUnavailable("Install the 'contree' API extra") from exc
-        api_client = ContreeAsyncClient(
-            self._token,
-            base_url=self._base_url,
-            timeout=30.0,
-            retry=RetryPolicy(max_attempts=3),
+        config = ContreeConfig(
+            auth=IAMAuth(
+                token=self._token,
+                project_id=self._project_id,
+                base_url=self._base_url,
+            ),
+            transport_timeout=30.0,
+            operation_run_timeout=300.0,
+            operation_import_timeout=180.0,
         )
-        await api_client.__aenter__()
-        try:
-            # Current docs/main branch: transport is constructed explicitly.
-            self._sdk = Contree(api_client)
-            self._api_client = api_client
-        except AttributeError:
-            # PyPI 0.4.0.dev5 still ships the legacy convenience constructor.
-            await api_client.__aexit__(None, None, None)
-            self._sdk = Contree(token=self._token, base_url=self._base_url)
-            await self._sdk.__aenter__()
-            self._sdk_owns_transport = True
+        self._sdk = Contree(config)
+        await self._sdk.__aenter__()
         return self
 
     async def __aexit__(self, exc_type: Any, exc: Any, traceback: Any) -> None:
-        if self._sdk_owns_transport and self._sdk is not None:
+        if self._sdk is not None:
             await self._sdk.__aexit__(exc_type, exc, traceback)
-        elif self._api_client is not None:
-            await self._api_client.__aexit__(exc_type, exc, traceback)
 
     async def create_base(self, image: str, setup_command: str) -> SandboxState:
         if self._sdk is None:
@@ -62,9 +56,16 @@ class ContreeSandboxProvider:
         base = await self._sdk.images.use(image)
         prepared = await base.run(
             shell=setup_command,
+            timeout=300,
             disposable=False,
             truncate_output_at=32_000,
         )
+        if int(prepared.exit_code) != 0:
+            detail = redact(
+                str(prepared.stdout) + "\n" + str(prepared.stderr),
+                [self._token],
+            )[-2_000:]
+            raise ProviderUnavailable(f"Sandbox baseline setup failed: {detail}")
         state = SandboxState(checkpoint_id=str(prepared.uuid))
         self._states[state.checkpoint_id] = prepared
         return state
@@ -96,4 +97,5 @@ class ContreeSandboxProvider:
         raw_state = self._states.get(state.checkpoint_id)
         if raw_state is None:
             raise ProviderUnavailable("Unknown or expired Sandbox checkpoint")
-        return await raw_state.read(path)
+        content: bytes = await raw_state.read(path)
+        return content

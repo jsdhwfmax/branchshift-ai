@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -10,16 +11,19 @@ from app.api.health import router as health_router
 from app.api.runs import router as runs_router
 from app.config import Settings, settings
 from app.orchestrator.run_manager import RunManager
+from app.static import AppStaticFiles
 from app.storage.repositories import RunRepository
 
 
-def create_app(config: Settings = settings) -> FastAPI:
+def create_app(config: Settings = settings, *, web_dist: Path | None = None) -> FastAPI:
     repository = RunRepository(config.database_url)
     manager = RunManager(repository, config)
 
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+        await manager.recover_interrupted()
         yield
+        await manager.shutdown()
         repository.close()
 
     application = FastAPI(
@@ -45,8 +49,11 @@ def create_app(config: Settings = settings) -> FastAPI:
     async def api_root() -> dict[str, str]:
         return {"name": "BranchShift", "status": "ready"}
 
+    static_directory = web_dist or Path(__file__).resolve().parents[3] / "apps/web/dist"
+    if (static_directory / "index.html").is_file():
+        application.mount("/", AppStaticFiles(directory=static_directory, html=True), name="web")
+
     return application
 
 
 app = create_app()
-

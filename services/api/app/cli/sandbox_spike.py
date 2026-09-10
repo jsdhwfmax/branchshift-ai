@@ -12,6 +12,7 @@ async def run_spike() -> dict[str, object]:
     started = time.monotonic()
     async with ContreeSandboxProvider(
         token=settings.nebius_api_key,
+        project_id=settings.nebius_project_id,
         base_url=settings.contree_api_url,
     ) as sandbox:
         baseline = await sandbox.create_base(
@@ -54,9 +55,10 @@ async def run_spike() -> dict[str, object]:
 def main() -> None:
     if not settings.nebius_api_key:
         raise SystemExit("NEBIUS_API_KEY is required for the Sandbox spike")
+    if not settings.nebius_project_id:
+        raise SystemExit("NEBIUS_PROJECT_ID is required for the Sandbox spike")
     print(json.dumps(asyncio.run(run_spike()), indent=2))
 
 
 if __name__ == "__main__":
     main()
-

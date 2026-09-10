@@ -1,0 +1,25 @@
+{
+  "id": "f45d8d865b50",
+  "repo_url": "https://github.com/jsdhwfmax/branchshift-ai",
+  "target": "pydantic-v2",
+  "mode": "live",
+  "status": "failed",
+  "created_at": "2026-09-10T03:43:13.742841Z",
+  "updated_at": "2026-09-10T03:43:58.326719Z",
+  "strategies": [],
+  "branches": [],
+  "citations": [],
+  "winner_id": null,
+  "patch": null,
+  "report": null,
+  "failure_reason": "Nemotron strategy validation failed: minimal must identify at least one target file",
+  "baseline_commit_sha": "afb82d4fdeace940e0054895c73a0ddca2ff55c3",
+  "baseline_checkpoint_id": "19899297-8f23-4b78-81d6-5e11f25857b8",
+  "baseline_tests_collected": 13,
+  "model_id": "nvidia/Nemotron-3_5-Lightning",
+  "provider_usage": {
+    "requests": 2,
+    "input_tokens": 4923,
+    "output_tokens": 1943
+  }
+}

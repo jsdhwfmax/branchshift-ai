@@ -4,7 +4,15 @@ import asyncio
 import sqlite3
 from pathlib import Path
 
-from app.domain.models import RunEvent, RunStatus, RunSummary, assert_transition, utc_now
+from app.domain.models import (
+    TERMINAL_RUN_STATUSES,
+    BranchResult,
+    RunEvent,
+    RunStatus,
+    RunSummary,
+    assert_transition,
+    utc_now,
+)
 
 
 def _database_path(database_url: str) -> str:
@@ -62,6 +70,12 @@ class RunRepository:
             ).fetchone()
         return RunSummary.model_validate_json(row["document"]) if row else None
 
+    async def unfinished_run_ids(self) -> list[str]:
+        async with self._lock:
+            rows = self._connection.execute("SELECT document FROM runs").fetchall()
+        summaries = [RunSummary.model_validate_json(row["document"]) for row in rows]
+        return [summary.id for summary in summaries if summary.status not in TERMINAL_RUN_STATUSES]
+
     async def save_run(self, summary: RunSummary) -> RunSummary:
         summary.updated_at = utc_now()
         async with self._lock:
@@ -71,6 +85,25 @@ class RunRepository:
             )
             self._connection.commit()
         return summary
+
+    async def save_branch_result(self, run_id: str, result: BranchResult) -> None:
+        """Merge a finished sibling atomically, even if another branch is still running."""
+        async with self._lock:
+            row = self._connection.execute(
+                "SELECT document FROM runs WHERE id = ?", (run_id,)
+            ).fetchone()
+            if row is None:
+                raise KeyError(run_id)
+            summary = RunSummary.model_validate_json(row["document"])
+            summary.branches = [
+                branch for branch in summary.branches if branch.strategy_id != result.strategy_id
+            ] + [result]
+            summary.updated_at = utc_now()
+            self._connection.execute(
+                "UPDATE runs SET document = ? WHERE id = ?",
+                (summary.model_dump_json(), run_id),
+            )
+            self._connection.commit()
 
     async def set_status(self, run_id: str, next_status: RunStatus, message: str) -> RunSummary:
         summary = await self.require_run(run_id)
@@ -136,7 +169,7 @@ class RunRepository:
             async with condition:
                 await asyncio.wait_for(condition.wait(), timeout=timeout)
         except TimeoutError:
-            return []
+            pass
         return await self.list_events(run_id, after)
 
     async def require_run(self, run_id: str) -> RunSummary:
