@@ -18,22 +18,25 @@ loops execute independently from the same baseline. Test files and test
 configuration remain protected; the final runtime must use Pydantic v2.
 
 An explicitly labelled offline sample is also available. Sample metrics are
-illustrative. Live reliability, five-case evaluation and public hosting remain
-under validation; this repository does not claim that every migration succeeds.
+illustrative. Five controlled cases now have verified live migration evidence;
+broader reliability and public hosting remain under validation.
 
 ## Current evaluation evidence
 
-The [retained development record](evaluation/results.md) contains **12
-autonomous live attempts: 9 failures and 3 qualified successes**. Code and
-model settings changed during the earlier attempts. The latest three runs
-passed consecutively with the same baseline, model, source digest and runtime
-configuration; each winner preserved and passed all 13 original tests under
-Pydantic 2 and passed clean-baseline revalidation.
+The [retained development record](evaluation/results.md) contains **16
+autonomous live attempts: 9 failures and 7 qualified successes across five
+controlled cases**. Code and model settings changed during the earlier
+attempts. The original validators case ended with three consecutive successes
+using the same baseline, model, source digest and runtime configuration. Four
+additional cases each succeeded once: configuration, serialization, parsing
+and compatibility. Their public source was verified byte-for-byte at commit
+`b8a1204` through anonymous access.
 
-This covers **one controlled fixture**, not five independent migration cases
-or a general reliability rate. Four additional fixture baselines pass locally;
-their public-source and live migration evaluation remains pending. Original
-JSON records, failure outcomes and provenance are retained in
+Every qualified winner preserved its original tests, passed under Pydantic 2
+and passed clean-baseline revalidation. This completes five-case coverage plus
+the original case's three-run streak; it does not establish three successful
+runs of the full suite or a general migration reliability rate. Original
+JSON records, failed branches, failure outcomes and provenance are retained in
 [evaluation/evidence](evaluation/evidence), with the
 [collection and interpretation procedure](docs/evaluation.md).
 

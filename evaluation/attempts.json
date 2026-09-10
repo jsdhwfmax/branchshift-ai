@@ -48,6 +48,22 @@
     {
       "case_id": "validators",
       "path": "evidence/aedb7bf272f4.json"
+    },
+    {
+      "case_id": "config",
+      "path": "evidence/113e13ad8413.json"
+    },
+    {
+      "case_id": "serialization",
+      "path": "evidence/714229fb2814.json"
+    },
+    {
+      "case_id": "parsing",
+      "path": "evidence/5b124a9d5dee.json"
+    },
+    {
+      "case_id": "compatibility",
+      "path": "evidence/fe86c430aa32.json"
     }
   ]
 }

@@ -1,17 +1,30 @@
 # BranchShift container deployment runbook
 
-Prepared 10 September 2026. **No image has been built with Docker, pushed to a
-registry or deployed by this preparation.** Docker is absent from the current
-local shell. This is a reviewable deployment package with explicit release
-gates, not a working public-demo claim.
+Updated 10 September 2026. The Linux `amd64` image at
+[commit `99fae2fab173d6a34e085a2f5939bff35c70d33c`](https://github.com/jsdhwfmax/branchshift-ai/commit/99fae2fab173d6a34e085a2f5939bff35c70d33c)
+was built and smoke-tested successfully in
+[image workflow `34440192693`](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34440192693).
+The dispatch used `publish=false`; **GHCR publication was skipped**. No public
+image digest, AI Cloud storage result or hosted live deployment is established
+by this run.
+
+[CI `34440006894`](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34440006894)
+passed at the same commit: Ruff, mypy across 34 source files, frontend type
+checks, 202 API tests, 13 baseline fixture tests, 27 frontend tests and the
+production UI build. The image workflow separately passed runtime SDK imports,
+UID `10001`, same-origin UI and route refresh, a completed mock run, patch/report
+retrieval, and retention of that completed run and patch after replacing the
+container against the same runner-local bind directory. These are **mock and
+local-bind persistence checks**, not Cloud persistence or hosted live evidence.
 
 Local preparation checks passed: YAML parsing and the manual-only trigger,
 all four embedded Bash scripts with `bash -n`, embedded Python syntax,
 referenced source-file existence, runtime database/user/worker declarations,
 and local documentation links. The local tool versions are Python 3.13.9,
 Node 24.14.0 and pnpm 11.19.0. Neither Docker nor `actionlint` is installed in
-this shell; no container build/runtime check or GitHub workflow execution is
-claimed. Existing source tests are separate from validation of this image.
+this shell; the actual container build/runtime evidence above comes from the
+GitHub-hosted Linux runner. Existing source tests and image smoke checks remain
+separate from validation of a Cloud deployment.
 
 ## Deployment target
 
@@ -51,10 +64,10 @@ mode to fit a different host. [Feasibility and official sources](../docs/evidenc
   existing SHA tag and fails closed on an uncertain registry lookup.
 
 The workflow creates no Nebius resources, changes no package visibility and
-has no push, pull-request or release trigger. Uploading the workflow to the
-repository and dispatching it remain separate external actions. An authorized
-publish dispatch writes a GHCR package and consumes applicable Actions/package
-usage. [GitHub manual triggers](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow),
+has no push, pull-request or release trigger. It has been published and
+dispatched with `publish=false`; registry publication remains a separate
+action. An authorized publish dispatch writes a GHCR package and consumes
+applicable Actions/package usage. [GitHub manual triggers](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow),
 [GHCR publication](https://docs.github.com/en/actions/tutorials/publish-packages/publish-docker-images).
 
 After publication, record and deploy the **image digest**
@@ -93,9 +106,13 @@ persistence or live provider success.
 The manual workflow automates checks for SDK imports, the nonroot user, UI/API
 serving, a completed mock run, patch/report retrieval, SPA refresh and retained
 records after container replacement against a runner-local bind directory.
-These checks have been **prepared, not executed**, until the workflow or local
-Docker build is actually run. The image health check requests `/api`; it is
-process liveness, not proof of working credentials or remote providers.
+These checks **passed** in the verified
+[image smoke step](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34440192693/job/102753435169#step:5:1),
+whose logs record a replacement container retrieving the retained completed
+run and the final successful bind-retention assertion. This does not verify a
+Nebius mount, Cloud lifecycle operation or live provider call. The image health
+check requests `/api`; it is process liveness, not proof of working credentials
+or remote providers.
 
 ## Complete this deployment record before provisioning
 
@@ -104,7 +121,7 @@ process liveness, not proof of working credentials or remote providers.
 | Cloud tenant / project | Exact existing IDs, account access and role; not yet inspected |
 | Region / subnet | Exact project-supported region and subnet; not yet selected |
 | Endpoint platform / preset | Prefer CPU only; compare `cpu-e2/2vcpu-8gb` if available with the documented `cpu-d3/4vcpu-16gb` |
-| Image | Published immutable digest; not yet built/published |
+| Image | Linux image built and smoke-tested at `99fae2f`; GHCR publish skipped, published immutable digest pending |
 | Registry access | Prove the chosen host can pull; private GHCR requires a supported credential path, or separately approved package visibility |
 | HTTP interface | Container port 8000, managed HTTPS URL; actual URL pending |
 | Runtime identity | Container UID/GID 10001:10001; minimum host IAM needed |

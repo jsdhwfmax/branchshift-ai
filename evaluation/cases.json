@@ -13,7 +13,7 @@
       "id": "config",
       "local_path": "fixtures/config",
       "project_path": "evaluation/fixtures/config",
-      "public_repo_url": null,
+      "public_repo_url": "https://github.com/jsdhwfmax/branchshift-ai",
       "minimum_tests": 5,
       "behavior": "Alias and field-name population, whitespace trimming, extra-field rejection and ORM attribute input remain unchanged."
     },
@@ -21,7 +21,7 @@
       "id": "serialization",
       "local_path": "fixtures/serialization",
       "project_path": "evaluation/fixtures/serialization",
-      "public_repo_url": null,
+      "public_repo_url": "https://github.com/jsdhwfmax/branchshift-ai",
       "minimum_tests": 4,
       "behavior": "Dictionary aliases, exclusion of absent values, nested serialization and JSON datetime output remain unchanged."
     },
@@ -29,7 +29,7 @@
       "id": "parsing",
       "local_path": "fixtures/parsing",
       "project_path": "evaluation/fixtures/parsing",
-      "public_repo_url": null,
+      "public_repo_url": "https://github.com/jsdhwfmax/branchshift-ai",
       "minimum_tests": 4,
       "behavior": "Object, JSON, nested payload and validation-error boundaries remain unchanged."
     },
@@ -37,7 +37,7 @@
       "id": "compatibility",
       "local_path": "fixtures/compatibility",
       "project_path": "evaluation/fixtures/compatibility",
-      "public_repo_url": null,
+      "public_repo_url": "https://github.com/jsdhwfmax/branchshift-ai",
       "minimum_tests": 4,
       "behavior": "Native and pydantic.v1 imports coexist behind a dictionary boundary, preserving coercion and validation under installed Pydantic 2."
     }

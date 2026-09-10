@@ -3,18 +3,18 @@
 Generated locally from the explicitly supplied export manifest. No providers were called.
 The manifest must include failed attempts; this tool cannot discover omitted runs.
 
-Qualified successes: 3 / 12 terminal live attempts.
-Independent cases with success: 1; five-case gate: False; three-consecutive gate: True.
+Qualified successes: 7 / 16 terminal live attempts.
+Independent cases with success: 5; five-case gate: True; three-consecutive gate: True.
 
 At least three qualified successes on every case: False.
 
 | Case | Attempts | Live terminal | Qualified success | Trailing same-runtime streak |
 | --- | ---: | ---: | ---: | ---: |
 | validators | 12 | 12 | 3 | 3 |
-| config | 0 | 0 | 0 | 0 |
-| serialization | 0 | 0 | 0 | 0 |
-| parsing | 0 | 0 | 0 | 0 |
-| compatibility | 0 | 0 | 0 | 0 |
+| config | 1 | 1 | 1 | 1 |
+| serialization | 1 | 1 | 1 | 1 |
+| parsing | 1 | 1 | 1 | 1 |
+| compatibility | 1 | 1 | 1 | 1 |
 
 | Run | Case | Status | Winner | Qualified | Unmet gates | Input/output tokens |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -30,14 +30,18 @@ At least three qualified successes on every case: False.
 | 6d863a18d814 | validators | completed | compatibility | True | none | 35389 / 15952 |
 | 83489c0de0de | validators | completed | compatibility | True | none | 34076 / 12274 |
 | aedb7bf272f4 | validators | completed | minimal | True | none | 24663 / 18472 |
+| 113e13ad8413 | config | completed | refactor | True | none | 19804 / 5023 |
+| 714229fb2814 | serialization | completed | compatibility | True | none | 19834 / 5039 |
+| 5b124a9d5dee | parsing | completed | minimal | True | none | 12392 / 2329 |
+| fe86c430aa32 | compatibility | completed | minimal | True | none | 12870 / 3469 |
 
-Median ledger duration: 64.4785 seconds. p95: 106.409 seconds (nearest rank).
+Median ledger duration: 58.661 seconds. p95: 106.409 seconds (nearest rank).
 Durations include queue time and final writes; small-sample p95 is descriptive.
 
 Observed model usage (response-reported totals, not complete billing):
-- observed_model_requests: 79; field present in 12 terminal live records.
-- observed_input_tokens: 248046; field present in 12 terminal live records.
-- observed_output_tokens: 140058; field present in 12 terminal live records.
+- observed_model_requests: 99; field present in 16 terminal live records.
+- observed_input_tokens: 312946; field present in 16 terminal live records.
+- observed_output_tokens: 155918; field present in 16 terminal live records.
 
 Total cost and Sandbox operation counts: **unknown**, not zero.
 Revalidation is a retained-ledger assertion; this tool does not replay the patch or independently authenticate provider evidence.

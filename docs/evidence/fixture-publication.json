@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "verified_at_utc": "2026-09-10T05:04:21.312777+00:00",
+  "repository": "https://github.com/jsdhwfmax/branchshift-ai",
+  "commit": "b8a1204ceaec260261c8fe1d695eae23c4597ae8",
+  "access": "Anonymous HTTPS requests; no authorization headers",
+  "scope": "Four evaluation fixture manifests, package initializers, source modules and behavior tests; no live execution",
+  "file_count": 16,
+  "all_match_local": true,
+  "files": [
+    {
+      "path": "evaluation/fixtures/config/pyproject.toml",
+      "url": "https://raw.githubusercontent.com/jsdhwfmax/branchshift-ai/b8a1204ceaec260261c8fe1d695eae23c4597ae8/evaluation/fixtures/config/pyproject.toml",
+      "http_status": 200,
+      "bytes": 366,
+      "sha256": "faefb3ebc0ed29613a459467a00a8d512dac1086760afe6cac78da4dd10c2433",
+      "matches_local": true
+    },
+    {
+      "path": "evaluation/fixtures/config/src/sample_app/__init__.py",
+      "url": "https://raw.githubusercontent.com/jsdhwfmax/branchshift-ai/b8a1204ceaec260261c8fe1d695eae23c4597ae8/evaluation/fixtures/config/src/sample_app/__init__.py",
+      "http_status": 200,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches_local": true
+    },
+    {
+      "path": "evaluation/fixtures/config/src/sample_app/models.py",
+      "url": "https://raw.githubusercontent.com/jsdhwfmax/branchshift-ai/b8a1204ceaec260261c8fe1d695eae23c4597ae8/evaluation/fixtures/config/src/sample_app/models.py",
+      "http_status": 200,
+      "bytes": 340,
+      "sha256": "3579d774d99c504f5fff31e40b8206e4df75509ed3615beb325cebc44a24d57f",
+      "matches_local": true
+    },
+    {
+      "path": "evaluation/fixtures/config/tests/test_behavior.py",
+      "url": "https://raw.githubusercontent.com/jsdhwfmax/branchshift-ai/b8a1204ceaec260261c8fe1d695eae23c4597ae8/evaluation/fixtures/config/tests/test_behavior.py",
+      "http_status": 200,
+      "bytes": 679,
+      "sha256": "aa9b6f72db100bc7a3b99c701baa7a5ea7bbc759cb5379c54f042d8786a39582",
+      "matches_local": true
+    },
+    {
+      "path": "evaluation/fixtures/serialization/pyproject.toml",
+      "url": "https://raw.githubusercontent.com/jsdhwfmax/branchshift-ai/b8a1204ceaec260261c8fe1d695eae23c4597ae8/evaluation/fixtures/serialization/pyproject.toml",
+      "http_status": 200,
+      "bytes": 373,
+      "sha256": "e8d2ca8175d2f8a26a28e62f3b0a3cc050ba5ae03fc610565bd6fb9667a5befa",
+      "matches_local": true
+    },
+    {
+      "path": "evaluation/fixtures/serialization/src/sample_app/__init__.py",
+      "url": "https://raw.githubusercontent.com/jsdhwfmax/branchshift-ai/b8a1204ceaec260261c8fe1d695eae23c4597ae8/evaluation/fixtures/serialization/src/sample_app/__init__.py",
+      "http_status": 200,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches_local": true
+    },
+    {
+      "path": "evaluation/fixtures/serialization/src/sample_app/models.py",
+      "url": "https://raw.githubusercontent.com/jsdhwfmax/branchshift-ai/b8a1204ceaec260261c8fe1d695eae23c4597ae8/evaluation/fixtures/serialization/src/sample_app/models.py",
+      "http_status": 200,
+      "bytes": 522,
+      "sha256": "4cac09d380a2a947678c01ee78c74b43e6fa53bec0fa0964295fd99a98611681",
+      "matches_local": true
+    },
+    {
+      "path": "evaluation/fixtures/serialization/tests/test_behavior.py",
+      "url": "https://raw.githubusercontent.com/jsdhwfmax/branchshift-ai/b8a1204ceaec260261c8fe1d695eae23c4597ae8/evaluation/fixtures/serialization/tests/test_behavior.py",
+      "http_status": 200,
+      "bytes": 718,
+      "sha256": "4cf8747a9b8189690e8106e702333c2e6e6056e0db2d64eb136e06ba140a8bd8",
+      "matches_local": true
+    },
+    {
+      "path": "evaluation/fixtures/parsing/pyproject.toml",
+      "url": "https://raw.githubusercontent.com/jsdhwfmax/branchshift-ai/b8a1204ceaec260261c8fe1d695eae23c4597ae8/evaluation/fixtures/parsing/pyproject.toml",
+      "http_status": 200,
+      "bytes": 367,
+      "sha256": "a73bc25efadc7b010834cf5c703f18f76f8aec3a3be4c98caa15ba2941510bb1",
+      "matches_local": true
+    },
+    {
+      "path": "evaluation/fixtures/parsing/src/sample_app/__init__.py",
+      "url": "https://raw.githubusercontent.com/jsdhwfmax/branchshift-ai/b8a1204ceaec260261c8fe1d695eae23c4597ae8/evaluation/fixtures/parsing/src/sample_app/__init__.py",
+      "http_status": 200,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches_local": true
+    },
+    {
+      "path": "evaluation/fixtures/parsing/src/sample_app/models.py",
+      "url": "https://raw.githubusercontent.com/jsdhwfmax/branchshift-ai/b8a1204ceaec260261c8fe1d695eae23c4597ae8/evaluation/fixtures/parsing/src/sample_app/models.py",
+      "http_status": 200,
+      "bytes": 329,
+      "sha256": "9c7d4faf2b64f7c635c059040d491223e87abf3741f37fb62b3a7478ee361d63",
+      "matches_local": true
+    },
+    {
+      "path": "evaluation/fixtures/parsing/tests/test_behavior.py",
+      "url": "https://raw.githubusercontent.com/jsdhwfmax/branchshift-ai/b8a1204ceaec260261c8fe1d695eae23c4597ae8/evaluation/fixtures/parsing/tests/test_behavior.py",
+      "http_status": 200,
+      "bytes": 516,
+      "sha256": "54238d45b133eb500ceaafaf2d56fc8bde9be09a395f852f7e02a44c1bfc2209",
+      "matches_local": true
+    },
+    {
+      "path": "evaluation/fixtures/compatibility/pyproject.toml",
+      "url": "https://raw.githubusercontent.com/jsdhwfmax/branchshift-ai/b8a1204ceaec260261c8fe1d695eae23c4597ae8/evaluation/fixtures/compatibility/pyproject.toml",
+      "http_status": 200,
+      "bytes": 373,
+      "sha256": "0d41f266c07f891f5e194e1e5cc5ef42dda40e6864e6843d804898766238c785",
+      "matches_local": true
+    },
+    {
+      "path": "evaluation/fixtures/compatibility/src/sample_app/__init__.py",
+      "url": "https://raw.githubusercontent.com/jsdhwfmax/branchshift-ai/b8a1204ceaec260261c8fe1d695eae23c4597ae8/evaluation/fixtures/compatibility/src/sample_app/__init__.py",
+      "http_status": 200,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches_local": true
+    },
+    {
+      "path": "evaluation/fixtures/compatibility/src/sample_app/models.py",
+      "url": "https://raw.githubusercontent.com/jsdhwfmax/branchshift-ai/b8a1204ceaec260261c8fe1d695eae23c4597ae8/evaluation/fixtures/compatibility/src/sample_app/models.py",
+      "http_status": 200,
+      "bytes": 509,
+      "sha256": "80260d086a4eaa95f038a5f092549377a69198ee175b089a28e161f10c402225",
+      "matches_local": true
+    },
+    {
+      "path": "evaluation/fixtures/compatibility/tests/test_behavior.py",
+      "url": "https://raw.githubusercontent.com/jsdhwfmax/branchshift-ai/b8a1204ceaec260261c8fe1d695eae23c4597ae8/evaluation/fixtures/compatibility/tests/test_behavior.py",
+      "http_status": 200,
+      "bytes": 662,
+      "sha256": "a899f66223e502cfd0911b0f624e0e16e553f18f4cf9646658843dba31a56b56",
+      "matches_local": true
+    }
+  ]
+}

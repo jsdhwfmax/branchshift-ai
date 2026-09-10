@@ -104,10 +104,25 @@ replace the real backend with replay data.
 serving was added by the parent task, and the
 [container/deployment package](../../deploy/nebius-endpoint.md) is now present.
 Its manual-only workflow and embedded scripts passed local syntax checks.
-Docker is unavailable locally, so actual image build, cloud persistence and
-hosted live execution remain unverified. The initial file-inventory observation
-above records the earlier audit state, not a claim that packaging is still
-absent.
+Docker remains unavailable in the local shell, but a GitHub-hosted Linux runner
+has now built and checked the actual image. The initial file-inventory
+observation above records the earlier audit state, not a claim that packaging
+is still absent.
+
+**Verified CI and image follow-through:** both workflows passed at
+[commit `99fae2fab173d6a34e085a2f5939bff35c70d33c`](https://github.com/jsdhwfmax/branchshift-ai/commit/99fae2fab173d6a34e085a2f5939bff35c70d33c).
+[CI `34440006894`](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34440006894)
+passed Ruff, mypy across 34 files, frontend type checks, 202 API tests, 13
+baseline fixture tests, 27 frontend tests and the production UI build.
+[Image workflow `34440192693`](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34440192693)
+passed the Linux `amd64` build, runtime dependency imports and nonroot UID
+`10001`. Its
+[smoke step](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34440192693/job/102753435169#step:5:1)
+passed same-origin UI/route refresh, a completed mock run, patch/report retrieval
+and completed-run/patch retention after container replacement against the same
+runner-local bind directory. The dispatch used `publish=false`, and the GHCR
+publish step was **skipped**. Cloud filesystem durability, Cloud lifecycle
+retention, public hosting and hosted live provider execution remain unverified.
 
 ## Persistence is the unresolved technical gate
 
@@ -274,15 +289,16 @@ project access. Keep an immutable release and a tested rollback route.
 | AI Cloud account access | User login at `console.nebius.com` if no reusable session exists; confirm tenant/project and editor permission. Token Factory key alone is not evidence of Cloud management access. |
 | Cloud resource eligibility | Inspect region, subnet, CPU/storage quota and billing account read-only; do not invent IDs or a payment method. |
 | Hosting budget | Prepare the actual tenant/project, region/preset, disk, image/registry, secret names, public-access mode and cost from provisioning through 16 December. Then confirm applicable Cloud credits or an authorized total budget if needed. No spend authorized by this audit. |
-| Tooling | `nebius` and `docker` were absent from this shell's PATH; `~/.nebius/config.yaml` was absent. `gh` was present. Existing browser login was not inspected. An authenticated console route or CLI setup and an image-build route are needed. |
-| Container image | Build the actual UI/API image, install the Contree optional dependency, use an immutable image reference, and verify registry pull access. No image workflow was claimed ready here. |
+| Tooling | `nebius` and `docker` were absent from this shell's PATH; `~/.nebius/config.yaml` was absent. `gh` was present. An image-build route is now verified through GitHub Actions; Cloud account access remains a separate check. |
+| Container image | Actual Linux UI/API image and Contree/runtime imports passed at `99fae2f` in image workflow `34440192693`. GHCR publication was skipped; a published immutable digest and host registry pull access remain pending. |
 | Runtime secrets | Set actual provider values through the chosen host's secret mechanism; verify no keys are embedded in the image or frontend. |
-| Storage/restart gate | Complete the persistence checks above before a judge-facing release. |
+| Storage/restart gate | Mock completed-run/patch retention passed after container replacement with a runner-local bind directory. Complete the Cloud persistence and backup/restore checks above before a judge-facing release. |
 | Public behavior | Verify health, real migration, SSE reconnect, refresh, failure state, patch download and evaluator access through the exact HTTPS URL. |
 
-The safe independent next action is container/static-serving preparation and
-restart handling, while obtaining account and budget facts read-only. Any
-budget request should be the final approval of a concrete, reviewable target,
+The image and mock bind-retention checks are complete. The remaining deployment
+work is registry release, Cloud storage verification and hosted acceptance,
+while obtaining account and budget facts read-only. Any budget request should
+be the final approval of a concrete, reviewable target,
 not a premature open-ended hosting question. Deployment is not blocked by a
-model-only Endpoint restriction; it is pending packaging, persistence
+model-only Endpoint restriction; it is pending registry release, Cloud persistence
 evidence, AI Cloud access and an appropriate hosting budget.
