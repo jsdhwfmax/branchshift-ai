@@ -2,6 +2,13 @@
 
 **MIT licensed** · [License](LICENSE)
 
+Bundled browser assets retain their
+[third-party licenses](apps/web/public/third-party-notices.txt).
+The pinned runtime candidate is
+[`v0.1.0-rc.1`](https://github.com/jsdhwfmax/branchshift-ai/tree/v0.1.0-rc.1);
+later packaging changes are documented in the
+[asset provenance record](docs/evidence/third-party-assets.md).
+
 [![CI](https://github.com/jsdhwfmax/branchshift-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/jsdhwfmax/branchshift-ai/actions/workflows/ci.yml)
 
 BranchShift is an evidence-first dependency migration agent. It asks NVIDIA

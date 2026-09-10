@@ -1,0 +1,11 @@
+BranchShift uses NVIDIA Nemotron on Nebius Token Factory to propose migration strategies, then executes them from a shared Sandbox baseline and selects a patch using measured tests and clean-baseline revalidation.
+
+Shared filesystem states were useful for preserving independent attempts and comparing their evidence. In three predeclared rounds across five small Pydantic migration cases, all 15 runs produced a qualified native-v2 migration. We retained all 45 candidate outcomes, including seven failures. The model was nvidia/Nemotron-3-Ultra-550b-a55b with thinking enabled. These are outcomes of our complete pipeline, including bounded repairs, rather than a per-response model accuracy rate. They do not establish general production reliability or an advantage over one strategy at a matched budget.
+
+Our main onboarding suggestions come from the 31 August integration experience: make project-level Sandbox Beta readiness visible alongside inference access, and tie SDK quickstarts to an exact installable version. A valid inference key did not establish Sandbox permission. We later verified the separate Sandbox access and pinned contree-sdk==0.4.0.dev5. The constructor mismatch we encountered is a dated observation, not a claim that current documentation remains incorrect.
+
+We would also value a documented timeout-recovery path that distinguishes a client wait deadline from remote workload termination. In two controlled probes, the SDK raised OperationTimedOutError; later status reads reported operation SUCCESS but process timed_out=true and signal 9. Keeping the operation handle let us inspect the original execution without repeating it. This is provider-reported termination, not an independent OS-level guarantee.
+
+For Nemotron coding examples, we suggest showing exact model/thinking/structured-output settings, executable behavior tests, rejected candidates, bounded repairs and usage accounting together. Across our frozen series, all 79 model requests returned complete token usage. Sandbox adapter counts were recorded separately from unknown billable operation units. Versioned examples covering that distinction would make complete agent workflows easier to reproduce.
+
+Evidence and complete candidate records: https://github.com/jsdhwfmax/branchshift-ai/tree/main/evaluation/series-20260910
