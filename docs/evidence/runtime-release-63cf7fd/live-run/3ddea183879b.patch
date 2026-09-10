@@ -1,0 +1,103 @@
+diff --git a/pyproject.toml b/pyproject.toml
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -6,7 +6,7 @@
+ name = "branchshift-pydantic-v1-fixture"
+ version = "0.1.0"
+ requires-python = ">=3.10"
+-dependencies = ["pydantic>=1.10,<2"]
++dependencies = ["pydantic>=2,<3"]
+ 
+ [project.optional-dependencies]
+ test = ["pytest>=8"]
+diff --git a/src/sample_app/models.py b/src/sample_app/models.py
+--- a/src/sample_app/models.py
++++ b/src/sample_app/models.py
+@@ -1,36 +1,44 @@
+ from datetime import datetime
+ from typing import Optional
+ 
+-from pydantic import BaseModel, Field, root_validator, validator
++from pydantic import BaseModel, Field, field_validator, model_validator
+ 
+ 
+ class User(BaseModel):
+-    user_id: int = Field(alias="id")
++    user_id: int = Field(alias='id')
+     name: str
+     email: str
+     nickname: Optional[str] = None
+     created_at: datetime = Field(default_factory=datetime.utcnow)
+ 
+-    @validator("name")
++    @field_validator('name')
+     def name_must_not_be_blank(cls, value: str) -> str:
+         if not value.strip():
+-            raise ValueError("name must not be blank")
++            raise ValueError('name must not be blank')
+         return value.strip()
+ 
+-    @validator("email")
++    @field_validator('email')
+     def normalize_email(cls, value: str) -> str:
+         return value.strip().lower()
+ 
+-    @root_validator(skip_on_failure=True)
++    @model_validator(mode='after')
+     def nickname_differs_from_name(cls, values):
+-        if values.get("nickname") == values.get("name"):
+-            raise ValueError("nickname must differ from name")
++        # Handle both dict (validation) and model instance (assignment validation)
++        if isinstance(values, dict):
++            nickname = values.get('nickname')
++            name = values.get('name')
++        else:
++            nickname = getattr(values, 'nickname', None)
++            name = getattr(values, 'name', None)
++        if nickname == name:
++            raise ValueError('nickname must differ from name')
+         return values
+ 
+-    class Config:
+-        allow_population_by_field_name = True
+-        anystr_strip_whitespace = True
+-        orm_mode = True
++    model_config = {
++        'populate_by_name': True,
++        'str_strip_whitespace': True,
++        'from_attributes': True,
++    }
+ 
+ 
+ class Project(BaseModel):
+@@ -38,8 +46,8 @@
+     owner: User
+     archived: bool = False
+ 
+-    @validator("slug")
++    @field_validator('slug')
+     def slug_is_lowercase(cls, value: str) -> str:
+         if value != value.lower():
+-            raise ValueError("slug must be lowercase")
++            raise ValueError('slug must be lowercase')
+         return value
+diff --git a/src/sample_app/api.py b/src/sample_app/api.py
+--- a/src/sample_app/api.py
++++ b/src/sample_app/api.py
+@@ -2,13 +2,13 @@
+ 
+ 
+ def parse_user(payload: dict) -> User:
+-    return User.parse_obj(payload)
++    return User.model_validate(payload)
+ 
+ 
+ def serialize_user(user: User) -> dict:
+-    return user.dict(by_alias=True, exclude_none=True)
++    return user.model_dump(by_alias=True, exclude_none=True)
+ 
+ 
+ def parse_project_json(payload: str) -> Project:
+-    return Project.parse_raw(payload)
++    return Project.model_validate_json(payload)
+ 

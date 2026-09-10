@@ -1,0 +1,28 @@
+{
+  "url": "http://127.0.0.1:8001/api/runs/3ddea183879b",
+  "status": 200,
+  "reason": "OK",
+  "headers": [
+    [
+      "date",
+      "Thu, 10 Sep 2026 06:41:04 GMT"
+    ],
+    [
+      "server",
+      "uvicorn"
+    ],
+    [
+      "content-length",
+      "37422"
+    ],
+    [
+      "content-type",
+      "application/json"
+    ],
+    [
+      "connection",
+      "close"
+    ]
+  ],
+  "collected_at_utc": "2026-09-10T06:41:04.918480+00:00"
+}

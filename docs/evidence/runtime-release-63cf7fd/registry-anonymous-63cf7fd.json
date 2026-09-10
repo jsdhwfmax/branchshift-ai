@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "repository": "ghcr.io/jsdhwfmax/branchshift-ai",
+  "tag": "63cf7fdb4c62e119facb87fe108e9c278960a5c1",
+  "expected_workflow_digest": "sha256:e1c84566cbe08d4ae5548288dea59cab78ea00dc8f596d4d34ca98c74f3ba9ac",
+  "workflow_url": "https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34446125409",
+  "workflow_job_url": "https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34446125409/job/102771195497",
+  "started_at_utc": "2026-09-10T06:43:12.281631+00:00",
+  "finished_at_utc": "2026-09-10T06:43:13.314924+00:00",
+  "elapsed_seconds": 1.033,
+  "authentication": {
+    "initial_manifest_status": 401,
+    "scheme": "Bearer",
+    "token_realm": "https://ghcr.io/token",
+    "service": "ghcr.io",
+    "scope": "repository:jsdhwfmax/branchshift-ai:pull",
+    "token_status": 200,
+    "account_credentials_sent": false,
+    "token_printed_or_retained": false,
+    "authorization_removed_on_cross_host_redirects": true
+  },
+  "tag_manifest": {
+    "url": "https://ghcr.io/v2/jsdhwfmax/branchshift-ai/manifests/63cf7fdb4c62e119facb87fe108e9c278960a5c1",
+    "http_status": 200,
+    "bytes": 2204,
+    "content_type": "application/vnd.docker.distribution.manifest.v2+json",
+    "media_type": "application/vnd.docker.distribution.manifest.v2+json",
+    "docker_content_digest": "sha256:e1c84566cbe08d4ae5548288dea59cab78ea00dc8f596d4d34ca98c74f3ba9ac",
+    "calculated_digest": "sha256:e1c84566cbe08d4ae5548288dea59cab78ea00dc8f596d4d34ca98c74f3ba9ac",
+    "matches_workflow_digest": true,
+    "matches_digest_header": true
+  },
+  "image_config": {
+    "http_status": 200,
+    "final_host": "pkg-containers.githubusercontent.com",
+    "bytes": 8868,
+    "digest": "sha256:c00bc7f13b70a01d41ff2b6e50dc7ce121a55c281394787b0542148126d6f8fd",
+    "matches_manifest_descriptor": true,
+    "os": "linux",
+    "architecture": "amd64",
+    "declared_user": "10001:10001",
+    "numeric_uid_in_config": 10001,
+    "nonroot_numeric_uid_in_config": true,
+    "oci_revision": "63cf7fdb4c62e119facb87fe108e9c278960a5c1",
+    "oci_source": "https://github.com/jsdhwfmax/branchshift-ai",
+    "matches_commit": true,
+    "matches_linux_amd64": true
+  },
+  "checks": {
+    "tag_digest_matches_workflow": true,
+    "tag_digest_matches_header": true,
+    "config_digest_matches_descriptor": true,
+    "config_platform_linux_amd64": true,
+    "config_revision_matches_commit": true
+  },
+  "all_required_checks_passed": true,
+  "prior_read_attempt": "An initial identical bounded read confirmed the manifest digest and config digest but stopped at an exact user-format assertion before retaining a receipt. This read records the actual user declaration without inferring numeric identity.",
+  "scope": "Anonymous manifest and small config-blob verification only. No image layer downloaded, full image pulled, container run, repository mutation, deployment or CI recheck. Named user declarations do not establish numeric UID; the separately reported workflow runtime UID is outside this receipt."
+}

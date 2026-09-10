@@ -41,7 +41,7 @@ The intended first release is a bounded public demo with a small controlled
 fixture, persistent creation quotas and retained evidence; the security document
 states the limits for other untrusted repositories.
 
-## Work still being verified
+## Completed release checks and remaining delivery
 
 - Three complete rounds of the five live cases finished with 15/15 qualified
   migrations at frozen commit `92c733a1338cc7abdbcf04ca00be363158fd126c`;
@@ -52,10 +52,27 @@ states the limits for other untrusted repositories.
   desktop/mobile mocked flows, reconnect/download/refresh, keyboard and selected
   accessibility checks. The combined code passed 324 API tests, 13 original
   fixture tests, 29 component tests, Ruff, mypy and production build checks.
-  Those later changes do not alter the frozen matrix. A new real release
-  verification is pending.
-- The exact `92c733a` image was built, smoke-tested and published, and its
-  manifest was read anonymously. A later source change needs its own build.
+  [CI at `63cf7fd`](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34445971465)
+  passed all 16 steps, including Chromium installation and four desktop/mobile
+  Playwright checks. Anonymous publication checks matched 91 changed text files
+  and 34 original cohort files to committed bytes. The historical matrix remains
+  frozen at `92c733a`.
+- A separate local live release check, `3ddea183879b`, completed with source and
+  baseline `63cf7fd`: two candidates passed and one failed; minimal won with 44
+  changed lines and passed all 13 tests on clean revalidation. Stored attempt
+  sequences were minimal 1, compatibility 1–2 and refactor 1–3. Desktop/mobile
+  refresh, browser JSON/patch downloads and deterministic Markdown/JSON exports
+  matched retained evidence. This is one new local verification, not another
+  five-case cohort or a hosted run.
+- The exact `63cf7fd` image was built, smoke-tested and published with digest
+  `sha256:e1c84566cbe08d4ae5548288dea59cab78ea00dc8f596d4d34ca98c74f3ba9ac`.
+  Its eight workflow steps passed; execution used mock data and a runner-local
+  bind directory. Anonymous manifest/config reads matched that digest, Linux
+  `amd64`, user `10001:10001` and source revision; no layers were downloaded.
+  [Current release receipts](runtime-release-63cf7fd/README.md)
+  distinguish this container check from the separate local live run. Full host
+  image pull, Cloud storage and live provider execution in that image remain
+  deployment checks.
 - Nebius Cloud account access, concrete hosting/storage/budget selection,
   actual public live run, refresh/download and judge availability remain pending.
 - The 130-second local recorded-evidence video exists. Its final hosted version,

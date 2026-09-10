@@ -23,6 +23,11 @@ broader reliability and public hosting remain under validation.
 
 ## Current evaluation evidence
 
+The [latest runtime release verification](docs/evidence/runtime-release-63cf7fd/README.md)
+records a real UI-started migration at `63cf7fd`, its downloadable JSON/Markdown
+reports and patch, desktop/mobile refresh checks, passing CI and the published
+container digest. Public Cloud hosting remains pending.
+
 The [predeclared three-round evaluation](evaluation/series-20260910/README.md)
 completed **15/15 qualified live migrations**: validators, configuration,
 serialization, parsing and compatibility, each attempted three times at frozen

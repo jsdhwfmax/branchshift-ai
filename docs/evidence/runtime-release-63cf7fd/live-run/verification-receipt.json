@@ -1,0 +1,402 @@
+{
+  "schema_version": 1,
+  "run_id": "3ddea183879b",
+  "collected_at_utc": "2026-09-10T06:41:04.982074+00:00",
+  "evidence_scope": "Read-only exports of the one pre-existing live run on the local production server; no run creation, retry, provider replay, or public-host validation by this collector.",
+  "all_checks_pass": true,
+  "checks": {
+    "terminal_completed_live": true,
+    "summary_matches_report_run": true,
+    "report_schema_version_1": true,
+    "live_report_scope": true,
+    "expected_orchestrator_revision": true,
+    "expected_baseline_revision": true,
+    "source_digest_matches_local_bytes": true,
+    "runtime_config_digest_matches_local_nonsecret_config": true,
+    "dirty_status_retained": true,
+    "exact_model_matches_config": true,
+    "three_candidate_results": true,
+    "winner_verification_gate": true,
+    "revalidation_verification_gate": true,
+    "same_winner_revalidated": true,
+    "distinct_clean_revalidation_checkpoint": true,
+    "baseline_contract_retained": true,
+    "patch_matches_summary_winner_revalidation": true,
+    "markdown_repeated_bytes_identical": true,
+    "json_report_repeated_bytes_identical": true,
+    "markdown_matches_pure_renderer": true,
+    "successful_report_gates": true,
+    "started_event_contract": true,
+    "started_attempt_sequences_retained_for_all_branches": true,
+    "raw_exports_http_200": true,
+    "configured_credential_values_absent_from_exports": true
+  },
+  "expected_commit": "63cf7fdb4c62e119facb87fe108e9c278960a5c1",
+  "source_provenance": {
+    "orchestrator_revision": "63cf7fdb4c62e119facb87fe108e9c278960a5c1",
+    "orchestrator_digest": "b10f14ba54cb60d5f1c858eb6928d4957255409f4e689d21b187e8d83fe07c1b",
+    "orchestrator_dirty": true
+  },
+  "runtime_config_digest": "99c4a77f36522aaf6cc6830ab6f0f40f45ab95066077dda61cf4ad75a81a7b8e",
+  "nonsecret_config": {
+    "mode": "live",
+    "nemotron_model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+    "nemotron_enable_thinking": true,
+    "run_timeout_seconds": 900,
+    "max_repository_bytes": 52428800,
+    "contree_image": "python:3.13-slim"
+  },
+  "baseline_commit_sha": "63cf7fdb4c62e119facb87fe108e9c278960a5c1",
+  "baseline_checkpoint_id": "c605be9f-2d6a-4c71-b897-f7ca3e5635b2",
+  "baseline_tests_collected": 13,
+  "baseline_test_contract_digest": "425a9c3c2f3a1a564707e77d054b359cf5e4459f59d9c2fa38cdeceed616948f",
+  "status": "completed",
+  "failure_reason": null,
+  "winner_id": "minimal",
+  "revalidated_checkpoint_id": "5dbfadb5-0005-46db-8413-79522a22d8f3",
+  "candidate_statuses": {
+    "passed": 2,
+    "failed": 1
+  },
+  "candidate_metrics": [
+    {
+      "strategy_id": "minimal",
+      "status": "passed",
+      "tests_collected": 13,
+      "tests_passed": 13,
+      "tests_failed": 0,
+      "lint_findings": 1,
+      "changed_lines": 44,
+      "elapsed_seconds": 7.882017541996902,
+      "pydantic_major": 2,
+      "test_contract_preserved": true,
+      "checkpoint_id": "38a6d383-4ae3-41bb-81a7-8a56202f0f1f",
+      "failure_reason": null
+    },
+    {
+      "strategy_id": "compatibility",
+      "status": "passed",
+      "tests_collected": 13,
+      "tests_passed": 13,
+      "tests_failed": 0,
+      "lint_findings": 1,
+      "changed_lines": 71,
+      "elapsed_seconds": 15.693857833000948,
+      "pydantic_major": 2,
+      "test_contract_preserved": true,
+      "checkpoint_id": "6292762c-373d-4fbe-ad9f-fc557dc5f356",
+      "failure_reason": null
+    },
+    {
+      "strategy_id": "refactor",
+      "status": "failed",
+      "tests_collected": 13,
+      "tests_passed": 11,
+      "tests_failed": 2,
+      "lint_findings": 1,
+      "changed_lines": 58,
+      "elapsed_seconds": 23.227317791999667,
+      "pydantic_major": 2,
+      "test_contract_preserved": true,
+      "checkpoint_id": "dcef0c62-9ba9-40e6-b9e7-70a9aaa215c4",
+      "failure_reason": "Test execution failed; inspect the test diagnostic"
+    }
+  ],
+  "patch_sha256": "d3bf63ae2cd146b4db54564aa0dc4b20c3931e1dbbba63954e3fcc62f4a5b009",
+  "patch_bytes": 3242,
+  "retained_event_count": 23,
+  "started_proposal_events": [
+    {
+      "id": 9,
+      "run_id": "3ddea183879b",
+      "type": "branch.progress",
+      "message": "Minimal v1\u2192v2 migration: proposal attempt 1/3 started",
+      "created_at": "2026-09-10T06:38:25.485989Z",
+      "branch_id": "minimal",
+      "payload": {
+        "attempt": 1,
+        "max_attempts": 3
+      }
+    },
+    {
+      "id": 11,
+      "run_id": "3ddea183879b",
+      "type": "branch.progress",
+      "message": "Compatibility-layer migration: proposal attempt 1/3 started",
+      "created_at": "2026-09-10T06:38:25.515135Z",
+      "branch_id": "compatibility",
+      "payload": {
+        "attempt": 1,
+        "max_attempts": 3
+      }
+    },
+    {
+      "id": 13,
+      "run_id": "3ddea183879b",
+      "type": "branch.progress",
+      "message": "Full refactor to v2 idioms: proposal attempt 1/3 started",
+      "created_at": "2026-09-10T06:38:25.531826Z",
+      "branch_id": "refactor",
+      "payload": {
+        "attempt": 1,
+        "max_attempts": 3
+      }
+    },
+    {
+      "id": 14,
+      "run_id": "3ddea183879b",
+      "type": "branch.progress",
+      "message": "Compatibility-layer migration: proposal attempt 2/3 started",
+      "created_at": "2026-09-10T06:38:40.613482Z",
+      "branch_id": "compatibility",
+      "payload": {
+        "attempt": 2,
+        "max_attempts": 3
+      }
+    },
+    {
+      "id": 15,
+      "run_id": "3ddea183879b",
+      "type": "branch.progress",
+      "message": "Full refactor to v2 idioms: proposal attempt 2/3 started",
+      "created_at": "2026-09-10T06:38:40.659027Z",
+      "branch_id": "refactor",
+      "payload": {
+        "attempt": 2,
+        "max_attempts": 3
+      }
+    },
+    {
+      "id": 18,
+      "run_id": "3ddea183879b",
+      "type": "branch.progress",
+      "message": "Full refactor to v2 idioms: proposal attempt 3/3 started",
+      "created_at": "2026-09-10T06:38:54.684774Z",
+      "branch_id": "refactor",
+      "payload": {
+        "attempt": 3,
+        "max_attempts": 3
+      }
+    }
+  ],
+  "attempt_sequences": {
+    "minimal": [
+      1
+    ],
+    "compatibility": [
+      1,
+      2
+    ],
+    "refactor": [
+      1,
+      2,
+      3
+    ]
+  },
+  "provider_usage": {
+    "requests": 8,
+    "input_tokens": 36148,
+    "output_tokens": 10989,
+    "model_usage_version": 1,
+    "responses_with_usage": 8,
+    "sandbox_usage_version": 1,
+    "sandbox_sdk_calls_attempted": 16,
+    "sandbox_sdk_calls_completed": 16,
+    "sandbox_sdk_calls_failed": 0,
+    "sandbox_sdk_calls_cancelled": 0,
+    "sandbox_image_use_attempted": 1,
+    "sandbox_image_use_completed": 1,
+    "sandbox_image_use_failed": 0,
+    "sandbox_image_use_cancelled": 0,
+    "sandbox_run_attempted": 9,
+    "sandbox_run_completed": 9,
+    "sandbox_run_failed": 0,
+    "sandbox_run_cancelled": 0,
+    "sandbox_read_attempted": 6,
+    "sandbox_read_completed": 6,
+    "sandbox_read_failed": 0,
+    "sandbox_read_cancelled": 0,
+    "sandbox_run_exit_zero": 9,
+    "sandbox_run_exit_nonzero": 0
+  },
+  "download_response_headers": {
+    "json": [
+      [
+        "date",
+        "Thu, 10 Sep 2026 06:41:04 GMT"
+      ],
+      [
+        "server",
+        "uvicorn"
+      ],
+      [
+        "content-disposition",
+        "attachment; filename=\"3ddea183879b-evidence.json\""
+      ],
+      [
+        "content-length",
+        "76342"
+      ],
+      [
+        "content-type",
+        "application/json"
+      ],
+      [
+        "connection",
+        "close"
+      ]
+    ],
+    "markdown": [
+      [
+        "date",
+        "Thu, 10 Sep 2026 06:41:04 GMT"
+      ],
+      [
+        "server",
+        "uvicorn"
+      ],
+      [
+        "content-disposition",
+        "attachment; filename=\"3ddea183879b-evidence.md\""
+      ],
+      [
+        "content-length",
+        "59824"
+      ],
+      [
+        "content-type",
+        "text/markdown; charset=utf-8"
+      ],
+      [
+        "connection",
+        "close"
+      ]
+    ],
+    "patch": [
+      [
+        "date",
+        "Thu, 10 Sep 2026 06:41:04 GMT"
+      ],
+      [
+        "server",
+        "uvicorn"
+      ],
+      [
+        "content-disposition",
+        "attachment; filename=\"3ddea183879b-winner.patch\""
+      ],
+      [
+        "content-length",
+        "3242"
+      ],
+      [
+        "content-type",
+        "text/plain; charset=utf-8"
+      ],
+      [
+        "connection",
+        "close"
+      ]
+    ]
+  },
+  "files": [
+    {
+      "path": "3ddea183879b.json",
+      "bytes": 37422,
+      "sha256": "a960ddff66128057b153043e523ba84bf4344b6c92d56056ada0c6820936413f"
+    },
+    {
+      "path": "3ddea183879b.json.headers.txt",
+      "bytes": 124,
+      "sha256": "792e9a23c191fb29be3de6d476140b7b39f1391b55bf91078b323ebc0429ba62"
+    },
+    {
+      "path": "3ddea183879b.json.http.json",
+      "bytes": 439,
+      "sha256": "99d5968fc4e2e72941039eef3776ffe45e7db4bc71607a9fdc7b1bc959f7d4e4"
+    },
+    {
+      "path": "3ddea183879b-report.json",
+      "bytes": 76342,
+      "sha256": "869fad4d97809d367b78547ccdf0d6b010f0d485a71571205b6bf0e3f602fa69"
+    },
+    {
+      "path": "3ddea183879b-report.json.headers.txt",
+      "bytes": 195,
+      "sha256": "2cdf4bd044114b0aa3720640c583b02634124de8488c09a83b2bc07b1993fdbf"
+    },
+    {
+      "path": "3ddea183879b-report.json.http.json",
+      "bytes": 548,
+      "sha256": "b1c3c71e394dfc593032397b9688c07528f6d396ff609f03fab86f2c76def4c9"
+    },
+    {
+      "path": "3ddea183879b.md",
+      "bytes": 59824,
+      "sha256": "05cc41bf6f62a138b065444089a4a98741626d9ffe9b0f6d2afaae0ad220c4f5"
+    },
+    {
+      "path": "3ddea183879b.md.headers.txt",
+      "bytes": 205,
+      "sha256": "5188a0a856ba066d34d902fd572f160f82d2a2c5c83f171b18d35014b58c9df2"
+    },
+    {
+      "path": "3ddea183879b.md.http.json",
+      "bytes": 574,
+      "sha256": "03269048de71149437d7ce89c5e69b2d0cac3cc96d97498bcd0758d768caba1e"
+    },
+    {
+      "path": "3ddea183879b.patch",
+      "bytes": 3242,
+      "sha256": "d3bf63ae2cd146b4db54564aa0dc4b20c3931e1dbbba63954e3fcc62f4a5b009"
+    },
+    {
+      "path": "3ddea183879b.patch.headers.txt",
+      "bytes": 202,
+      "sha256": "5c884fa453e563f46f3e815fd8e8367914a317a9e8db8d97b1aa2a5914a0c316"
+    },
+    {
+      "path": "3ddea183879b.patch.http.json",
+      "bytes": 554,
+      "sha256": "2bf34de3dc8375db86a9c7d608b2b3be4f57c777d224ee6eba816f266e983061"
+    },
+    {
+      "path": "3ddea183879b-report-repeat.json",
+      "bytes": 76342,
+      "sha256": "869fad4d97809d367b78547ccdf0d6b010f0d485a71571205b6bf0e3f602fa69"
+    },
+    {
+      "path": "3ddea183879b-report-repeat.json.headers.txt",
+      "bytes": 195,
+      "sha256": "2cdf4bd044114b0aa3720640c583b02634124de8488c09a83b2bc07b1993fdbf"
+    },
+    {
+      "path": "3ddea183879b-report-repeat.json.http.json",
+      "bytes": 548,
+      "sha256": "6da9399fd75970491c3bdbad837298fd4b9d3f7211d587f945a5f5a6c94cba09"
+    },
+    {
+      "path": "3ddea183879b-repeat.md",
+      "bytes": 59824,
+      "sha256": "05cc41bf6f62a138b065444089a4a98741626d9ffe9b0f6d2afaae0ad220c4f5"
+    },
+    {
+      "path": "3ddea183879b-repeat.md.headers.txt",
+      "bytes": 205,
+      "sha256": "5188a0a856ba066d34d902fd572f160f82d2a2c5c83f171b18d35014b58c9df2"
+    },
+    {
+      "path": "3ddea183879b-repeat.md.http.json",
+      "bytes": 574,
+      "sha256": "b9020666b1d71f035d0d23c3ac3ae100d3d19f9c0165e1d2253a6d3f59f2652f"
+    }
+  ],
+  "limitations": [
+    "Proposal events record started attempts, not completion or independently verified provider telemetry.",
+    "Local source/config digest comparison validates provenance agreement, not external authenticity.",
+    "The preceding 15-run cohort remains frozen at 92c733a; this is one later-release verification, not a repeated benchmark.",
+    "SDK counters are adapter invocations, not billable operation units; no invoice or total cost is inferred."
+  ],
+  "original_receipt_sha256": "7eb7d1760da6b09b541828a5c9de0d4bdf48803e32379aad42ccb60a323f1f75",
+  "publication_transformation": "Only files[].path changed from private absolute paths to relative filenames; all original exports copied unchanged."
+}

@@ -1,0 +1,943 @@
+{
+  "schema_version": 1,
+  "repository": "jsdhwfmax/branchshift-ai",
+  "commit": "63cf7fdb4c62e119facb87fe108e9c278960a5c1",
+  "parent_commit": "92c733a1338cc7abdbcf04ca00be363158fd126c",
+  "started_at_utc": "2026-09-10T06:38:37.909822+00:00",
+  "finished_at_utc": "2026-09-10T06:38:44.271295+00:00",
+  "elapsed_seconds": 6.361,
+  "method": "Anonymous HTTPS GET from full-commit raw URLs; no Authorization header, cookies or account credentials. Each response byte-compared with git show COMMIT:path, not the working tree.",
+  "raw_url_base": "https://raw.githubusercontent.com/jsdhwfmax/branchshift-ai/63cf7fdb4c62e119facb87fe108e9c278960a5c1/",
+  "request_rounds": 1,
+  "changed_files": 94,
+  "excluded_images": [
+    "docs/images/ui-completed-desktop.png",
+    "docs/images/ui-completed-mobile.png",
+    "docs/images/ui-preflight-desktop.png"
+  ],
+  "expected_text_files": 91,
+  "verified_text_files": 91,
+  "cohort_original_files": 34,
+  "verified_cohort_original_files": 34,
+  "cohort_matches_collection_manifest": true,
+  "collection_manifest_sha256": "feadd9c1742e7a4db41393c66a0cbb20d1abf872444ef687ceceea4fd16a48c4",
+  "total_expected_text_bytes": 914391,
+  "manifest_digest_encoding": "UTF-8 sorted path + NUL + decimal bytes + NUL + local SHA256 + LF, one row per file.",
+  "text_manifest_sha256": "7e93263845c670e06c6f0b4574c3d476f2bc5ac275d332536697fbbc48687bdd",
+  "cohort_manifest_sha256": "4fe2a296cb7309dcd4424b34bebec6568289609281c2f097e0c414b39fb096ac",
+  "failures": [],
+  "all_match": true,
+  "files": [
+    {
+      "path": ".env.example",
+      "bytes": 1530,
+      "local_sha256": "8dc1fbc5196c9ed0c52f2420bf5077bdb7dc73de7890eff009b4a543194ac1fa",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 1530,
+      "remote_sha256": "8dc1fbc5196c9ed0c52f2420bf5077bdb7dc73de7890eff009b4a543194ac1fa"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "bytes": 1386,
+      "local_sha256": "71518c2e6d1c83b2ae53703d2e3578a5c7cf2b23ba726f9c2d2fa7ea220bc37c",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 1386,
+      "remote_sha256": "71518c2e6d1c83b2ae53703d2e3578a5c7cf2b23ba726f9c2d2fa7ea220bc37c"
+    },
+    {
+      "path": "README.md",
+      "bytes": 8503,
+      "local_sha256": "3a725fba1b839cacc34bc208208a6d38613fc6d75f1ad077c130be07317a120e",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 8503,
+      "remote_sha256": "3a725fba1b839cacc34bc208208a6d38613fc6d75f1ad077c130be07317a120e"
+    },
+    {
+      "path": "apps/web/.gitignore",
+      "bytes": 35,
+      "local_sha256": "cef44a388c2e70f98a6ce6cad05a30a9d9e568fb8efc957303114673ac5307dd",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 35,
+      "remote_sha256": "cef44a388c2e70f98a6ce6cad05a30a9d9e568fb8efc957303114673ac5307dd"
+    },
+    {
+      "path": "apps/web/e2e/build.ts",
+      "bytes": 310,
+      "local_sha256": "89202f301c1e6ad0eeb02aa9f35c6c0250d5a0f14ec56b3930938914cc87cca7",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 310,
+      "remote_sha256": "89202f301c1e6ad0eeb02aa9f35c6c0250d5a0f14ec56b3930938914cc87cca7"
+    },
+    {
+      "path": "apps/web/e2e/happy-path.spec.ts",
+      "bytes": 11967,
+      "local_sha256": "5987333ad07028006bb1b04fac316f7aa8ec06639909970996793afd9c08c541",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 11967,
+      "remote_sha256": "5987333ad07028006bb1b04fac316f7aa8ec06639909970996793afd9c08c541"
+    },
+    {
+      "path": "apps/web/package.json",
+      "bytes": 906,
+      "local_sha256": "3df62615692af98b632827db76183b4ea0d9d88656d129794176af07fa5d00c6",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 906,
+      "remote_sha256": "3df62615692af98b632827db76183b4ea0d9d88656d129794176af07fa5d00c6"
+    },
+    {
+      "path": "apps/web/playwright.config.ts",
+      "bytes": 516,
+      "local_sha256": "f349131276ec3b2d87c4c07faa131d16200ed60d26059c92cb47d71160a63fa4",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 516,
+      "remote_sha256": "f349131276ec3b2d87c4c07faa131d16200ed60d26059c92cb47d71160a63fa4"
+    },
+    {
+      "path": "apps/web/src/components/AppHeader.tsx",
+      "bytes": 894,
+      "local_sha256": "57b51022b314d3705cbcb5598ae043d34208f1e1d6e3114b517529d2f739bdd2",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 894,
+      "remote_sha256": "57b51022b314d3705cbcb5598ae043d34208f1e1d6e3114b517529d2f739bdd2"
+    },
+    {
+      "path": "apps/web/src/components/BranchLane.tsx",
+      "bytes": 3700,
+      "local_sha256": "253c5184a66e0395d565c80d36e1feae99327f2521cbce033ad42937d9304faf",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 3700,
+      "remote_sha256": "253c5184a66e0395d565c80d36e1feae99327f2521cbce033ad42937d9304faf"
+    },
+    {
+      "path": "apps/web/src/components/HowRunWorks.tsx",
+      "bytes": 1446,
+      "local_sha256": "1b32a9ea2d0882d08887efa0dce7a31e614aa54e728b3bdb2d9cbc3ad9b79fd9",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 1446,
+      "remote_sha256": "1b32a9ea2d0882d08887efa0dce7a31e614aa54e728b3bdb2d9cbc3ad9b79fd9"
+    },
+    {
+      "path": "apps/web/src/components/RunForm.test.tsx",
+      "bytes": 2597,
+      "local_sha256": "754ee7aecf854f7710e4045af266a42c77e9aa0d6e0f2d097627301bbcabe2e6",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 2597,
+      "remote_sha256": "754ee7aecf854f7710e4045af266a42c77e9aa0d6e0f2d097627301bbcabe2e6"
+    },
+    {
+      "path": "apps/web/src/components/RunForm.tsx",
+      "bytes": 4648,
+      "local_sha256": "a6e0c3a27fe15bde09976a4655b23cd2f2ef134623a4e07cb6fb0681a6ab4604",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 4648,
+      "remote_sha256": "a6e0c3a27fe15bde09976a4655b23cd2f2ef134623a4e07cb6fb0681a6ab4604"
+    },
+    {
+      "path": "apps/web/src/lib/api.ts",
+      "bytes": 3804,
+      "local_sha256": "3366e6a44657b742ed060d445938d79393857220c7c24f64e727db5b114b01d1",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 3804,
+      "remote_sha256": "3366e6a44657b742ed060d445938d79393857220c7c24f64e727db5b114b01d1"
+    },
+    {
+      "path": "apps/web/src/lib/events.ts",
+      "bytes": 1393,
+      "local_sha256": "aa49bcca2a78a19db84a547fa4914e943c7bb43ad03daeba0841c575a9af8f9a",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 1393,
+      "remote_sha256": "aa49bcca2a78a19db84a547fa4914e943c7bb43ad03daeba0841c575a9af8f9a"
+    },
+    {
+      "path": "apps/web/src/lib/useRunLedger.ts",
+      "bytes": 3593,
+      "local_sha256": "8fa59b94fc502a8a9ce0fc6c8a908fd1dfaa18e4231afb47563cf70f852a264a",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 3593,
+      "remote_sha256": "8fa59b94fc502a8a9ce0fc6c8a908fd1dfaa18e4231afb47563cf70f852a264a"
+    },
+    {
+      "path": "apps/web/src/routes/HomePage.test.tsx",
+      "bytes": 2076,
+      "local_sha256": "2ee94e2257056b51ec47c1dc4840a40a8837d685775e58a04f54c845ac3f1d6f",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 2076,
+      "remote_sha256": "2ee94e2257056b51ec47c1dc4840a40a8837d685775e58a04f54c845ac3f1d6f"
+    },
+    {
+      "path": "apps/web/src/routes/HomePage.tsx",
+      "bytes": 3863,
+      "local_sha256": "26923fb29df9d5f61ceed70ffa0271442c3d1bd31105b106fff3bd70b196d7c8",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 3863,
+      "remote_sha256": "26923fb29df9d5f61ceed70ffa0271442c3d1bd31105b106fff3bd70b196d7c8"
+    },
+    {
+      "path": "apps/web/src/routes/RunPage.test.tsx",
+      "bytes": 17206,
+      "local_sha256": "9188dd7956c7a26d02817362445f2b24ecc26a7c11ab2764f89a375585c85c3c",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 17206,
+      "remote_sha256": "9188dd7956c7a26d02817362445f2b24ecc26a7c11ab2764f89a375585c85c3c"
+    },
+    {
+      "path": "apps/web/src/routes/RunPage.tsx",
+      "bytes": 12623,
+      "local_sha256": "b3a982f9259c431bc94e66ba1a1c0863ac0e92334acfd378bb90bda3441ca725",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 12623,
+      "remote_sha256": "b3a982f9259c431bc94e66ba1a1c0863ac0e92334acfd378bb90bda3441ca725"
+    },
+    {
+      "path": "apps/web/src/styles.css",
+      "bytes": 24890,
+      "local_sha256": "e5ec4fa7dcc77b3ac6a517f6a836821d8fb997e38863de30435ce9ff687e7533",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 24890,
+      "remote_sha256": "e5ec4fa7dcc77b3ac6a517f6a836821d8fb997e38863de30435ce9ff687e7533"
+    },
+    {
+      "path": "apps/web/tsconfig.e2e.json",
+      "bytes": 305,
+      "local_sha256": "f912fe65018d29ad03a94e134713cff0f5d157f1ad9ff1cddbb0a01da9ac748b",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 305,
+      "remote_sha256": "f912fe65018d29ad03a94e134713cff0f5d157f1ad9ff1cddbb0a01da9ac748b"
+    },
+    {
+      "path": "apps/web/vitest.config.ts",
+      "bytes": 263,
+      "local_sha256": "fedc688015d7ed72f73d821f1cb8ab5109e732596a7fd58e3500220385d18d1c",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 263,
+      "remote_sha256": "fedc688015d7ed72f73d821f1cb8ab5109e732596a7fd58e3500220385d18d1c"
+    },
+    {
+      "path": "deploy/nebius-endpoint.md",
+      "bytes": 19526,
+      "local_sha256": "1a04fd9d2229952b6f1a39eddc16da8a3aa8e2597e51904bc845dbd79f9339a4",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 19526,
+      "remote_sha256": "1a04fd9d2229952b6f1a39eddc16da8a3aa8e2597e51904bc845dbd79f9339a4"
+    },
+    {
+      "path": "docs/evaluation.md",
+      "bytes": 17928,
+      "local_sha256": "51ea346e00e3eb528bf5efb9d4aab656158d34e0c799d9deea600bdec1ce60c8",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 17928,
+      "remote_sha256": "51ea346e00e3eb528bf5efb9d4aab656158d34e0c799d9deea600bdec1ce60c8"
+    },
+    {
+      "path": "docs/evidence/cost-and-latency.md",
+      "bytes": 14455,
+      "local_sha256": "c7e14a6bb36c6512c825b387e302c9243ac50140de8942310d95f2c143029d62",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 14455,
+      "remote_sha256": "c7e14a6bb36c6512c825b387e302c9243ac50140de8942310d95f2c143029d62"
+    },
+    {
+      "path": "docs/evidence/implementation-status.md",
+      "bytes": 5616,
+      "local_sha256": "4b0778960d0bf56b45c6316dd4271124c15fe3b6d7967054ba70ba8152e881f5",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 5616,
+      "remote_sha256": "4b0778960d0bf56b45c6316dd4271124c15fe3b6d7967054ba70ba8152e881f5"
+    },
+    {
+      "path": "docs/evidence/openapi.json",
+      "bytes": 24071,
+      "local_sha256": "2977eaae7e50cb7ad646def1b0f30ae04e13d66616cb77d18c08dce49486e476",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 24071,
+      "remote_sha256": "2977eaae7e50cb7ad646def1b0f30ae04e13d66616cb77d18c08dce49486e476"
+    },
+    {
+      "path": "docs/evidence/repository-size-gate.md",
+      "bytes": 3488,
+      "local_sha256": "b337a7b2b6dbcaf287e9b1314e96ff88a589169007c6711a63a292899d47b8bc",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 3488,
+      "remote_sha256": "b337a7b2b6dbcaf287e9b1314e96ff88a589169007c6711a63a292899d47b8bc"
+    },
+    {
+      "path": "docs/evidence/runtime-release-92c733a/ci-92c733a.json",
+      "bytes": 2943,
+      "local_sha256": "5bc94305ad5f0a4e572b206aece41c57cac413eba1b923372fddfc41299310aa",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 2943,
+      "remote_sha256": "5bc94305ad5f0a4e572b206aece41c57cac413eba1b923372fddfc41299310aa"
+    },
+    {
+      "path": "docs/evidence/runtime-release-92c733a/history-secret-check.json",
+      "bytes": 347,
+      "local_sha256": "5082625727be5eca3d894102f8b1f65adb91c25acd505de261354f6baed8615e",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 347,
+      "remote_sha256": "5082625727be5eca3d894102f8b1f65adb91c25acd505de261354f6baed8615e"
+    },
+    {
+      "path": "docs/evidence/runtime-release-92c733a/image-92c733a.json",
+      "bytes": 2698,
+      "local_sha256": "b8395aeb7b62df6e6c08c97f4046ffc09ca050046a414bdea1894d41e292b8b1",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 2698,
+      "remote_sha256": "b8395aeb7b62df6e6c08c97f4046ffc09ca050046a414bdea1894d41e292b8b1"
+    },
+    {
+      "path": "docs/evidence/runtime-release-92c733a/registry-anonymous-92c733a.json",
+      "bytes": 987,
+      "local_sha256": "f3704d98d25e4c1886a8dbc4d355bfd91fc76b2e2edb428cd871871f7fc5fe9e",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 987,
+      "remote_sha256": "f3704d98d25e4c1886a8dbc4d355bfd91fc76b2e2edb428cd871871f7fc5fe9e"
+    },
+    {
+      "path": "docs/evidence/runtime-release-92c733a/runtime-publication-92c733a.json",
+      "bytes": 8336,
+      "local_sha256": "64b9bbbed6767459470513838f0ba0193c3119170277bc64b8ed0543ef6a71ae",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 8336,
+      "remote_sha256": "64b9bbbed6767459470513838f0ba0193c3119170277bc64b8ed0543ef6a71ae"
+    },
+    {
+      "path": "docs/evidence/ui-browser-validation.json",
+      "bytes": 4183,
+      "local_sha256": "02a437bba798dcd8d267761a77ba4ce0251f70b19ad5bdcbb30ea3cbae90286a",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 4183,
+      "remote_sha256": "02a437bba798dcd8d267761a77ba4ce0251f70b19ad5bdcbb30ea3cbae90286a"
+    },
+    {
+      "path": "docs/evidence/ui-browser.md",
+      "bytes": 2659,
+      "local_sha256": "4ec4d5bf2426d9614126036c7045ba1f761a2e231b08e0cf3a99e3e9e42c3120",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 2659,
+      "remote_sha256": "4ec4d5bf2426d9614126036c7045ba1f761a2e231b08e0cf3a99e3e9e42c3120"
+    },
+    {
+      "path": "evaluation/series-20260910/README.md",
+      "bytes": 5448,
+      "local_sha256": "6b6ef5ce04eb48fb2ce98e3f5c33e18783b907ec54433a211b087e89ab7aa170",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 5448,
+      "remote_sha256": "6b6ef5ce04eb48fb2ce98e3f5c33e18783b907ec54433a211b087e89ab7aa170"
+    },
+    {
+      "path": "evaluation/series-20260910/attempts.json",
+      "bytes": 1780,
+      "local_sha256": "e794c3a53d4b4b09594d40868acbeaf043d3919f6b2419a9421cf3d8b0ae961f",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 1780,
+      "remote_sha256": "e794c3a53d4b4b09594d40868acbeaf043d3919f6b2419a9421cf3d8b0ae961f"
+    },
+    {
+      "path": "evaluation/series-20260910/collection-verification.json",
+      "bytes": 6334,
+      "local_sha256": "feadd9c1742e7a4db41393c66a0cbb20d1abf872444ef687ceceea4fd16a48c4",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 6334,
+      "remote_sha256": "feadd9c1742e7a4db41393c66a0cbb20d1abf872444ef687ceceea4fd16a48c4"
+    },
+    {
+      "path": "evaluation/series-20260910/results.json",
+      "bytes": 36979,
+      "local_sha256": "58c7dfaf0be4afd61d7d57cc5e6d640ff8ff3056f04cdfece577004f7314e938",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 36979,
+      "remote_sha256": "58c7dfaf0be4afd61d7d57cc5e6d640ff8ff3056f04cdfece577004f7314e938"
+    },
+    {
+      "path": "evaluation/series-20260910/results.md",
+      "bytes": 4370,
+      "local_sha256": "2ad54cdf71068cdf4ced5a0fa2365fe617ca7afc6c9b0390ddbbae9da3d91d96",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 4370,
+      "remote_sha256": "2ad54cdf71068cdf4ced5a0fa2365fe617ca7afc6c9b0390ddbbae9da3d91d96"
+    },
+    {
+      "path": "evaluation/series-20260910/round-01/compatibility/97b310dcbde7.json",
+      "bytes": 21795,
+      "local_sha256": "690dc912be0385d4446bb2087e7f571bca569a2cd8b858d4b018abe1d707726b",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 21795,
+      "remote_sha256": "690dc912be0385d4446bb2087e7f571bca569a2cd8b858d4b018abe1d707726b"
+    },
+    {
+      "path": "evaluation/series-20260910/round-01/compatibility/97b310dcbde7.patch",
+      "bytes": 649,
+      "local_sha256": "a756d3f1a6b0937a6130fa1a1f78edf430dae3dafa9b2a04f0323f2903bf30f3",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 649,
+      "remote_sha256": "a756d3f1a6b0937a6130fa1a1f78edf430dae3dafa9b2a04f0323f2903bf30f3"
+    },
+    {
+      "path": "evaluation/series-20260910/round-01/config/2e86cf16dfc0.json",
+      "bytes": 24684,
+      "local_sha256": "928f4a286d4d39f74f034f14df2d36e0d4020ee74f8dde72e01ba4f93607dd2c",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 24684,
+      "remote_sha256": "928f4a286d4d39f74f034f14df2d36e0d4020ee74f8dde72e01ba4f93607dd2c"
+    },
+    {
+      "path": "evaluation/series-20260910/round-01/config/2e86cf16dfc0.patch",
+      "bytes": 1061,
+      "local_sha256": "7ce158457e4af8b80a16aef415c902a90957477314c920739875f5ce9e43f4f2",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 1061,
+      "remote_sha256": "7ce158457e4af8b80a16aef415c902a90957477314c920739875f5ce9e43f4f2"
+    },
+    {
+      "path": "evaluation/series-20260910/round-01/parsing/b6475ac669f8.json",
+      "bytes": 23478,
+      "local_sha256": "d311b3babd63a7da6aac2dc71fb711ebab2e4673e1e151b784326e96232738c2",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 23478,
+      "remote_sha256": "d311b3babd63a7da6aac2dc71fb711ebab2e4673e1e151b784326e96232738c2"
+    },
+    {
+      "path": "evaluation/series-20260910/round-01/parsing/b6475ac669f8.patch",
+      "bytes": 799,
+      "local_sha256": "09acf717b96cce1aa2e5fa1c1fa76f45e7650a2afc172cbba753e6b349932525",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 799,
+      "remote_sha256": "09acf717b96cce1aa2e5fa1c1fa76f45e7650a2afc172cbba753e6b349932525"
+    },
+    {
+      "path": "evaluation/series-20260910/round-01/serialization/eea3304afbe6.json",
+      "bytes": 25926,
+      "local_sha256": "4e68115bfefbf4756350f183177f5e5f70e9759af019416e9d73602d6f51d4c6",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 25926,
+      "remote_sha256": "4e68115bfefbf4756350f183177f5e5f70e9759af019416e9d73602d6f51d4c6"
+    },
+    {
+      "path": "evaluation/series-20260910/round-01/serialization/eea3304afbe6.patch",
+      "bytes": 741,
+      "local_sha256": "86122c114ef7dbfde5a74f5c8d516d57318f5bdde5bd76b2be3a2338112d68a1",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 741,
+      "remote_sha256": "86122c114ef7dbfde5a74f5c8d516d57318f5bdde5bd76b2be3a2338112d68a1"
+    },
+    {
+      "path": "evaluation/series-20260910/round-01/validators/3c96a45e7a8b.json",
+      "bytes": 39684,
+      "local_sha256": "c8cc50ba8202f848512da2f9be0f254520e8d46a3300cb7aaa92032b5a15d1b4",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 39684,
+      "remote_sha256": "c8cc50ba8202f848512da2f9be0f254520e8d46a3300cb7aaa92032b5a15d1b4"
+    },
+    {
+      "path": "evaluation/series-20260910/round-01/validators/3c96a45e7a8b.patch",
+      "bytes": 3158,
+      "local_sha256": "2623371460cd89da204dc59a375c375d3a3429e8034e19ae59952dfc78a2a1d5",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 3158,
+      "remote_sha256": "2623371460cd89da204dc59a375c375d3a3429e8034e19ae59952dfc78a2a1d5"
+    },
+    {
+      "path": "evaluation/series-20260910/round-02/compatibility/e6dd367c1436.json",
+      "bytes": 21800,
+      "local_sha256": "af98c6af619accaeb39757b3f0931a6b8c9f388d3b3a62d4427122a0694026a5",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 21800,
+      "remote_sha256": "af98c6af619accaeb39757b3f0931a6b8c9f388d3b3a62d4427122a0694026a5"
+    },
+    {
+      "path": "evaluation/series-20260910/round-02/compatibility/e6dd367c1436.patch",
+      "bytes": 649,
+      "local_sha256": "a756d3f1a6b0937a6130fa1a1f78edf430dae3dafa9b2a04f0323f2903bf30f3",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 649,
+      "remote_sha256": "a756d3f1a6b0937a6130fa1a1f78edf430dae3dafa9b2a04f0323f2903bf30f3"
+    },
+    {
+      "path": "evaluation/series-20260910/round-02/config/f87a0a787413.json",
+      "bytes": 24620,
+      "local_sha256": "6d19b2817173e2f7ae8e65f2c0c7d31357909736fa3a1a7ff2e30860afdccfca",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 24620,
+      "remote_sha256": "6d19b2817173e2f7ae8e65f2c0c7d31357909736fa3a1a7ff2e30860afdccfca"
+    },
+    {
+      "path": "evaluation/series-20260910/round-02/config/f87a0a787413.patch",
+      "bytes": 1039,
+      "local_sha256": "1494a9c443f5ce4b573c695e9f16d26fb483807a501566f562e365c033b9319d",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 1039,
+      "remote_sha256": "1494a9c443f5ce4b573c695e9f16d26fb483807a501566f562e365c033b9319d"
+    },
+    {
+      "path": "evaluation/series-20260910/round-02/parsing/67cfd318e689.json",
+      "bytes": 23482,
+      "local_sha256": "3473ab715f9442138167d1b8bdb61e02a1ad2940798308028e020ba79dc11efa",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 23482,
+      "remote_sha256": "3473ab715f9442138167d1b8bdb61e02a1ad2940798308028e020ba79dc11efa"
+    },
+    {
+      "path": "evaluation/series-20260910/round-02/parsing/67cfd318e689.patch",
+      "bytes": 799,
+      "local_sha256": "09acf717b96cce1aa2e5fa1c1fa76f45e7650a2afc172cbba753e6b349932525",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 799,
+      "remote_sha256": "09acf717b96cce1aa2e5fa1c1fa76f45e7650a2afc172cbba753e6b349932525"
+    },
+    {
+      "path": "evaluation/series-20260910/round-02/serialization/6bc43693144a.json",
+      "bytes": 24032,
+      "local_sha256": "cc89cced8b5f93a8da13ee39ca4dde8733402cb28002e73dd70dd55684b8cff4",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 24032,
+      "remote_sha256": "cc89cced8b5f93a8da13ee39ca4dde8733402cb28002e73dd70dd55684b8cff4"
+    },
+    {
+      "path": "evaluation/series-20260910/round-02/serialization/6bc43693144a.patch",
+      "bytes": 741,
+      "local_sha256": "86122c114ef7dbfde5a74f5c8d516d57318f5bdde5bd76b2be3a2338112d68a1",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 741,
+      "remote_sha256": "86122c114ef7dbfde5a74f5c8d516d57318f5bdde5bd76b2be3a2338112d68a1"
+    },
+    {
+      "path": "evaluation/series-20260910/round-02/validators/73347c34a2ef.json",
+      "bytes": 40233,
+      "local_sha256": "253c550c1065addf67054c928f5a0b6ac860a1ed8c400874faf5268900ccc4e5",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 40233,
+      "remote_sha256": "253c550c1065addf67054c928f5a0b6ac860a1ed8c400874faf5268900ccc4e5"
+    },
+    {
+      "path": "evaluation/series-20260910/round-02/validators/73347c34a2ef.patch",
+      "bytes": 3158,
+      "local_sha256": "2623371460cd89da204dc59a375c375d3a3429e8034e19ae59952dfc78a2a1d5",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 3158,
+      "remote_sha256": "2623371460cd89da204dc59a375c375d3a3429e8034e19ae59952dfc78a2a1d5"
+    },
+    {
+      "path": "evaluation/series-20260910/round-03/compatibility/b249a85a9f78.json",
+      "bytes": 21793,
+      "local_sha256": "1ce93917fc40ed17ec83ac9804348d44b9887af3b51ccc617f17fc38363b8397",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 21793,
+      "remote_sha256": "1ce93917fc40ed17ec83ac9804348d44b9887af3b51ccc617f17fc38363b8397"
+    },
+    {
+      "path": "evaluation/series-20260910/round-03/compatibility/b249a85a9f78.patch",
+      "bytes": 649,
+      "local_sha256": "a756d3f1a6b0937a6130fa1a1f78edf430dae3dafa9b2a04f0323f2903bf30f3",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 649,
+      "remote_sha256": "a756d3f1a6b0937a6130fa1a1f78edf430dae3dafa9b2a04f0323f2903bf30f3"
+    },
+    {
+      "path": "evaluation/series-20260910/round-03/config/ee4ce9911531.json",
+      "bytes": 23234,
+      "local_sha256": "397190cb3bf913d8d4966bb9a2d0098e62007aa96fa957ee8dc6535e8be319be",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 23234,
+      "remote_sha256": "397190cb3bf913d8d4966bb9a2d0098e62007aa96fa957ee8dc6535e8be319be"
+    },
+    {
+      "path": "evaluation/series-20260910/round-03/config/ee4ce9911531.patch",
+      "bytes": 1028,
+      "local_sha256": "f368018483d9dadc0440c1480e6828cca78317cd3dec570fafc4eacb1e68b48b",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 1028,
+      "remote_sha256": "f368018483d9dadc0440c1480e6828cca78317cd3dec570fafc4eacb1e68b48b"
+    },
+    {
+      "path": "evaluation/series-20260910/round-03/parsing/2d501a3e059f.json",
+      "bytes": 19818,
+      "local_sha256": "a5fc1fbd180f21f7516eda388ec4e06be41c0a33eae6383ede19017a73be63d9",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 19818,
+      "remote_sha256": "a5fc1fbd180f21f7516eda388ec4e06be41c0a33eae6383ede19017a73be63d9"
+    },
+    {
+      "path": "evaluation/series-20260910/round-03/parsing/2d501a3e059f.patch",
+      "bytes": 318,
+      "local_sha256": "15788a4a396fb57122e2fd4ee34ddf78c1a3f43779cfdb9339aa66a2936ba58d",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 318,
+      "remote_sha256": "15788a4a396fb57122e2fd4ee34ddf78c1a3f43779cfdb9339aa66a2936ba58d"
+    },
+    {
+      "path": "evaluation/series-20260910/round-03/serialization/f3f3b10e5df1.json",
+      "bytes": 25926,
+      "local_sha256": "09ee3ca9de121d5fb9bc6a1b55305d3109340deb5ccebc5c1a90b971a1aa43d7",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 25926,
+      "remote_sha256": "09ee3ca9de121d5fb9bc6a1b55305d3109340deb5ccebc5c1a90b971a1aa43d7"
+    },
+    {
+      "path": "evaluation/series-20260910/round-03/serialization/f3f3b10e5df1.patch",
+      "bytes": 741,
+      "local_sha256": "86122c114ef7dbfde5a74f5c8d516d57318f5bdde5bd76b2be3a2338112d68a1",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 741,
+      "remote_sha256": "86122c114ef7dbfde5a74f5c8d516d57318f5bdde5bd76b2be3a2338112d68a1"
+    },
+    {
+      "path": "evaluation/series-20260910/round-03/validators/b93c8df744ac.json",
+      "bytes": 39354,
+      "local_sha256": "d08c7a3d7728444b06bc810f44e3bb876b1fb56abc56f42b0a0646545f9313e5",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 39354,
+      "remote_sha256": "d08c7a3d7728444b06bc810f44e3bb876b1fb56abc56f42b0a0646545f9313e5"
+    },
+    {
+      "path": "evaluation/series-20260910/round-03/validators/b93c8df744ac.patch",
+      "bytes": 3194,
+      "local_sha256": "4c012246661c163bcb2e2df3014a525ca4a04065df5666f231c0fb003cf79065",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 3194,
+      "remote_sha256": "4c012246661c163bcb2e2df3014a525ca4a04065df5666f231c0fb003cf79065"
+    },
+    {
+      "path": "evaluation/series-20260910/series-plan.json",
+      "bytes": 2494,
+      "local_sha256": "24e043b234c36cc1b87be24a96c820b7eabfa708cde6edad2c0f5a385c04ad34",
+      "cohort_original": true,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 2494,
+      "remote_sha256": "24e043b234c36cc1b87be24a96c820b7eabfa708cde6edad2c0f5a385c04ad34"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "bytes": 67737,
+      "local_sha256": "1f8ec37cb83dc23aa3f9c591135daec563d9928eab30da8a1b0c09f665afcaef",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 67737,
+      "remote_sha256": "1f8ec37cb83dc23aa3f9c591135daec563d9928eab30da8a1b0c09f665afcaef"
+    },
+    {
+      "path": "services/api/app/api/runs.py",
+      "bytes": 6098,
+      "local_sha256": "9b7de1acf33f4c0f1e871a758e1c97ffb03782494267ee1c6777e9a32dd5f536",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 6098,
+      "remote_sha256": "9b7de1acf33f4c0f1e871a758e1c97ffb03782494267ee1c6777e9a32dd5f536"
+    },
+    {
+      "path": "services/api/app/cli/live_run.py",
+      "bytes": 3131,
+      "local_sha256": "d540a62383e433726867dc400e5b69524e84c3c1ef0e8654f3b1fbc09b6975e1",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 3131,
+      "remote_sha256": "d540a62383e433726867dc400e5b69524e84c3c1ef0e8654f3b1fbc09b6975e1"
+    },
+    {
+      "path": "services/api/app/config.py",
+      "bytes": 3361,
+      "local_sha256": "dd100e4d8ae68cb85113474ccb78b27207544f1b7c90ea5aa37a5b2b5be80052",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 3361,
+      "remote_sha256": "dd100e4d8ae68cb85113474ccb78b27207544f1b7c90ea5aa37a5b2b5be80052"
+    },
+    {
+      "path": "services/api/app/orchestrator/baseline.py",
+      "bytes": 9582,
+      "local_sha256": "151db0c32dcffc4c842969feb9b9954a9083c05072d0d5a3301a4361196cc968",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 9582,
+      "remote_sha256": "151db0c32dcffc4c842969feb9b9954a9083c05072d0d5a3301a4361196cc968"
+    },
+    {
+      "path": "services/api/app/orchestrator/branch_runner.py",
+      "bytes": 25009,
+      "local_sha256": "8ecc42f27c5e0f5e7e5f8203f8886766a02a4c376ecf4544105ece7b5dadf0cc",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 25009,
+      "remote_sha256": "8ecc42f27c5e0f5e7e5f8203f8886766a02a4c376ecf4544105ece7b5dadf0cc"
+    },
+    {
+      "path": "services/api/app/orchestrator/repository_size.py",
+      "bytes": 2327,
+      "local_sha256": "05f4e3eded0aff10de99f836962bf86c1d79f1fd434a9f8cbaadad4255018aa2",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 2327,
+      "remote_sha256": "05f4e3eded0aff10de99f836962bf86c1d79f1fd434a9f8cbaadad4255018aa2"
+    },
+    {
+      "path": "services/api/app/orchestrator/run_manager.py",
+      "bytes": 23151,
+      "local_sha256": "b8cfa6906540eafe34ccd0fad8c4255326fb821e199aaca35626f44f91d3f22a",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 23151,
+      "remote_sha256": "b8cfa6906540eafe34ccd0fad8c4255326fb821e199aaca35626f44f91d3f22a"
+    },
+    {
+      "path": "services/api/app/provenance.py",
+      "bytes": 2091,
+      "local_sha256": "9b2d8ef5da52106ab18c013f6a788751239c86d204011927d7495a5577184925",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 2091,
+      "remote_sha256": "9b2d8ef5da52106ab18c013f6a788751239c86d204011927d7495a5577184925"
+    },
+    {
+      "path": "services/api/app/reports.py",
+      "bytes": 16111,
+      "local_sha256": "2610a034261cf4ab64ac4f8da1c7c02c0baee35413e60be0acad887cbdc92cb5",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 16111,
+      "remote_sha256": "2610a034261cf4ab64ac4f8da1c7c02c0baee35413e60be0acad887cbdc92cb5"
+    },
+    {
+      "path": "services/api/tests/api/test_markdown_report.py",
+      "bytes": 2122,
+      "local_sha256": "3dc722548d5da53b82140dc8147a4bd0a3475faba573cc4fc7bd3de3c2093a7a",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 2122,
+      "remote_sha256": "3dc722548d5da53b82140dc8147a4bd0a3475faba573cc4fc7bd3de3c2093a7a"
+    },
+    {
+      "path": "services/api/tests/api/test_openapi_contract.py",
+      "bytes": 4329,
+      "local_sha256": "1ea976dc04d3b54cc27764a79d3ea5f2230b8cae2c79cb07c0098542423954e4",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 4329,
+      "remote_sha256": "1ea976dc04d3b54cc27764a79d3ea5f2230b8cae2c79cb07c0098542423954e4"
+    },
+    {
+      "path": "services/api/tests/cli/test_live_run_report.py",
+      "bytes": 2039,
+      "local_sha256": "e07194bd262da046addfe0e03ca9466f8e6716829dee4e336faa373e539bd676",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 2039,
+      "remote_sha256": "e07194bd262da046addfe0e03ca9466f8e6716829dee4e336faa373e539bd676"
+    },
+    {
+      "path": "services/api/tests/orchestrator/test_attempt_progress.py",
+      "bytes": 7907,
+      "local_sha256": "6f4cddbca82fff6804e4bd38727d3003c16753e497e06286412e809054900a0e",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 7907,
+      "remote_sha256": "6f4cddbca82fff6804e4bd38727d3003c16753e497e06286412e809054900a0e"
+    },
+    {
+      "path": "services/api/tests/orchestrator/test_baseline.py",
+      "bytes": 7184,
+      "local_sha256": "cb48104c1c581c50cba0b006d0b1c74bd7962a06d9e91d0cf9260e34b68f3172",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 7184,
+      "remote_sha256": "cb48104c1c581c50cba0b006d0b1c74bd7962a06d9e91d0cf9260e34b68f3172"
+    },
+    {
+      "path": "services/api/tests/orchestrator/test_branch_runner.py",
+      "bytes": 25681,
+      "local_sha256": "e864de028297f43ad4e6705e61e424ecf0d9a38c434d7c6cbfca357d0842dc80",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 25681,
+      "remote_sha256": "e864de028297f43ad4e6705e61e424ecf0d9a38c434d7c6cbfca357d0842dc80"
+    },
+    {
+      "path": "services/api/tests/orchestrator/test_repository_size.py",
+      "bytes": 7055,
+      "local_sha256": "269b1f41b899fd8990791e1cefcd4e1be86b29d3c58c7bcbc0ef7f1488bb3e3f",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 7055,
+      "remote_sha256": "269b1f41b899fd8990791e1cefcd4e1be86b29d3c58c7bcbc0ef7f1488bb3e3f"
+    },
+    {
+      "path": "services/api/tests/test_provenance.py",
+      "bytes": 1228,
+      "local_sha256": "9efa5ad4f81cdc3212e9de8eee586ba249cb69d41786912f75466bba686bd40a",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 1228,
+      "remote_sha256": "9efa5ad4f81cdc3212e9de8eee586ba249cb69d41786912f75466bba686bd40a"
+    },
+    {
+      "path": "services/api/tests/test_reports.py",
+      "bytes": 6569,
+      "local_sha256": "45a9a500dc95c0febb747940a322d6994f4c70815c28857eb4239c77301dab27",
+      "cohort_original": false,
+      "matched": true,
+      "http_status": 200,
+      "remote_bytes": 6569,
+      "remote_sha256": "45a9a500dc95c0febb747940a322d6994f4c70815c28857eb4239c77301dab27"
+    }
+  ],
+  "scope": "Changed non-image text files only. Does not verify images, CI, image publication, hosting, provider operation or general secret absence."
+}

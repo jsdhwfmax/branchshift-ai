@@ -1,0 +1,32 @@
+{
+  "url": "http://127.0.0.1:8001/api/runs/3ddea183879b/patch",
+  "status": 200,
+  "reason": "OK",
+  "headers": [
+    [
+      "date",
+      "Thu, 10 Sep 2026 06:41:04 GMT"
+    ],
+    [
+      "server",
+      "uvicorn"
+    ],
+    [
+      "content-disposition",
+      "attachment; filename=\"3ddea183879b-winner.patch\""
+    ],
+    [
+      "content-length",
+      "3242"
+    ],
+    [
+      "content-type",
+      "text/plain; charset=utf-8"
+    ],
+    [
+      "connection",
+      "close"
+    ]
+  ],
+  "collected_at_utc": "2026-09-10T06:41:04.926618+00:00"
+}

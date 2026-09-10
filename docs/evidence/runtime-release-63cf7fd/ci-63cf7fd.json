@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "verified_at_utc": "2026-09-10T06:39:11.153Z",
+  "repository": "jsdhwfmax/branchshift-ai",
+  "commit_sha": "63cf7fdb4c62e119facb87fe108e9c278960a5c1",
+  "run": {
+    "id": 34445971465,
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "63cf7fdb4c62e119facb87fe108e9c278960a5c1",
+    "url": "https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34445971465",
+    "created_at": "2026-09-10T06:36:34Z",
+    "updated_at": "2026-09-10T06:38:27Z"
+  },
+  "jobs": [
+    {
+      "id": 102770725055,
+      "name": "quality",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Check out source",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Set up Python",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Set up pnpm",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Set up Node.js",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Install API dependencies",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Install fixture dependencies",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Install web dependencies",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Run the complete quality gate",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Install Chromium for browser checks",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "Check desktop and mobile product flows",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Set up Node.js",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19
+        },
+        {
+          "name": "Post Set up pnpm",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20
+        },
+        {
+          "name": "Post Set up Python",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21
+        },
+        {
+          "name": "Post Check out source",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23
+        }
+      ]
+    }
+  ],
+  "observed_checks": {
+    "api_tests_passed": 324,
+    "fixture_tests_passed": 13,
+    "web_tests_passed": 29,
+    "mypy_source_files": 40,
+    "playwright_product_checks_passed": 4,
+    "chromium_install": "success",
+    "ruff": "success"
+  },
+  "evidence_lines": [
+    "2026-09-10T06:37:15.8505349Z All checks passed!",
+    "2026-09-10T06:37:21.2119390Z Success: no issues found in 40 source files",
+    "2026-09-10T06:37:31.7899420Z 324 passed, 2 warnings in 7.01s",
+    "2026-09-10T06:37:32.2204253Z 13 passed, 13 warnings in 0.05s",
+    "2026-09-10T06:37:35.5061699Z       Tests  29 passed (29)",
+    "2026-09-10T06:37:58.0593765Z Chrome for Testing 153.0.8010.12 (playwright chromium v1243) downloaded to /home/runner/.cache/ms-playwright/chromium-1243",
+    "2026-09-10T06:38:01.9511600Z Chrome Headless Shell 153.0.8010.12 (playwright chromium-headless-shell v1243) downloaded to /home/runner/.cache/ms-playwright/chromium_headless_shell-1243",
+    "2026-09-10T06:38:07.2804952Z Running 4 tests using 1 worker",
+    "2026-09-10T06:38:20.4675549Z   4 passed (17.4s)"
+  ],
+  "scope": "Read-only GitHub connector verification of exact-commit push CI. No dispatch, rerun, push, provider call or repository modification. Chromium product tests use controlled browser fixtures; this receipt does not claim a live-provider deployment.",
+  "historical_cohort_commit_sha": "92c733a1338cc7abdbcf04ca00be363158fd126c",
+  "historical_cohort_unchanged": true
+}

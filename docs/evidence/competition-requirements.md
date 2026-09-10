@@ -5,6 +5,13 @@ checklist, not a claim that BranchShift has passed every item. Local inspection
 covered the README, license, implementation plan, and evidence/file inventory;
 provider integration and deployment are being developed separately.
 
+Later implementation evidence is recorded in the
+[63cf7fd release verification](runtime-release-63cf7fd/README.md): the public
+source, real migration, exports, CI and image publication are now verified.
+The file-inventory observations below describe the initial audit, not the
+current inventory. Public hosted access, final video, entrant declarations and
+the accepted Devpost submission remain pending.
+
 ## Dates and unresolved discrepancies
 
 | Milestone | Organizer's Pacific time | Australia/Sydney |

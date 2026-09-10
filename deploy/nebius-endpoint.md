@@ -1,36 +1,45 @@
 # BranchShift container deployment runbook
 
 Updated 10 September 2026. The Linux `amd64` image at
-[commit `92c733a1338cc7abdbcf04ca00be363158fd126c`](https://github.com/jsdhwfmax/branchshift-ai/commit/92c733a1338cc7abdbcf04ca00be363158fd126c)
+[commit `63cf7fdb4c62e119facb87fe108e9c278960a5c1`](https://github.com/jsdhwfmax/branchshift-ai/commit/63cf7fdb4c62e119facb87fe108e9c278960a5c1)
 was built, smoke-tested and published successfully in
-[image workflow `34443329138`](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34443329138).
+[image workflow `34446125409`](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34446125409).
 The dispatch used `publish=true`; the publish step completed successfully.
 
 ```text
-ghcr.io/jsdhwfmax/branchshift-ai:92c733a1338cc7abdbcf04ca00be363158fd126c
-ghcr.io/jsdhwfmax/branchshift-ai@sha256:c7bab05a969e6b0a91619ed3785115bdbd766a3622be9703ec6fde078897761b
+ghcr.io/jsdhwfmax/branchshift-ai:63cf7fdb4c62e119facb87fe108e9c278960a5c1
+ghcr.io/jsdhwfmax/branchshift-ai@sha256:e1c84566cbe08d4ae5548288dea59cab78ea00dc8f596d4d34ca98c74f3ba9ac
 ```
 
-A separate credential-free registry challenge and anonymous pull-token flow
-returned the 2,204-byte manifest. Its response digest and computed SHA-256
-matched the published digest. This verifies anonymous manifest access, not a
-complete image pull by the eventual host. No AI Cloud resource or hosted live
-deployment is established by these checks. The retained [CI receipt](../docs/evidence/runtime-release-92c733a/ci-92c733a.json),
-[image receipt](../docs/evidence/runtime-release-92c733a/image-92c733a.json) and
-[later anonymous registry receipt](../docs/evidence/runtime-release-92c733a/registry-anonymous-92c733a.json)
-record these distinct observations.
+The [current release evidence](../docs/evidence/runtime-release-63cf7fd/README.md)
+separates source publication, CI, image publication and the local live check.
+Anonymous registry reads returned the 2,204-byte manifest with a matching
+digest and a matching configuration blob declaring Linux `amd64`, user
+`10001:10001` and the exact source revision. No image layers were downloaded.
+The eventual host still needs to pull the exact digest. No AI Cloud resource,
+Cloud filesystem retention or hosted live deployment is established here.
 
-[CI `34443169993`](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34443169993)
-passed all 14 steps at the same commit: Ruff, mypy, frontend type checks,
-277 API tests, 13 original fixture tests, 27 frontend tests and the production
-UI build. The image workflow's eight steps passed, including runtime SDK
+[CI `34445971465`](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34445971465)
+passed all 16 steps at the same commit: Ruff, mypy across 40 files, frontend
+type checks, 324 API tests, 13 original fixture tests, 29 frontend tests,
+the production UI build, Chromium installation and four desktop/mobile
+Playwright checks using controlled fixtures. The image workflow's eight steps
+passed, including runtime SDK
 imports, UID `10001`, same-origin UI and route refresh, a completed mock run,
 patch/report retrieval, and retention after replacing the container against
 the same runner-local bind directory. These are mock/local-bind checks;
-Cloud storage and hosted live execution remain unverified.
+Cloud storage and live provider execution inside this image remain unverified.
 
-The earlier `99fae2f` build passed with publication skipped. The newer immutable
-image above includes persistent admission quotas and usage instrumentation.
+Separately, the local production UI created live run `3ddea183879b` with source
+and baseline `63cf7fd`. Two candidates passed; minimal won with 44 changed lines
+and passed all 13 tests again from a distinct clean checkpoint. Desktop/mobile
+refresh and actual browser JSON/patch downloads matched the stored evidence;
+Markdown and JSON exports repeated byte-for-byte. This is a local live check,
+not a provider run in the published image or a public Cloud deployment.
+
+The historical `92c733a` image and 15-slot live cohort retain their original
+receipts. The newer immutable image above adds the interface, Markdown report
+and repository-size gate without rewriting that cohort's provenance.
 Docker remains unavailable in the local shell; actual Linux build evidence
 comes from the GitHub-hosted runner. Do not reuse this image's test receipt for
 later source commits without building and checking their actual images.
@@ -114,7 +123,7 @@ The manual workflow automates checks for SDK imports, the nonroot user, UI/API
 serving, a completed mock run, patch/report retrieval, SPA refresh and retained
 records after container replacement against a runner-local bind directory.
 These checks **passed** in the verified
-[image smoke step](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34443329138/job/102762737376#step:5:1),
+[image smoke step](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34446125409/job/102771195497#step:5:1),
 whose logs record a replacement container retrieving the retained completed
 run and the final successful bind-retention assertion. This does not verify a
 Nebius mount, Cloud lifecycle operation or live provider call. The image health
@@ -128,7 +137,7 @@ or remote providers.
 | Cloud tenant / project | Exact existing IDs, account access and role; not yet inspected |
 | Region / subnet | Exact project-supported region and subnet; not yet selected |
 | Endpoint platform / preset | Prefer CPU only; compare `cpu-e2/2vcpu-8gb` if available with the documented `cpu-d3/4vcpu-16gb` |
-| Image | Published and smoke-tested at `92c733a`; use the exact digest above after host pull verification |
+| Image | Published and smoke-tested at `63cf7fd`; use the exact digest above after host pull verification |
 | Registry access | Prove the chosen host can pull; private GHCR requires a supported credential path, or separately approved package visibility |
 | HTTP interface | Container port 8000, managed HTTPS URL; actual URL pending |
 | Runtime identity | Container UID/GID 10001:10001; minimum host IAM needed |

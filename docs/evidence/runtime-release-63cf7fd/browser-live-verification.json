@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-09-10T06:41:37.814Z",
+  "run_id": "3ddea183879b",
+  "origin": "http://127.0.0.1:8001",
+  "browser_version": "153.0.8010.12",
+  "scope": "Existing real run; new isolated Chromium reads/downloads only. Initial creation and progress were separately observed in Codex browser.",
+  "downloads": [
+    {
+      "filename": "browser-evidence.json",
+      "suggested_filename": "3ddea183879b-evidence.json",
+      "bytes": 76342,
+      "sha256": "869fad4d97809d367b78547ccdf0d6b010f0d485a71571205b6bf0e3f602fa69"
+    },
+    {
+      "filename": "browser-winner.patch",
+      "suggested_filename": "3ddea183879b-winner.patch",
+      "bytes": 3242,
+      "sha256": "d3bf63ae2cd146b4db54564aa0dc4b20c3931e1dbbba63954e3fcc62f4a5b009"
+    }
+  ],
+  "checks": {
+    "desktop_and_mobile_refresh": true,
+    "proposal_counts_1_2_3": true,
+    "actual_browser_download_bytes_match_stored_run": true,
+    "desktop_horizontal_overflow": false,
+    "mobile_horizontal_overflow": false,
+    "page_errors": [],
+    "no_post_requests": true
+  },
+  "screenshots": [
+    "live-completed-desktop.png",
+    "live-evidence-matrix.png",
+    "live-completed-mobile.png"
+  ],
+  "not_proven": [
+    "Public hosting",
+    "Cloud persistence",
+    "Exhaustive accessibility audit"
+  ]
+}

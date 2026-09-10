@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-09-10T06:40:41.924Z",
+  "commit": "63cf7fdb4c62e119facb87fe108e9c278960a5c1",
+  "run_id": 34446125409,
+  "job_id": 102771195497,
+  "workflow_url": "https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34446125409",
+  "job": {
+    "id": 102771195497,
+    "name": "image",
+    "status": "completed",
+    "conclusion": "success",
+    "run_id": 34446125409,
+    "logs_url": null,
+    "steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 1
+      },
+      {
+        "name": "Check out the selected commit",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 2
+      },
+      {
+        "name": "Build the Linux CPU image without publishing",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 3
+      },
+      {
+        "name": "Check runtime dependencies and nonroot user",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 4
+      },
+      {
+        "name": "Check same-origin UI, mock run and retained ledger after container replacement",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 5
+      },
+      {
+        "name": "Publish the tested SHA tag only when explicitly requested",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 6
+      },
+      {
+        "name": "Post Check out the selected commit",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 12
+      },
+      {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 13
+      }
+    ]
+  },
+  "image_tag": "ghcr.io/jsdhwfmax/branchshift-ai:63cf7fdb4c62e119facb87fe108e9c278960a5c1",
+  "image_digest": "sha256:e1c84566cbe08d4ae5548288dea59cab78ea00dc8f596d4d34ca98c74f3ba9ac",
+  "manifest_bytes": 2204,
+  "checked_scope": [
+    "Linux amd64 container build",
+    "runtime imports and nonroot UID10001",
+    "same-origin UI and route refresh",
+    "mock run/report/patch retrieval",
+    "completed ledger and patch retention after container replacement on same runner-local bind directory",
+    "actual GHCR publish step completed"
+  ],
+  "not_proven": [
+    "Cloud hosting or persistent Cloud filesystem",
+    "Live provider execution inside this image",
+    "full anonymous Docker image pull"
+  ],
+  "log_evidence": [
+    "2026-09-10T06:38:42.6987571Z 63cf7fdb4c62e119facb87fe108e9c278960a5c1",
+    "2026-09-10T06:38:42.7462889Z 63cf7fdb4c62e119facb87fe108e9c278960a5c1",
+    "2026-09-10T06:39:06.3994506Z Image smoke passed: mock only; local bind retention verified.",
+    "2026-09-10T06:39:14.5181334Z 63cf7fdb4c62e119facb87fe108e9c278960a5c1: digest: sha256:e1c84566cbe08d4ae5548288dea59cab78ea00dc8f596d4d34ca98c74f3ba9ac size: 2204"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "url": "http://127.0.0.1:8001/api/runs/3ddea183879b/report",
+  "status": 200,
+  "reason": "OK",
+  "headers": [
+    [
+      "date",
+      "Thu, 10 Sep 2026 06:41:04 GMT"
+    ],
+    [
+      "server",
+      "uvicorn"
+    ],
+    [
+      "content-disposition",
+      "attachment; filename=\"3ddea183879b-evidence.json\""
+    ],
+    [
+      "content-length",
+      "76342"
+    ],
+    [
+      "content-type",
+      "application/json"
+    ],
+    [
+      "connection",
+      "close"
+    ]
+  ],
+  "collected_at_utc": "2026-09-10T06:41:04.920185+00:00"
+}

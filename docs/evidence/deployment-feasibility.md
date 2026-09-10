@@ -91,38 +91,44 @@ The inspected source has these concrete deployment dependencies:
 - The interface uses API requests plus SSE. The configured run timeout is
   900 seconds. The host must keep the process alive independently of the
   initial HTTP request; the public route must handle stream reconnects.
-- The inspected FastAPI entrypoint serves API routes only and has localhost
-  CORS settings. React static serving and a deployment image were not yet
-  present in this audit's file inventory.
+- FastAPI serves the production React build and API from one origin. The
+  container package includes the Python runtime, Contree adapter and UI assets.
 - Provider credentials belong only in backend runtime secrets. The browser
   must never receive the Nebius API key, project credential or Tavily key.
 
-These observations identify necessary packaging work; they are not reasons to
-replace the real backend with replay data.
+These dependencies remain requirements for the chosen host. The
+[container/deployment package](../../deploy/nebius-endpoint.md) is implemented;
+Docker remains unavailable in the local shell, so actual Linux build evidence
+comes from GitHub Actions.
 
-**Preparation follow-through, later on 10 September:** same-origin static
-serving was added by the parent task, and the
-[container/deployment package](../../deploy/nebius-endpoint.md) is now present.
-Its manual-only workflow and embedded scripts passed local syntax checks.
-Docker remains unavailable in the local shell, but a GitHub-hosted Linux runner
-has now built and checked the actual image. The initial file-inventory
-observation above records the earlier audit state, not a claim that packaging
-is still absent.
+**Verified release follow-through:** source
+[63cf7fdb4c62e119facb87fe108e9c278960a5c1](https://github.com/jsdhwfmax/branchshift-ai/commit/63cf7fdb4c62e119facb87fe108e9c278960a5c1)
+is published. Anonymous checks matched 91 changed text files and all 34 original
+cohort exports to committed bytes. [CI `34445971465`](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34445971465)
+passed all 16 steps, including 324 API tests, 13 original fixture tests, 29 web
+tests, Ruff, mypy across 40 files, type/build checks, Chromium installation and
+four controlled desktop/mobile browser checks.
 
-**Verified CI and image follow-through:** both workflows passed at
-[commit `99fae2fab173d6a34e085a2f5939bff35c70d33c`](https://github.com/jsdhwfmax/branchshift-ai/commit/99fae2fab173d6a34e085a2f5939bff35c70d33c).
-[CI `34440006894`](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34440006894)
-passed Ruff, mypy across 34 files, frontend type checks, 202 API tests, 13
-baseline fixture tests, 27 frontend tests and the production UI build.
-[Image workflow `34440192693`](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34440192693)
-passed the Linux `amd64` build, runtime dependency imports and nonroot UID
-`10001`. Its
-[smoke step](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34440192693/job/102753435169#step:5:1)
-passed same-origin UI/route refresh, a completed mock run, patch/report retrieval
-and completed-run/patch retention after container replacement against the same
-runner-local bind directory. The dispatch used `publish=false`, and the GHCR
-publish step was **skipped**. Cloud filesystem durability, Cloud lifecycle
-retention, public hosting and hosted live provider execution remain unverified.
+[Image workflow `34446125409`](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34446125409)
+passed all eight steps, including actual GHCR publication. Its Linux `amd64`
+image passed runtime imports, nonroot UID `10001`, same-origin UI/route refresh,
+mock run/report/patch retrieval and completed-run/patch retention after
+container replacement against the same runner-local bind directory. The exact
+digest is `sha256:e1c84566cbe08d4ae5548288dea59cab78ea00dc8f596d4d34ca98c74f3ba9ac`.
+Anonymous reads matched the 2,204-byte manifest digest and the small image
+configuration blob, including Linux `amd64`, user `10001:10001` and source
+revision. This verifies those registry reads, not a complete image-layer pull.
+
+A separate local production-UI run, `3ddea183879b`, used that source revision
+and a baseline at the same commit. Two candidates passed and one failed;
+minimal won with 44 changed lines and clean revalidation passed all 13 tests.
+Desktop/mobile refresh and browser JSON/patch downloads matched retained
+evidence, as did repeated deterministic Markdown/JSON exports. The
+[release receipts](runtime-release-63cf7fd/README.md) distinguish this real local
+provider run from the container's mock smoke check. The historical 15-slot
+cohort remains at `92c733a`. Cloud filesystem durability, Cloud lifecycle
+retention, public hosting and live provider execution inside the published
+image remain unverified.
 
 ## Persistence is the unresolved technical gate
 
@@ -290,15 +296,15 @@ project access. Keep an immutable release and a tested rollback route.
 | Cloud resource eligibility | Inspect region, subnet, CPU/storage quota and billing account read-only; do not invent IDs or a payment method. |
 | Hosting budget | Prepare the actual tenant/project, region/preset, disk, image/registry, secret names, public-access mode and cost from provisioning through 16 December. Then confirm applicable Cloud credits or an authorized total budget if needed. No spend authorized by this audit. |
 | Tooling | `nebius` and `docker` were absent from this shell's PATH; `~/.nebius/config.yaml` was absent. `gh` was present. An image-build route is now verified through GitHub Actions; Cloud account access remains a separate check. |
-| Container image | Actual Linux UI/API image and Contree/runtime imports passed at `99fae2f` in image workflow `34440192693`. GHCR publication was skipped; a published immutable digest and host registry pull access remain pending. |
+| Container image | Published at `63cf7fd` with exact digest in the [runbook](../../deploy/nebius-endpoint.md); all eight image-workflow steps passed. Complete the chosen host's full image pull and live-provider smoke test. |
 | Runtime secrets | Set actual provider values through the chosen host's secret mechanism; verify no keys are embedded in the image or frontend. |
 | Storage/restart gate | Mock completed-run/patch retention passed after container replacement with a runner-local bind directory. Complete the Cloud persistence and backup/restore checks above before a judge-facing release. |
 | Public behavior | Verify health, real migration, SSE reconnect, refresh, failure state, patch download and evaluator access through the exact HTTPS URL. |
 
-The image and mock bind-retention checks are complete. The remaining deployment
-work is registry release, Cloud storage verification and hosted acceptance,
+The image publication and mock bind-retention checks are complete. The remaining deployment
+work is host image pull, Cloud storage verification and hosted acceptance,
 while obtaining account and budget facts read-only. Any budget request should
 be the final approval of a concrete, reviewable target,
 not a premature open-ended hosting question. Deployment is not blocked by a
-model-only Endpoint restriction; it is pending registry release, Cloud persistence
+model-only Endpoint restriction; it is pending Cloud persistence
 evidence, AI Cloud access and an appropriate hosting budget.

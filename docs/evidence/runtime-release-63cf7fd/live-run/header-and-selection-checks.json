@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "run_id": "3ddea183879b",
+  "all_checks_pass": true,
+  "checks": {
+    "json_content_type": true,
+    "json_attachment_filename": true,
+    "json_content_length": true,
+    "markdown_content_type": true,
+    "markdown_attachment_filename": true,
+    "markdown_content_length": true,
+    "patch_content_type": true,
+    "patch_attachment_filename": true,
+    "patch_content_length": true,
+    "winner_explanation_identifies_smaller_patch_after_lint_tie": true,
+    "failed_candidate_excluded_by_passed_gate": true
+  },
+  "read_only_scope": "Checks on already retained response bytes and headers; no new HTTP or provider calls."
+}
