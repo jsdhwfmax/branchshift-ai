@@ -16,6 +16,7 @@ export interface Strategy {
   rationale: string
   ordered_steps: string[]
   source_urls: string[]
+  target_files?: string[]
 }
 
 export interface BranchResult {

@@ -11,6 +11,7 @@ test('rejects a non-GitHub repository before submission', async () => {
   fireEvent.click(screen.getByRole('button', { name: /split run/i }))
   expect(await screen.findByRole('alert')).toHaveTextContent('public GitHub')
   expect(onSubmit).not.toHaveBeenCalled()
+  expect(screen.getByLabelText('Public repository')).toHaveFocus()
 })
 
 test('submits an optional repository-relative Python project directory', async () => {
@@ -37,7 +38,8 @@ test.each(['../config', '/evaluation/config'])('rejects non-relative or traversi
   expect(await screen.findByRole('alert')).toHaveTextContent('repository-relative directory')
   expect(screen.getByLabelText(/Project directory/)).toHaveAttribute('aria-invalid', 'true')
   expect(screen.getByLabelText('Public repository')).toHaveAttribute('aria-invalid', 'false')
-  expect(onSubmit).not.toHaveBeenCalled()
+    expect(onSubmit).not.toHaveBeenCalled()
+    expect(screen.getByLabelText(/Project directory/)).toHaveFocus()
 })
 
 test('keeps sample replay free of project directory options', () => {

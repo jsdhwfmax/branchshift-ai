@@ -94,13 +94,9 @@ export function useRunLedger(runId: string) {
     }
 
     void refresh()
-    const poll = window.setInterval(() => {
-      if (snapshot && !isTerminal(snapshot.status)) void refresh()
-    }, 5000)
     return () => {
       disposed = true
       controller.abort()
-      window.clearInterval(poll)
       source?.close()
     }
   }, [runId, attempt])

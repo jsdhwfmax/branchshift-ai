@@ -1,0 +1,183 @@
+{
+  "verified_at": "2026-09-10T06:16:02.866998+00:00",
+  "source_cohort": "predeclared 3 rounds x 5 cases",
+  "original_files_preserved": [
+    {
+      "path": "series-plan.json",
+      "bytes": 2494,
+      "sha256": "24e043b234c36cc1b87be24a96c820b7eabfa708cde6edad2c0f5a385c04ad34"
+    },
+    {
+      "path": "attempts.json",
+      "bytes": 1780,
+      "sha256": "e794c3a53d4b4b09594d40868acbeaf043d3919f6b2419a9421cf3d8b0ae961f"
+    },
+    {
+      "path": "results.json",
+      "bytes": 36979,
+      "sha256": "58c7dfaf0be4afd61d7d57cc5e6d640ff8ff3056f04cdfece577004f7314e938"
+    },
+    {
+      "path": "results.md",
+      "bytes": 4370,
+      "sha256": "2ad54cdf71068cdf4ced5a0fa2365fe617ca7afc6c9b0390ddbbae9da3d91d96"
+    },
+    {
+      "path": "round-01/validators/3c96a45e7a8b.json",
+      "bytes": 39684,
+      "sha256": "c8cc50ba8202f848512da2f9be0f254520e8d46a3300cb7aaa92032b5a15d1b4"
+    },
+    {
+      "path": "round-01/validators/3c96a45e7a8b.patch",
+      "bytes": 3158,
+      "sha256": "2623371460cd89da204dc59a375c375d3a3429e8034e19ae59952dfc78a2a1d5"
+    },
+    {
+      "path": "round-01/config/2e86cf16dfc0.json",
+      "bytes": 24684,
+      "sha256": "928f4a286d4d39f74f034f14df2d36e0d4020ee74f8dde72e01ba4f93607dd2c"
+    },
+    {
+      "path": "round-01/config/2e86cf16dfc0.patch",
+      "bytes": 1061,
+      "sha256": "7ce158457e4af8b80a16aef415c902a90957477314c920739875f5ce9e43f4f2"
+    },
+    {
+      "path": "round-01/serialization/eea3304afbe6.json",
+      "bytes": 25926,
+      "sha256": "4e68115bfefbf4756350f183177f5e5f70e9759af019416e9d73602d6f51d4c6"
+    },
+    {
+      "path": "round-01/serialization/eea3304afbe6.patch",
+      "bytes": 741,
+      "sha256": "86122c114ef7dbfde5a74f5c8d516d57318f5bdde5bd76b2be3a2338112d68a1"
+    },
+    {
+      "path": "round-01/parsing/b6475ac669f8.json",
+      "bytes": 23478,
+      "sha256": "d311b3babd63a7da6aac2dc71fb711ebab2e4673e1e151b784326e96232738c2"
+    },
+    {
+      "path": "round-01/parsing/b6475ac669f8.patch",
+      "bytes": 799,
+      "sha256": "09acf717b96cce1aa2e5fa1c1fa76f45e7650a2afc172cbba753e6b349932525"
+    },
+    {
+      "path": "round-01/compatibility/97b310dcbde7.json",
+      "bytes": 21795,
+      "sha256": "690dc912be0385d4446bb2087e7f571bca569a2cd8b858d4b018abe1d707726b"
+    },
+    {
+      "path": "round-01/compatibility/97b310dcbde7.patch",
+      "bytes": 649,
+      "sha256": "a756d3f1a6b0937a6130fa1a1f78edf430dae3dafa9b2a04f0323f2903bf30f3"
+    },
+    {
+      "path": "round-02/validators/73347c34a2ef.json",
+      "bytes": 40233,
+      "sha256": "253c550c1065addf67054c928f5a0b6ac860a1ed8c400874faf5268900ccc4e5"
+    },
+    {
+      "path": "round-02/validators/73347c34a2ef.patch",
+      "bytes": 3158,
+      "sha256": "2623371460cd89da204dc59a375c375d3a3429e8034e19ae59952dfc78a2a1d5"
+    },
+    {
+      "path": "round-02/config/f87a0a787413.json",
+      "bytes": 24620,
+      "sha256": "6d19b2817173e2f7ae8e65f2c0c7d31357909736fa3a1a7ff2e30860afdccfca"
+    },
+    {
+      "path": "round-02/config/f87a0a787413.patch",
+      "bytes": 1039,
+      "sha256": "1494a9c443f5ce4b573c695e9f16d26fb483807a501566f562e365c033b9319d"
+    },
+    {
+      "path": "round-02/serialization/6bc43693144a.json",
+      "bytes": 24032,
+      "sha256": "cc89cced8b5f93a8da13ee39ca4dde8733402cb28002e73dd70dd55684b8cff4"
+    },
+    {
+      "path": "round-02/serialization/6bc43693144a.patch",
+      "bytes": 741,
+      "sha256": "86122c114ef7dbfde5a74f5c8d516d57318f5bdde5bd76b2be3a2338112d68a1"
+    },
+    {
+      "path": "round-02/parsing/67cfd318e689.json",
+      "bytes": 23482,
+      "sha256": "3473ab715f9442138167d1b8bdb61e02a1ad2940798308028e020ba79dc11efa"
+    },
+    {
+      "path": "round-02/parsing/67cfd318e689.patch",
+      "bytes": 799,
+      "sha256": "09acf717b96cce1aa2e5fa1c1fa76f45e7650a2afc172cbba753e6b349932525"
+    },
+    {
+      "path": "round-02/compatibility/e6dd367c1436.json",
+      "bytes": 21800,
+      "sha256": "af98c6af619accaeb39757b3f0931a6b8c9f388d3b3a62d4427122a0694026a5"
+    },
+    {
+      "path": "round-02/compatibility/e6dd367c1436.patch",
+      "bytes": 649,
+      "sha256": "a756d3f1a6b0937a6130fa1a1f78edf430dae3dafa9b2a04f0323f2903bf30f3"
+    },
+    {
+      "path": "round-03/validators/b93c8df744ac.json",
+      "bytes": 39354,
+      "sha256": "d08c7a3d7728444b06bc810f44e3bb876b1fb56abc56f42b0a0646545f9313e5"
+    },
+    {
+      "path": "round-03/validators/b93c8df744ac.patch",
+      "bytes": 3194,
+      "sha256": "4c012246661c163bcb2e2df3014a525ca4a04065df5666f231c0fb003cf79065"
+    },
+    {
+      "path": "round-03/config/ee4ce9911531.json",
+      "bytes": 23234,
+      "sha256": "397190cb3bf913d8d4966bb9a2d0098e62007aa96fa957ee8dc6535e8be319be"
+    },
+    {
+      "path": "round-03/config/ee4ce9911531.patch",
+      "bytes": 1028,
+      "sha256": "f368018483d9dadc0440c1480e6828cca78317cd3dec570fafc4eacb1e68b48b"
+    },
+    {
+      "path": "round-03/serialization/f3f3b10e5df1.json",
+      "bytes": 25926,
+      "sha256": "09ee3ca9de121d5fb9bc6a1b55305d3109340deb5ccebc5c1a90b971a1aa43d7"
+    },
+    {
+      "path": "round-03/serialization/f3f3b10e5df1.patch",
+      "bytes": 741,
+      "sha256": "86122c114ef7dbfde5a74f5c8d516d57318f5bdde5bd76b2be3a2338112d68a1"
+    },
+    {
+      "path": "round-03/parsing/2d501a3e059f.json",
+      "bytes": 19818,
+      "sha256": "a5fc1fbd180f21f7516eda388ec4e06be41c0a33eae6383ede19017a73be63d9"
+    },
+    {
+      "path": "round-03/parsing/2d501a3e059f.patch",
+      "bytes": 318,
+      "sha256": "15788a4a396fb57122e2fd4ee34ddf78c1a3f43779cfdb9339aa66a2936ba58d"
+    },
+    {
+      "path": "round-03/compatibility/b249a85a9f78.json",
+      "bytes": 21793,
+      "sha256": "1ce93917fc40ed17ec83ac9804348d44b9887af3b51ccc617f17fc38363b8397"
+    },
+    {
+      "path": "round-03/compatibility/b249a85a9f78.patch",
+      "bytes": 649,
+      "sha256": "a756d3f1a6b0937a6130fa1a1f78edf430dae3dafa9b2a04f0323f2903bf30f3"
+    }
+  ],
+  "all_original_bytes_match": true,
+  "summary_patch_revalidation_patch_equal": true,
+  "unique_run_ids": 15,
+  "known_configured_credential_values_checked": 2,
+  "known_credential_matches": 0,
+  "independent_token_estimate_usd": "0.654327",
+  "patch_whitespace_note": "Original unified-diff artifacts retain required context-line spaces and terminal blank lines; excluded from source whitespace lint, never normalized."
+}

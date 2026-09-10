@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AppHeader from '../components/AppHeader'
 import RunForm from '../components/RunForm'
+import HowRunWorks from '../components/HowRunWorks'
 import { createRun, getIntegrationHealth, type IntegrationHealth } from '../lib/api'
 
 const lanes = [
@@ -28,10 +29,10 @@ export default function HomePage() {
   return (
     <main>
       <AppHeader mode={health?.mode} />
-      <section className="preflight-section" aria-labelledby="preflight-heading">
+      <section className="preflight-section" aria-labelledby="main-content">
         <div className="section-kicker"><span>01</span> migration preflight</div>
         <div className="preflight-heading-row">
-          <h1 id="preflight-heading">One baseline.<br />Three attempts.<br /><em>Proof decides.</em></h1>
+          <h1 id="main-content" tabIndex={-1}>One baseline.<br />Three attempts.<br /><em>Proof decides.</em></h1>
           <p>
             Compare three Pydantic v1 → v2 migration candidates. In live execution, Nemotron plans;
             isolated Nebius Sandboxes test the patches; deterministic evidence selects the winner.
@@ -74,17 +75,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="how-grid" aria-labelledby="how-heading">
-        <div>
-          <div className="section-kicker"><span>03</span> evidence contract</div>
-          <h2 id="how-heading">Three candidates.<br />One evidence gate.</h2>
-        </div>
-        <ol>
-          <li><span>Nemotron</span><p>Returns three structured, cited migration strategies.</p></li>
-          <li><span>Nebius Sandbox</span><p>Forks one exact filesystem state into independent branches.</p></li>
-          <li><span>Test gate</span><p>Reapplies and ranks patches with deterministic metrics.</p></li>
-        </ol>
-      </section>
+      <HowRunWorks mode={health?.mode} />
     </main>
   )
 }

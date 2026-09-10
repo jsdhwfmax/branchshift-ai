@@ -1,0 +1,242 @@
+{
+  "commit": "92c733a1338cc7abdbcf04ca00be363158fd126c",
+  "verified_at": "2026-09-10T05:59:20.890147+00:00",
+  "anonymous_http": true,
+  "files": [
+    {
+      "path": ".env.example",
+      "bytes": 1421,
+      "sha256": "30baf29d92ddbd37d85c1da999dbcb44b12a5be238a5db4ff6bf8256c1f56933",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "Makefile",
+      "bytes": 1038,
+      "sha256": "3795b19d3636ee73d460a957c235349255e11422fd3767b60ca21392358ac56a",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "deploy/nebius-endpoint.md",
+      "bytes": 18864,
+      "sha256": "426022f71dd35a27c61c8e972a20a7053495e599a0206a3faf72aaea9584ece3",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "docs/evidence/cost-and-latency.md",
+      "bytes": 13939,
+      "sha256": "fb0343dd87dd57d7564e6a01f02f20a0c07eb86cc1846a22636cf6096dc3c5a2",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "docs/evidence/openapi.json",
+      "bytes": 23550,
+      "sha256": "8403aa95708cefd69b6ebce258b185c3143c3323d765d6c8f2ec8350bce108b7",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "docs/evidence/security-boundaries.md",
+      "bytes": 9441,
+      "sha256": "5b149d9c3d292831ebd685ab15ff12f2c6530641ef7e4118dceb7f00fef80c1a",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "evaluation/pricing-20260910.json",
+      "bytes": 819,
+      "sha256": "fab9d6e2d95a9e75bed87ea1f59a26ed767d79a945f336e32d5a63da2b48f617",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "evaluation/run_evaluation.py",
+      "bytes": 6800,
+      "sha256": "6cc919100778a7fd64fd2d5ffb7015c507a1e402941f5a84e2af6913d9592408",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "evaluation/security/README.md",
+      "bytes": 4066,
+      "sha256": "5c84264ae2263221a71ce1426c6bd1e8c55cbfab62d1ac6b7e9bdc197251a1c5",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "evaluation/security/cases.json",
+      "bytes": 725,
+      "sha256": "51f7926d37d06d8e4ca6f2e4caf93a8338cffa200c9ce319e7a98b43ae3c75eb",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "evaluation/security/evidence/operation-status-20260910.json",
+      "bytes": 2185,
+      "sha256": "31dc7d60f1dce1a65e18d06da7a58fae7646304052e3df5cb244c64a9ce098ce",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "evaluation/security/evidence/probes-20260910.json",
+      "bytes": 4943,
+      "sha256": "c93a535b21edcf6598d0707859a79014c82d47a962f26f55fc2112371eeac764",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "evaluation/security/fixtures/host_path.py.txt",
+      "bytes": 514,
+      "sha256": "47bc7b09aac65d753de20a2b3a7b084b8252bb54f6e2d7288a59c7b9ff6e4a39",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "evaluation/security/fixtures/infinite_output.py.txt",
+      "bytes": 289,
+      "sha256": "2490f1d284be5303a8c7620f59abfcb13a2fcd8eb8b86c9c8e879240e128b35c",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "evaluation/security/fixtures/long_running.py.txt",
+      "bytes": 224,
+      "sha256": "4a7921a9739f81389e59a72cc1cf8318ef7b183c73b6003bd123b2e2c2ba4c31",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "evaluation/security/fixtures/network_access.py.txt",
+      "bytes": 534,
+      "sha256": "6a522f864383a40b1825a910c8e990d8fd606dddfd981c3f8ba532ba388b3052",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "evaluation/security/fixtures/prompt_injection.py.txt",
+      "bytes": 640,
+      "sha256": "917b6e763aea6a26f3d7ddf157fdfcf44f2e9286fba2d24f5ed76fd3b557a509",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "evaluation/security/fixtures/secret_discovery.py.txt",
+      "bytes": 358,
+      "sha256": "174d90b00e88c7bbdcd13b20b3ea02902775ae44506ddb73a4c005887fb98923",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "services/api/app/api/body_limit.py",
+      "bytes": 1777,
+      "sha256": "784e74ce7e591b1a795adbae744e99f8868b09691a6c14d91634b864dbdf6661",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "services/api/app/api/runs.py",
+      "bytes": 5454,
+      "sha256": "c6b7ff031c032a9b1d84102def21c4049b80438118a79db4c757042a1f40785e",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "services/api/app/cli/evaluate.py",
+      "bytes": 18321,
+      "sha256": "a6ffd1b4092f9a7e34ff50dd27f53b5ba7c70a28a5e96f2e31d868534975dd62",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "services/api/app/cli/security_probes.py",
+      "bytes": 15017,
+      "sha256": "48eb30a93caa594ba81e6668e8510edb2ba677743875c4d912c4a25f5e5c21c7",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "services/api/app/cli/series.py",
+      "bytes": 4542,
+      "sha256": "6ba263a1a9fa19e1f451a317b7fbdca927aece4f48e91732e9db4e13ccb23f7a",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "services/api/app/config.py",
+      "bytes": 2908,
+      "sha256": "28357ffd810e0344b42a679afd66ac16f3af92d32363de49f68fb309d5b5c348",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "services/api/app/main.py",
+      "bytes": 2136,
+      "sha256": "7fb3752bfcefbb2d36e032742b6dc092cf9c22b1c047903c78ebfc2435f9f6f5",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "services/api/app/orchestrator/run_manager.py",
+      "bytes": 22541,
+      "sha256": "bcc7278bf90e6218b981fc585b13f140c0d88a3f4f9462e26792f315eda1b674",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "services/api/app/providers/contree.py",
+      "bytes": 6757,
+      "sha256": "f3e20e30a87eedd6b055c56e3b71253c0a18424a56533ec1fcbb1056bc1d46b9",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "services/api/app/providers/nebius.py",
+      "bytes": 3888,
+      "sha256": "d04ff912d0987cc2847ec42f3b7a592646de62a4b4723206bea9d5f2489ab41f",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "services/api/app/storage/admission.py",
+      "bytes": 5755,
+      "sha256": "b9d8963bf041752d0e1e67487e09c11e9684dcc5d6818c031e122acb356768e4",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "services/api/app/storage/repositories.py",
+      "bytes": 6863,
+      "sha256": "0e8d988ba2b19ecdd55af054a3e62464995c36076a7e72383adc7cfe862427e6",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "services/api/tests/api/test_admission.py",
+      "bytes": 13528,
+      "sha256": "ff97d4a8a8581ff7e9962b4da9b0d215e1dba033686fd0db09184a570652f2ce",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "services/api/tests/api/test_openapi_contract.py",
+      "bytes": 3743,
+      "sha256": "72d2876cd9f080abdadc249ddbd9f37a823432db13f2d5b8f90a9c9a76faa0e0",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "services/api/tests/cli/test_evaluate.py",
+      "bytes": 9856,
+      "sha256": "e865f5ee5458383cc0e03360110ca53d52f1f9844460f1725e23d0d72c551ac3",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "services/api/tests/cli/test_series_runner.py",
+      "bytes": 7435,
+      "sha256": "b2b876e4ed7fbb71f19877075adf9f8c5a0d6e2351bb2c2723fe0102bde2dad2",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "services/api/tests/orchestrator/test_sandbox_usage.py",
+      "bytes": 5166,
+      "sha256": "540feeb9826c6f17e6e330f960895230aa1436d74b34b08750b30f5c77525e3f",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "services/api/tests/providers/test_contree.py",
+      "bytes": 7190,
+      "sha256": "0828e2a6e11568ac91756575f75fbd9a8acc165ae7e581b7a3b5acbdfc123ebb",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "services/api/tests/providers/test_nebius.py",
+      "bytes": 3549,
+      "sha256": "b124feb84451f6e846c2b2b98f361767cec0965a28ea2143174f6605e8e8c756",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "services/api/tests/security/test_untrusted_repositories.py",
+      "bytes": 14046,
+      "sha256": "81b5ccf980d8eefdd68376e5e561b8a0341abfc865bf47250d581c9357a3b10b",
+      "matches_commit_bytes": true
+    },
+    {
+      "path": "services/api/tests/storage/test_admission_ledger.py",
+      "bytes": 2357,
+      "sha256": "575c069a62d5387c8e0bdefc5894a86a0985e572562166a7db4e3ac36ac45c41",
+      "matches_commit_bytes": true
+    }
+  ],
+  "all_match": true
+}

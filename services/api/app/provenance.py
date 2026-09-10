@@ -53,6 +53,7 @@ def runtime_config_digest(settings: Settings) -> str:
         "model": settings.nemotron_model,
         "enable_thinking": settings.nemotron_enable_thinking,
         "run_timeout_seconds": settings.run_timeout_seconds,
+        "max_repository_bytes": settings.max_repository_bytes,
         "contree_image": settings.contree_image,
         "mode": settings.mode,
     }

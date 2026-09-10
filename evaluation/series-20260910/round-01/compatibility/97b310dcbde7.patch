@@ -1,0 +1,24 @@
+diff --git a/pyproject.toml b/pyproject.toml
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -6,7 +6,7 @@
+ name = "branchshift-eval-compatibility"
+ version = "0.1.0"
+ requires-python = ">=3.10"
+-dependencies = ["pydantic>=1.10.17,<2"]
++dependencies = ["pydantic>=2,<3"]
+ 
+ [project.optional-dependencies]
+ test = ["pytest>=8"]
+diff --git a/src/sample_app/models.py b/src/sample_app/models.py
+--- a/src/sample_app/models.py
++++ b/src/sample_app/models.py
+@@ -11,7 +11,7 @@
+ 
+ 
+ def current_payload(payload):
+-    return CurrentItem.parse_obj(payload).dict()
++    return CurrentItem.model_validate(payload).model_dump()
+ 
+ 
+ def legacy_payload(payload):

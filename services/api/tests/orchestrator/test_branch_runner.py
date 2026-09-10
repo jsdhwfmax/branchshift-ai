@@ -1,3 +1,4 @@
+import asyncio
 import json
 import shlex
 import subprocess
@@ -15,7 +16,7 @@ from app.orchestrator.branch_runner import (
 )
 from app.orchestrator.patches import UnsafePatch, build_apply_command
 from app.orchestrator.planner import RepositoryEvidence
-from app.providers.base import CommandResult, SandboxState
+from app.providers.base import CommandResult, ProviderUnavailable, SandboxState
 
 VALID_PATCH = """diff --git a/src/app/models.py b/src/app/models.py
 index 1234567..7654321 100644
@@ -138,6 +139,96 @@ async def test_unsafe_first_patch_retries_without_entering_sandbox():
     assert result.status is BranchStatus.PASSED
     assert len(sandbox.commands) == 1
     assert "safety validation failed" in model.users[1]
+
+
+@pytest.mark.parametrize("invalid_first", [False, True])
+async def test_attempt_callback_precedes_each_proposal_and_stops_after_success(invalid_first):
+    observed = []
+
+    class ObservedModel(FakeModel):
+        async def complete_json(self, **kwargs):
+            observed.append(("model", len(self.users) + 1))
+            return await super().complete_json(**kwargs)
+
+    async def on_attempt(attempt, max_attempts):
+        observed.append(("progress", attempt, max_attempts))
+
+    proposals = [proposal("../outside.py"), proposal()] if invalid_first else [proposal()]
+    sandbox = FakeSandbox([(validation_output(), 0), (validation_output(), 0)])
+    runner = BranchRunner(ObservedModel(proposals), sandbox, max_attempts=3)
+    result = await runner.run(
+        SandboxState(checkpoint_id="baseline"), strategy(), evidence(), on_attempt=on_attempt,
+    )
+    expected = [("progress", 1, 3), ("model", 1)]
+    if invalid_first:
+        expected += [("progress", 2, 3), ("model", 2)]
+    assert observed == expected
+    assert result.status is BranchStatus.PASSED
+    assert len(sandbox.commands) == 1
+    await runner.validate_existing_patch(
+        SandboxState(checkpoint_id="baseline"), strategy(), result.patch,
+    )
+    assert observed == expected  # Winner revalidation never starts another proposal.
+
+
+async def test_attempt_callback_keeps_only_started_provider_failure():
+    observed = []
+
+    class UnavailableModel:
+        async def complete_json(self, **kwargs):
+            observed.append("model")
+            raise ProviderUnavailable("Service unavailable")
+
+    async def on_attempt(attempt, max_attempts):
+        observed.append((attempt, max_attempts))
+
+    with pytest.raises(ProviderUnavailable, match="Service unavailable"):
+        await BranchRunner(UnavailableModel(), FakeSandbox([])).run(
+            SandboxState(checkpoint_id="baseline"), strategy(), evidence(),
+            on_attempt=on_attempt,
+        )
+    assert observed == [(1, 3), "model"]
+
+
+async def test_attempt_callback_does_not_emit_after_inflight_cancellation():
+    observed = []
+    started = asyncio.Event()
+
+    class BlockedModel:
+        async def complete_json(self, **kwargs):
+            observed.append("model")
+            started.set()
+            await asyncio.Event().wait()
+
+    async def on_attempt(attempt, max_attempts):
+        observed.append((attempt, max_attempts))
+
+    task = asyncio.create_task(BranchRunner(BlockedModel(), FakeSandbox([])).run(
+        SandboxState(checkpoint_id="baseline"), strategy(), evidence(), on_attempt=on_attempt,
+    ))
+    await asyncio.wait_for(started.wait(), timeout=1)
+    task.cancel()
+    with pytest.raises(asyncio.CancelledError):
+        await task
+    assert observed == [(1, 3), "model"]
+
+
+@pytest.mark.parametrize("error", [UnsafePatch("Observer failed"), asyncio.CancelledError()])
+async def test_attempt_observer_failure_propagates_without_model_request_or_retry(error):
+    observed = []
+    model = FakeModel([proposal()])
+
+    async def on_attempt(attempt, max_attempts):
+        observed.append((attempt, max_attempts))
+        raise error
+
+    with pytest.raises(type(error)):
+        await BranchRunner(model, FakeSandbox([])).run(
+            SandboxState(checkpoint_id="baseline"), strategy(), evidence(),
+            on_attempt=on_attempt,
+        )
+    assert observed == [(1, 3)]
+    assert model.users == []
 
 
 async def test_failed_validation_rebranches_from_same_parent():

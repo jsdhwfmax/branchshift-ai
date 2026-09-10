@@ -85,6 +85,15 @@ async def test_controlled_fixture_prepares_passing_checkpoint():
     assert "pydantic>=1.10,<2" in outcome.evidence.file_contents["pyproject.toml"]
 
 
+async def test_configured_repository_limit_reaches_remote_setup_guard():
+    sandbox = FakeSandbox()
+    await BaselineRunner(sandbox, max_repository_bytes=123_456).prepare(
+        "python:3.13-slim", "https://github.com/owner/repo",
+    )
+    assert "/workspace/repo 123456; " in sandbox.setup_command
+    assert sandbox.setup_command.index("ls-files") < sandbox.setup_command.index("-m venv")
+
+
 def test_arbitrary_repository_uses_repository_root():
     from app.domain.models import http_url
 

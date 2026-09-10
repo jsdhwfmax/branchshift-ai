@@ -1,0 +1,31 @@
+diff --git a/pyproject.toml b/pyproject.toml
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -6,7 +6,7 @@
+ name = "branchshift-eval-parsing"
+ version = "0.1.0"
+ requires-python = ">=3.10"
+-dependencies = ["pydantic>=1.10.17,<2"]
++dependencies = ["pydantic>=2,<3"]
+ 
+ [project.optional-dependencies]
+ test = ["pytest>=8"]
+diff --git a/src/sample_app/models.py b/src/sample_app/models.py
+--- a/src/sample_app/models.py
++++ b/src/sample_app/models.py
+@@ -10,12 +10,12 @@
+ 
+ 
+ def parse_item(payload):
+-    return Item.parse_obj(payload)
++    return Item.model_validate(payload)
+ 
+ 
+ def parse_item_json(payload):
+-    return Item.parse_raw(payload)
++    return Item.model_validate_json(payload)
+ 
+ 
+ def parse_order(payload):
+-    return Order.parse_obj(payload)
++    return Order.model_validate(payload)

@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent, useRef, useState } from 'react'
 
 interface RunFormProps {
   onSubmit: (repoUrl: string, projectPath?: string) => Promise<void>
@@ -14,6 +14,8 @@ export default function RunForm({ onSubmit, mode, disabled = false }: RunFormPro
   const [error, setError] = useState('')
   const [invalidField, setInvalidField] = useState<'repository' | 'project' | null>(null)
   const [submitting, setSubmitting] = useState(false)
+  const repositoryRef = useRef<HTMLInputElement>(null)
+  const projectRef = useRef<HTMLInputElement>(null)
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -42,6 +44,8 @@ export default function RunForm({ onSubmit, mode, disabled = false }: RunFormPro
       setError(caught instanceof Error ? caught.message : 'Could not start the run.')
       setInvalidField(validating)
       setSubmitting(false)
+      if (validating === 'repository') repositoryRef.current?.focus()
+      if (validating === 'project') projectRef.current?.focus()
     }
   }
 
@@ -53,6 +57,7 @@ export default function RunForm({ onSubmit, mode, disabled = false }: RunFormPro
           <span aria-hidden="true">git/</span>
           <input
             id="repo-url"
+            ref={repositoryRef}
             name="repo-url"
             type="url"
             value={repoUrl}
@@ -70,7 +75,7 @@ export default function RunForm({ onSubmit, mode, disabled = false }: RunFormPro
         {mode === 'live' && <div className="project-directory">
           <label htmlFor="project-path">Project directory <span>(optional)</span></label>
           <div className="input-shell">
-            <input id="project-path" name="project-path" type="text" value={projectPath}
+            <input id="project-path" ref={projectRef} name="project-path" type="text" value={projectPath}
               placeholder="evaluation/fixtures/config" onChange={(event) => setProjectPath(event.target.value)}
               aria-describedby="project-help run-error" aria-invalid={invalidField === 'project'}
               disabled={submitting} spellCheck={false} autoComplete="off" />

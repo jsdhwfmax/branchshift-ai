@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "attempts": [
+    {
+      "round": 1,
+      "case_id": "validators",
+      "path": "round-01/validators/3c96a45e7a8b.json"
+    },
+    {
+      "round": 1,
+      "case_id": "config",
+      "path": "round-01/config/2e86cf16dfc0.json"
+    },
+    {
+      "round": 1,
+      "case_id": "serialization",
+      "path": "round-01/serialization/eea3304afbe6.json"
+    },
+    {
+      "round": 1,
+      "case_id": "parsing",
+      "path": "round-01/parsing/b6475ac669f8.json"
+    },
+    {
+      "round": 1,
+      "case_id": "compatibility",
+      "path": "round-01/compatibility/97b310dcbde7.json"
+    },
+    {
+      "round": 2,
+      "case_id": "validators",
+      "path": "round-02/validators/73347c34a2ef.json"
+    },
+    {
+      "round": 2,
+      "case_id": "config",
+      "path": "round-02/config/f87a0a787413.json"
+    },
+    {
+      "round": 2,
+      "case_id": "serialization",
+      "path": "round-02/serialization/6bc43693144a.json"
+    },
+    {
+      "round": 2,
+      "case_id": "parsing",
+      "path": "round-02/parsing/67cfd318e689.json"
+    },
+    {
+      "round": 2,
+      "case_id": "compatibility",
+      "path": "round-02/compatibility/e6dd367c1436.json"
+    },
+    {
+      "round": 3,
+      "case_id": "validators",
+      "path": "round-03/validators/b93c8df744ac.json"
+    },
+    {
+      "round": 3,
+      "case_id": "config",
+      "path": "round-03/config/ee4ce9911531.json"
+    },
+    {
+      "round": 3,
+      "case_id": "serialization",
+      "path": "round-03/serialization/f3f3b10e5df1.json"
+    },
+    {
+      "round": 3,
+      "case_id": "parsing",
+      "path": "round-03/parsing/2d501a3e059f.json"
+    },
+    {
+      "round": 3,
+      "case_id": "compatibility",
+      "path": "round-03/compatibility/b249a85a9f78.json"
+    }
+  ]
+}

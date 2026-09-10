@@ -49,6 +49,40 @@ beforeEach(() => {
 })
 afterEach(() => { vi.unstubAllGlobals(); vi.useRealTimers() })
 
+test('refreshes from stream events and reconnection without background polling', async () => {
+  vi.mocked(getRun).mockResolvedValue(sampleRun())
+  renderRun()
+  const stream = await source()
+  const calls = vi.mocked(getRun).mock.calls.length
+  vi.useFakeTimers()
+  await act(async () => { await vi.advanceTimersByTimeAsync(16_000) })
+  expect(getRun).toHaveBeenCalledTimes(calls)
+  await act(async () => stream.onopen?.())
+  expect(getRun).toHaveBeenCalledTimes(calls + 1)
+  await act(async () => stream.emit('run.status'))
+  expect(getRun).toHaveBeenCalledTimes(calls + 2)
+})
+
+test('shows retained target files and validated proposal counts without guessing for other branches', async () => {
+  vi.mocked(getRun).mockResolvedValue(sampleRun({ status: 'branching', strategies: [{
+    id: 'minimal', title: 'Minimal migration', rationale: 'Keep behavior', ordered_steps: ['Migrate'],
+    source_urls: [], target_files: ['src/models.py', 'pyproject.toml'],
+  }] }))
+  renderRun()
+  const stream = await source()
+  expect(screen.getByRole('heading', { name: 'Branches in motion.' })).toHaveFocus()
+  fireEvent.click(screen.getByText('Planned target files'))
+  expect(screen.getByText('src/models.py')).toBeVisible()
+  act(() => {
+    stream.emit('branch.progress', { id: 1, branch_id: 'minimal', payload: { attempt: 2, max_attempts: 3 } })
+    stream.emit('branch.progress', { id: 1, branch_id: 'minimal', payload: { attempt: 2, max_attempts: 3 } })
+    stream.emit('branch.progress', { id: 2, branch_id: 'minimal', payload: { attempt: 4, max_attempts: 3 } })
+    stream.emit('branch.progress', { id: 3, branch_id: 'refactor', payload: { attempt: '3', max_attempts: 3 } })
+  })
+  expect(screen.getAllByText('Proposal attempts started: 2 (limit 3)')).toHaveLength(1)
+  expect(screen.queryByText(/Proposal attempts started: [34]/)).not.toBeInTheDocument()
+})
+
 test('keeps one stream across status changes, deduplicates events, and clears reconnect notices', async () => {
   let current = sampleRun()
   vi.mocked(getRun).mockImplementation(async () => current)
@@ -167,7 +201,7 @@ test('shows actual baseline checkpoint, commit, test count, and model from a liv
   expect(screen.getByText('Checkpoint')).toBeInTheDocument()
   expect(screen.getByTitle('checkpoint-abcdefgh123')).toHaveTextContent('checkpoint-a…')
   expect(screen.getByText('abc123456789')).toBeInTheDocument()
-  expect(screen.getByText('nvidia/nemotron')).toBeInTheDocument()
+  expect(screen.getAllByText('nvidia/nemotron')).toHaveLength(2)
   expect(screen.getByTitle('contractdigest12345678')).toHaveTextContent('contractdige · baseline digest')
 })
 

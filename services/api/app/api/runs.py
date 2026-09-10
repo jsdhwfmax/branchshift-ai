@@ -3,12 +3,14 @@ from __future__ import annotations
 import json
 import sqlite3
 from collections.abc import AsyncIterator
+from typing import Literal
 
-from fastapi import APIRouter, Header, HTTPException, Request, Response, status
+from fastapi import APIRouter, Header, HTTPException, Query, Request, Response, status
 from fastapi.responses import PlainTextResponse, StreamingResponse
 from pydantic import BaseModel
 
 from app.domain.models import TERMINAL_RUN_STATUSES, CreateRunRequest, RunSummary
+from app.reports import render_markdown_report
 from app.storage.admission import AdmissionDenied, http_admission
 
 router = APIRouter(prefix="/api/runs", tags=["runs"])
@@ -84,12 +86,25 @@ async def get_patch(run_id: str, request: Request) -> Response:
     )
 
 
-@router.get("/{run_id}/report")
-async def get_report(run_id: str, request: Request) -> Response:
+@router.get("/{run_id}/report", responses={
+    200: {
+        "description": "Stored evidence as JSON (default) or a deterministic Markdown report.",
+        "content": {"application/json": {}, "text/markdown": {"schema": {"type": "string"}}},
+    },
+})
+async def get_report(
+    run_id: str, request: Request,
+    report_format: Literal["json", "markdown"] = Query(default="json", alias="format"),
+) -> Response:
     summary = await request.app.state.repository.get_run(run_id)
     if summary is None:
         raise HTTPException(status_code=404, detail="Run not found")
     events = await request.app.state.repository.list_events(run_id)
+    if report_format == "markdown":
+        return Response(
+            render_markdown_report(summary, events), media_type="text/markdown",
+            headers={"Content-Disposition": f'attachment; filename="{run_id}-evidence.md"'},
+        )
     report = {
         "schema_version": 1,
         "evidence_scope": "live providers" if summary.mode == "live" else "illustrative sample",

@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import re
 import shlex
+from collections.abc import Awaitable, Callable
 from difflib import unified_diff
 from pathlib import PurePosixPath
 from types import GenericAlias
@@ -178,6 +179,7 @@ class BranchRunner:
         *,
         workdir: str = "/workspace/repo",
         citations: list[Citation] | None = None,
+        on_attempt: Callable[[int, int], Awaitable[None]] | None = None,
     ) -> BranchResult:
         diagnostics = "No previous attempt."
         elapsed = 0.0
@@ -186,14 +188,19 @@ class BranchRunner:
         diagnostic_proposal: PatchProposal | None = None
         last_result: BranchResult | None = None
         response_schema = evidence_patch_schema(strategy, evidence)
-        for _attempt in range(1, self._max_attempts + 1):
+        for attempt in range(1, self._max_attempts + 1):
+            system = self._system_prompt()
+            user = self._user_prompt(
+                strategy, evidence, diagnostics, diagnostic_patch, citations,
+                diagnostic_proposal,
+            )
+            if on_attempt is not None:
+                # Observe starts only; validation and clean revalidation are not proposals.
+                await on_attempt(attempt, self._max_attempts)
             try:
                 proposal = await self._model.complete_json(
-                    system=self._system_prompt(),
-                    user=self._user_prompt(
-                        strategy, evidence, diagnostics, diagnostic_patch, citations,
-                        diagnostic_proposal,
-                    ),
+                    system=system,
+                    user=user,
                     schema=response_schema,
                 )
                 diagnostic_patch = None

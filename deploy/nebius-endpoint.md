@@ -1,30 +1,39 @@
 # BranchShift container deployment runbook
 
 Updated 10 September 2026. The Linux `amd64` image at
-[commit `99fae2fab173d6a34e085a2f5939bff35c70d33c`](https://github.com/jsdhwfmax/branchshift-ai/commit/99fae2fab173d6a34e085a2f5939bff35c70d33c)
-was built and smoke-tested successfully in
-[image workflow `34440192693`](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34440192693).
-The dispatch used `publish=false`; **GHCR publication was skipped**. No public
-image digest, AI Cloud storage result or hosted live deployment is established
-by this run.
+[commit `92c733a1338cc7abdbcf04ca00be363158fd126c`](https://github.com/jsdhwfmax/branchshift-ai/commit/92c733a1338cc7abdbcf04ca00be363158fd126c)
+was built, smoke-tested and published successfully in
+[image workflow `34443329138`](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34443329138).
+The dispatch used `publish=true`; the publish step completed successfully.
 
-[CI `34440006894`](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34440006894)
-passed at the same commit: Ruff, mypy across 34 source files, frontend type
-checks, 202 API tests, 13 baseline fixture tests, 27 frontend tests and the
-production UI build. The image workflow separately passed runtime SDK imports,
-UID `10001`, same-origin UI and route refresh, a completed mock run, patch/report
-retrieval, and retention of that completed run and patch after replacing the
-container against the same runner-local bind directory. These are **mock and
-local-bind persistence checks**, not Cloud persistence or hosted live evidence.
+```text
+ghcr.io/jsdhwfmax/branchshift-ai:92c733a1338cc7abdbcf04ca00be363158fd126c
+ghcr.io/jsdhwfmax/branchshift-ai@sha256:c7bab05a969e6b0a91619ed3785115bdbd766a3622be9703ec6fde078897761b
+```
 
-Local preparation checks passed: YAML parsing and the manual-only trigger,
-all four embedded Bash scripts with `bash -n`, embedded Python syntax,
-referenced source-file existence, runtime database/user/worker declarations,
-and local documentation links. The local tool versions are Python 3.13.9,
-Node 24.14.0 and pnpm 11.19.0. Neither Docker nor `actionlint` is installed in
-this shell; the actual container build/runtime evidence above comes from the
-GitHub-hosted Linux runner. Existing source tests and image smoke checks remain
-separate from validation of a Cloud deployment.
+A separate credential-free registry challenge and anonymous pull-token flow
+returned the 2,204-byte manifest. Its response digest and computed SHA-256
+matched the published digest. This verifies anonymous manifest access, not a
+complete image pull by the eventual host. No AI Cloud resource or hosted live
+deployment is established by these checks. The retained [CI receipt](../docs/evidence/runtime-release-92c733a/ci-92c733a.json),
+[image receipt](../docs/evidence/runtime-release-92c733a/image-92c733a.json) and
+[later anonymous registry receipt](../docs/evidence/runtime-release-92c733a/registry-anonymous-92c733a.json)
+record these distinct observations.
+
+[CI `34443169993`](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34443169993)
+passed all 14 steps at the same commit: Ruff, mypy, frontend type checks,
+277 API tests, 13 original fixture tests, 27 frontend tests and the production
+UI build. The image workflow's eight steps passed, including runtime SDK
+imports, UID `10001`, same-origin UI and route refresh, a completed mock run,
+patch/report retrieval, and retention after replacing the container against
+the same runner-local bind directory. These are mock/local-bind checks;
+Cloud storage and hosted live execution remain unverified.
+
+The earlier `99fae2f` build passed with publication skipped. The newer immutable
+image above includes persistent admission quotas and usage instrumentation.
+Docker remains unavailable in the local shell; actual Linux build evidence
+comes from the GitHub-hosted runner. Do not reuse this image's test receipt for
+later source commits without building and checking their actual images.
 
 ## Deployment target
 
@@ -64,9 +73,7 @@ mode to fit a different host. [Feasibility and official sources](../docs/evidenc
   existing SHA tag and fails closed on an uncertain registry lookup.
 
 The workflow creates no Nebius resources, changes no package visibility and
-has no push, pull-request or release trigger. It has been published and
-dispatched with `publish=false`; registry publication remains a separate
-action. An authorized publish dispatch writes a GHCR package and consumes
+has no push, pull-request or release trigger. It was dispatched with `publish=true` for the verified image above. An authorized publish dispatch writes a GHCR package and consumes
 applicable Actions/package usage. [GitHub manual triggers](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow),
 [GHCR publication](https://docs.github.com/en/actions/tutorials/publish-packages/publish-docker-images).
 
@@ -107,7 +114,7 @@ The manual workflow automates checks for SDK imports, the nonroot user, UI/API
 serving, a completed mock run, patch/report retrieval, SPA refresh and retained
 records after container replacement against a runner-local bind directory.
 These checks **passed** in the verified
-[image smoke step](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34440192693/job/102753435169#step:5:1),
+[image smoke step](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34443329138/job/102762737376#step:5:1),
 whose logs record a replacement container retrieving the retained completed
 run and the final successful bind-retention assertion. This does not verify a
 Nebius mount, Cloud lifecycle operation or live provider call. The image health
@@ -121,7 +128,7 @@ or remote providers.
 | Cloud tenant / project | Exact existing IDs, account access and role; not yet inspected |
 | Region / subnet | Exact project-supported region and subnet; not yet selected |
 | Endpoint platform / preset | Prefer CPU only; compare `cpu-e2/2vcpu-8gb` if available with the documented `cpu-d3/4vcpu-16gb` |
-| Image | Linux image built and smoke-tested at `99fae2f`; GHCR publish skipped, published immutable digest pending |
+| Image | Published and smoke-tested at `92c733a`; use the exact digest above after host pull verification |
 | Registry access | Prove the chosen host can pull; private GHCR requires a supported credential path, or separately approved package visibility |
 | HTTP interface | Container port 8000, managed HTTPS URL; actual URL pending |
 | Runtime identity | Container UID/GID 10001:10001; minimum host IAM needed |
@@ -147,6 +154,7 @@ arguments, repository files or image layers:
 | `DATABASE_URL` | `sqlite:////data/runs.db` on the verified mount |
 | `MAX_CONCURRENT_RUNS` | `1` initially; executing slots, combined with the persistent HTTP admission controls below |
 | `RUN_TIMEOUT_SECONDS` | `900` initially; enforce provider and output budgets as well |
+| `MAX_REPOSITORY_BYTES` | `52428800` (50 MiB); reject a larger tracked checkout before installing dependencies; excludes transient clone, `.git` and installed-package size |
 | `NEBIUS_API_KEY` | Runtime secret; authorized Token Factory credential |
 | `NEBIUS_PROJECT_ID` | Correct Token Factory project ID; runtime configuration |
 | `TAVILY_API_KEY` | Runtime secret |

@@ -383,7 +383,9 @@ class RunManager:
                 RunStatus.PREPARING,
                 "Cloning and testing the repository inside Token Factory Sandbox",
             )
-            baseline = await BaselineRunner(sandbox).prepare(
+            baseline = await BaselineRunner(
+                sandbox, max_repository_bytes=self._settings.max_repository_bytes,
+            ).prepare(
                 self._settings.contree_image,
                 summary.repo_url,
                 project_path=summary.project_path,
@@ -437,6 +439,15 @@ class RunManager:
             runner = BranchRunner(model, sandbox)
 
             async def execute_branch(strategy: MigrationStrategy) -> BranchResult:
+                async def report_attempt(attempt: int, max_attempts: int) -> None:
+                    await self._repository.append_event(
+                        run_id,
+                        EVENTS.BRANCH_PROGRESS,
+                        f"{strategy.title}: proposal attempt {attempt}/{max_attempts} started",
+                        branch_id=strategy.id,
+                        payload={"attempt": attempt, "max_attempts": max_attempts},
+                    )
+
                 await self._repository.append_event(
                     run_id,
                     EVENTS.BRANCH_STARTED,
@@ -450,6 +461,7 @@ class RunManager:
                         baseline.evidence,
                         workdir=repository_workdir(summary.repo_url, summary.project_path),
                         citations=citations,
+                        on_attempt=report_attempt,
                     )
                 except Exception as exc:  # noqa: BLE001 - preserve sibling branch evidence
                     message = redact(

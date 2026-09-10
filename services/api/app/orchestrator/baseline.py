@@ -9,6 +9,10 @@ from pydantic import HttpUrl
 
 from app.domain.models import CreateRunRequest, validate_project_path
 from app.orchestrator.planner import RepositoryEvidence
+from app.orchestrator.repository_size import (
+    DEFAULT_MAX_REPOSITORY_BYTES,
+    repository_size_guard_command,
+)
 from app.orchestrator.verification import (
     junit_metrics_command,
     marker_int,
@@ -36,9 +40,15 @@ class BaselineOutcome:
 
 
 class BaselineRunner:
-    def __init__(self, sandbox: SandboxProvider, *, timeout_seconds: int = 300) -> None:
+    def __init__(
+        self, sandbox: SandboxProvider, *, timeout_seconds: int = 300,
+        max_repository_bytes: int = DEFAULT_MAX_REPOSITORY_BYTES,
+    ) -> None:
+        if type(max_repository_bytes) is not int or max_repository_bytes < 1:
+            raise ValueError("MAX_REPOSITORY_BYTES must be a positive integer")
         self._sandbox = sandbox
         self._timeout_seconds = timeout_seconds
+        self._max_repository_bytes = max_repository_bytes
 
     async def prepare(
         self,
@@ -54,7 +64,7 @@ class BaselineRunner:
         workdir = repository_workdir(validated_url, request.project_path)
         base = await self._sandbox.create_base(
             image,
-            build_setup_command(validated_url, workdir),
+            build_setup_command(validated_url, workdir, self._max_repository_bytes),
         )
         checked = await self._sandbox.run(
             base,
@@ -136,13 +146,17 @@ def repository_workdir(repo_url: HttpUrl, project_path: str | None = None) -> st
     return REPOSITORY_ROOT
 
 
-def build_setup_command(repo_url: HttpUrl, workdir: str) -> str:
+def build_setup_command(
+    repo_url: HttpUrl, workdir: str,
+    max_repository_bytes: int = DEFAULT_MAX_REPOSITORY_BYTES,
+) -> str:
     url = shlex.quote(str(repo_url))
     return (
         "set -eu; "
         "if ! command -v git >/dev/null 2>&1; then "
         "apt-get update -qq && apt-get install -y --no-install-recommends git ca-certificates; fi; "
         f"git clone --depth 1 --filter=blob:none --single-branch -- {url} {REPOSITORY_ROOT}; "
+        + repository_size_guard_command(REPOSITORY_ROOT, max_repository_bytes) + "; "
         + project_guard_command(workdir) + "; "
         +
         "python -m venv .venv; "

@@ -11,6 +11,7 @@ interface BranchLaneProps {
   finished?: boolean
   sample?: boolean
   message?: string
+  proposalProgress?: { attempt: number; maxAttempts: number }
 }
 
 const FALLBACK_TITLES: Record<Strategy['id'], string> = {
@@ -19,7 +20,7 @@ const FALLBACK_TITLES: Record<Strategy['id'], string> = {
   refactor: 'Model-layer refactor',
 }
 
-export default function BranchLane({ id, strategy, result, active, winner, terminal = false, finished = false, sample = false, message }: BranchLaneProps) {
+export default function BranchLane({ id, strategy, result, active, winner, terminal = false, finished = false, sample = false, message, proposalProgress }: BranchLaneProps) {
   const state = result?.status ?? (terminal ? (active ? 'not_completed' : 'not_started') : finished ? 'awaiting_evidence' : active ? 'running' : 'waiting')
   const hasTests = result && result.tests_collected > 0
   return (
@@ -32,12 +33,14 @@ export default function BranchLane({ id, strategy, result, active, winner, termi
         </div>
         <h3>{strategy?.title ?? FALLBACK_TITLES[id]}</h3>
         <p>{strategy?.rationale ?? (terminal ? 'No migration plan was retained for this branch.' : 'Waiting for a cited migration plan.')}</p>
+        {proposalProgress && <p className="branch-progress">Proposal attempts started: {proposalProgress.attempt} (limit {proposalProgress.maxAttempts})</p>}
         {!sample && result && <dl className="branch-provenance">
           <div><dt>Child checkpoint</dt><dd title={result.checkpoint_id ?? undefined}>{result.checkpoint_id ? `${result.checkpoint_id.slice(0, 12)}${result.checkpoint_id.length > 12 ? '…' : ''}` : 'not recorded'}</dd></div>
           <div><dt>Test contract</dt><dd title={result.test_contract_preserved == null ? 'The contract check did not produce a result.' : undefined} className={result.test_contract_preserved === false ? 'contract-changed' : ''}>{result.test_contract_preserved === true ? 'preserved' : result.test_contract_preserved === false ? 'changed · ineligible' : 'unknown'}</dd></div>
         </dl>}
         {(result?.failure_reason || message) && <p className={result?.failure_reason ? 'branch-failure' : 'branch-progress'}>{result?.failure_reason || message}</p>}
         {!!strategy?.ordered_steps.length && <details className="strategy-details"><summary>Migration steps</summary><ol>{strategy.ordered_steps.map((step, index) => <li key={index}>{step}</li>)}</ol></details>}
+        {!!strategy?.target_files?.length && <details className="strategy-details target-files"><summary>Planned target files</summary><ul>{strategy.target_files.map((path) => <li key={path}><code>{path}</code></li>)}</ul></details>}
         {result?.diagnostics && <details className="strategy-details branch-diagnostics"><summary>Execution diagnostics</summary><pre>{result.diagnostics}</pre></details>}
       </div>
       <dl className="lane-metrics">

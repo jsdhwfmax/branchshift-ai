@@ -81,3 +81,13 @@ def test_runtime_secrets_and_limits_do_not_become_public_schema_defaults(tmp_pat
         "tavily_api_key", "database_url", "http_daily_run_limit",
     ):
         assert private_value not in serialized
+
+
+def test_report_format_is_explicit_with_json_as_the_compatible_default(tmp_path):
+    schema = schema_for(safe_schema_settings(tmp_path), tmp_path)
+    operation = schema["paths"]["/api/runs/{run_id}/report"]["get"]
+    parameter = next(p for p in operation["parameters"] if p["name"] == "format")
+    assert parameter["in"] == "query" and parameter["required"] is False
+    assert parameter["schema"]["enum"] == ["json", "markdown"]
+    assert parameter["schema"]["default"] == "json"
+    assert set(operation["responses"]["200"]["content"]) == {"application/json", "text/markdown"}

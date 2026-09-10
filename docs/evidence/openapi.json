@@ -928,6 +928,20 @@
               "title": "Run Id",
               "type": "string"
             }
+          },
+          {
+            "in": "query",
+            "name": "format",
+            "required": false,
+            "schema": {
+              "default": "json",
+              "enum": [
+                "json",
+                "markdown"
+              ],
+              "title": "Format",
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -935,9 +949,14 @@
             "content": {
               "application/json": {
                 "schema": {}
+              },
+              "text/markdown": {
+                "schema": {
+                  "type": "string"
+                }
               }
             },
-            "description": "Successful Response"
+            "description": "Stored evidence as JSON (default) or a deterministic Markdown report."
           },
           "422": {
             "content": {

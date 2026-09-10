@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "scope": "Frozen isolated UI validation, before integration; production assets with local HTTP test data.",
+  "frozen_at_utc": "2026-09-10T06:23:58.328453+00:00",
+  "source_receipt_sha256": "f8f032d7478494102eb0901cd3e6194d0928315ee2fc290d48a9347e08d9cff7",
+  "derivation": "Preserves the source receipt test results and selected screenshot hashes; replaces private absolute artifact paths with repository-relative paths and adds copy verification and review scope. This is a derived receipt, not a byte-identical copy of the source receipt.",
+  "artifact_paths_base": "repository_root",
+  "base_commit": "92c733a1338cc7abdbcf04ca00be363158fd126c",
+  "ui_patch_sha256": "e63f7bc7ad89e3c41073c8541305ba11df6f0f8eeb06a68ed999c79c742bbe82",
+  "ui_patch_changed_files": 21,
+  "live_provider_calls": 0,
+  "checks": [
+    {
+      "command": "pnpm --dir apps/web exec vitest run",
+      "result": "29 tests passed in 4 files; latest run 987ms"
+    },
+    {
+      "command": "pnpm --dir apps/web lint",
+      "result": "passed; app, Playwright, Vitest config and Node e2e sources type-checked"
+    },
+    {
+      "command": "pnpm --dir apps/web build",
+      "result": "passed; production assets built again by Playwright global setup"
+    },
+    {
+      "command": "pnpm --dir apps/web exec playwright test",
+      "result": "4 tests passed in 8.4 seconds; desktop and mobile Chromium; production assets and loopback-only HTTP mock"
+    },
+    {
+      "command": "git apply --check --whitespace=error <patch>",
+      "result": "passed against original repository; no application of patch performed"
+    }
+  ],
+  "browser_evidence": [
+    "Native EventSource reconnect sends Last-Event-ID=2; duplicate replayed event appears once in event ledger.",
+    "Browser downloads exact patch and JSON bytes through real same-origin loopback HTTP; refresh retains terminal result.",
+    "Keyboard skip link, validation focus, route heading focus and scrollable evidence table work.",
+    "Reduced-motion animation duration verified; mobile 393px and 320px have no page-wide horizontal overflow.",
+    "Axe WCAG 2 A/AA and 2.1 AA checks returned zero violations on tested home, validation-error, completed, failed and missing-run pages."
+  ],
+  "visual_review": {
+    "desktop": "Lead reviewer inspected composition; service roles and sample disclosure were visible.",
+    "mobile": "No exhaustive mobile legibility review. Full-height screenshot downscaling limits visual conclusions; the recorded 393px/320px browser and axe checks are separate evidence."
+  },
+  "limitations": [
+    "Mocked browser evidence, not public hosting, cloud persistence or a new real migration.",
+    "No exhaustive screen-reader or accessibility conformance claim.",
+    "Attempt counts appear only from valid branch.progress attempt/max_attempts; requires the separately prepared backend event change for new live records. Existing records are not backfilled.",
+    "These historical checks apply to the frozen UI snapshot; integration validation is recorded separately.",
+    "Automated checks and desktop composition review are not exhaustive screen-reader, mobile-legibility or accessibility-conformance verification."
+  ],
+  "screenshots": [
+    {
+      "project": "desktop",
+      "view": "preflight",
+      "path": "docs/images/ui-preflight-desktop.png",
+      "sha256": "1570de568fe11d74b645485d5be8ffad3531a5cc5047c396b1532c28553557d5",
+      "bytes": 231101,
+      "width": 1440,
+      "height": 1575,
+      "copied_without_modification": true
+    },
+    {
+      "project": "desktop",
+      "view": "completed",
+      "path": "docs/images/ui-completed-desktop.png",
+      "sha256": "53607215f77c535e006e90b36937ec7d8b62580985088d2fb506d9e16b2b9823",
+      "bytes": 294441,
+      "width": 1440,
+      "height": 2261,
+      "copied_without_modification": true
+    },
+    {
+      "project": "mobile",
+      "view": "completed",
+      "path": "docs/images/ui-completed-mobile.png",
+      "sha256": "eec6026547e429b3ab9b519cd1c64b3607a6d0ce3673930a6d9cf87f9b0a2881",
+      "bytes": 930425,
+      "width": 1081,
+      "height": 10673,
+      "copied_without_modification": true
+    }
+  ]
+}

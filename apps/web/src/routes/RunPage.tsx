@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import AppHeader from '../components/AppHeader'
 import BranchLane from '../components/BranchLane'
@@ -6,8 +6,10 @@ import CitationList from '../components/CitationList'
 import EvidenceTable from '../components/EvidenceTable'
 import PatchViewer from '../components/PatchViewer'
 import RuntimeFingerprint from '../components/RuntimeFingerprint'
+import HowRunWorks from '../components/HowRunWorks'
 import { patchUrl, reportUrl, type BranchResult, type RunSummary } from '../lib/api'
 import { isTerminal, useRunLedger } from '../lib/useRunLedger'
+import { proposalProgress } from '../lib/events'
 
 const BRANCH_IDS = ['minimal', 'compatibility', 'refactor'] as const
 
@@ -49,6 +51,8 @@ function repositoryName(value: string) {
 export default function RunPage() {
   const { runId = '' } = useParams()
   const { run, events, error, stream, retry } = useRunLedger(runId)
+  const headingRef = useRef<HTMLHeadingElement>(null)
+  useEffect(() => { if (run?.id) headingRef.current?.focus() }, [run?.id])
   const branches = useMemo(() => {
     const results = new Map<string, BranchResult>()
     // Events can arrive before the summary refresh; retain partial evidence immediately.
@@ -64,7 +68,8 @@ export default function RunPage() {
   if (!run) {
     return (
       <main className="run-page"><AppHeader /><section className="loading-panel" aria-live="polite">
-        {error ? <><h1>Could not load this run.</h1><p role="alert">{error}</p><button className="retry-button" onClick={retry}>Retry loading</button><Link to="/" className="recovery-link">Return to preflight</Link></> : <p role="status">Loading run ledger…</p>}
+        <h1 id="main-content" tabIndex={-1}>{error ? 'Could not load this run.' : 'Loading run ledger…'}</h1>
+        {error ? <><p role="alert">{error}</p><button className="retry-button" onClick={retry}>Retry loading</button><Link to="/" className="recovery-link">Return to preflight</Link></> : <p role="status">Retrieving saved results and events.</p>}
       </section></main>
     )
   }
@@ -76,7 +81,7 @@ export default function RunPage() {
   const verified = hasVerifiedWinner(run)
   const ledgerLabel = sample ? 'sample' : terminal ? 'saved' : 'live'
   const streamNote = stream === 'reconnecting' && !terminal
-    ? 'Event connection interrupted. Reconnecting automatically; saved results refresh every 5 seconds.'
+    ? 'Event connection interrupted. Reconnecting automatically; saved results refresh when the connection resumes.'
     : ''
 
   return (
@@ -86,7 +91,7 @@ export default function RunPage() {
         <div>
           <Link to="/" className="back-link">← new run</Link>
           <div className="section-kicker"><span>{run.id.slice(0, 6)}</span> run ledger</div>
-          <h1>{heading(run)}</h1>
+          <h1 id="main-content" ref={headingRef} tabIndex={-1}>{heading(run)}</h1>
         </div>
         <dl className="run-meta">
           <div><dt>repository</dt><dd>{repositoryName(run.repo_url)}</dd></div>
@@ -115,6 +120,7 @@ export default function RunPage() {
       </section>}
 
       <section className="branch-board" aria-label="Three migration branches">
+        <h2 className="sr-only">Migration branch progress</h2>
         <div className="board-label">
           <span>{sample ? 'sample baseline' : 'Checkpoint'}</span>
           <strong title={run.baseline_checkpoint_id ?? undefined}>{sample ? `SAMPLE/${run.id.slice(0, 6)}` : run.baseline_checkpoint_id ? `${run.baseline_checkpoint_id.slice(0, 12)}…` : 'pending'}</strong>
@@ -125,6 +131,7 @@ export default function RunPage() {
           {BRANCH_IDS.map((id) => {
             const branchEvents = events.filter((event) => event.branch_id === id && event.type.startsWith('branch.'))
             const lastEvent = branchEvents.at(-1)
+            const progress = branchEvents.map(proposalProgress).filter((item) => item !== null).at(-1)
             return <BranchLane
               key={id}
               id={id}
@@ -136,6 +143,7 @@ export default function RunPage() {
               terminal={terminal}
               sample={sample}
               message={lastEvent?.message}
+              proposalProgress={progress}
             />
           })}
         </div>
@@ -148,6 +156,8 @@ export default function RunPage() {
           </div>}
         </div>
       </section>
+
+      <HowRunWorks mode={run.mode} modelId={run.model_id} />
 
       {streamNote && <p className="stream-note" role="status">{streamNote}</p>}
       {error && <p className="stream-note" role="alert">Results could not refresh: {error} <button className="retry-button" onClick={retry}>Reload ledger</button></p>}

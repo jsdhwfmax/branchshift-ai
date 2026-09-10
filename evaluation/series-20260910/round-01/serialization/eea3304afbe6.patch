@@ -1,0 +1,31 @@
+diff --git a/pyproject.toml b/pyproject.toml
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -6,7 +6,7 @@
+ name = "branchshift-eval-serialization"
+ version = "0.1.0"
+ requires-python = ">=3.10"
+-dependencies = ["pydantic>=1.10.17,<2"]
++dependencies = ["pydantic>=2,<3"]
+ 
+ [project.optional-dependencies]
+ test = ["pytest>=8"]
+diff --git a/src/sample_app/models.py b/src/sample_app/models.py
+--- a/src/sample_app/models.py
++++ b/src/sample_app/models.py
+@@ -5,12 +5,14 @@
+ 
+ 
+ class Receipt(BaseModel):
+-    receipt_id: int = Field(alias="id")
++    model_config = {}
++    receipt_id: int = Field(alias='id')
+     issued_at: datetime
+     note: Optional[str] = None
+ 
+ 
+ class Bundle(BaseModel):
++    model_config = {}
+     receipt: Receipt
+ 
+ 

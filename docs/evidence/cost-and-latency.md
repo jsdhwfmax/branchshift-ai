@@ -1,5 +1,16 @@
 # Cost and latency evidence
 
+**Completed controlled cohort, 10 September:** the separate
+[three-round series](../../evaluation/series-20260910/README.md) retained all
+15 planned terminal live runs and qualified all 15. It recorded 79 model
+requests with complete returned usage (275,634 input / 126,231 output tokens),
+an estimated **USD 0.654327** of reported-token inference, and 176 returned
+Sandbox SDK calls. Median ledger duration is 53.022 seconds; p95 114.892 seconds.
+Those SDK counts are not billed operations, and the inference estimate excludes
+other services/taxes. Original records and the predeclared matrix are retained.
+
+## Earlier development cohort
+
 Prepared 10 September 2026 from the **16 retained development attempts** in
 [attempts.json](../../evaluation/attempts.json). The response-token arithmetic
 for the **13 records matching the verified Ultra rate card is USD 0.672222**.
@@ -173,14 +184,13 @@ and the actual account charge remain unverified here.
 | AI Cloud runtime, disk, network, backups and registry | Not included; separate deployment estimate and actual billing required |
 | Taxes and credit deductions | Excluded; not inferred from the rate card |
 
-## Next declared 15-run series: collection method, results pending
+## Declared 15-run series: collection method
 
-**No result from the next series is included in this document.** At preparation
-time it had not begun. The next batch is intended to cover the five declared
-cases for three rounds, using the [series runner](../../evaluation/run_evaluation.py)
-and [series summarizer](../../services/api/app/cli/series.py). Its actual results
-must be appended as a separate dated cohort, not merged into a claim that these
-16 development attempts used a frozen implementation.
+This method was defined before the completed cohort linked at the top. The
+[series runner](../../evaluation/run_evaluation.py) and
+[series summarizer](../../services/api/app/cli/series.py) collected all five cases
+for three rounds. Those results remain separate from the 16 development
+attempts above; the older cohort is not retroactively described as frozen.
 
 1. Retain the predeclared 15 case/round slots, exact public baseline commit,
    model ID, orchestrator content digest, runtime-config digest and applicable
@@ -207,7 +217,7 @@ must be appended as a separate dated cohort, not merged into a claim that these
    usage stops further scheduled work for review. It is not a hard provider
    spending cap: a run already underway can exceed the remaining estimate,
    and excluded services remain outside it. No new-series estimate or total
-   is asserted until its actual retained results exist.
+   is asserted without its actual retained results.
 
 ## Local validation and source identity
 

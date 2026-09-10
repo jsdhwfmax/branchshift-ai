@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "verified_at": "2026-09-10T06:00:16.444Z",
+  "source": "GitHub Actions read-only connector",
+  "repository": "jsdhwfmax/branchshift-ai",
+  "run": {
+    "id": 34443169993,
+    "attempt": 1,
+    "name": "CI",
+    "event": "push",
+    "head_sha": "92c733a1338cc7abdbcf04ca00be363158fd126c",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34443169993",
+    "created_at": "2026-09-10T05:57:48Z",
+    "updated_at": "2026-09-10T05:58:47Z"
+  },
+  "jobs": [
+    {
+      "id": 102762253948,
+      "name": "quality",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "number": 1,
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 2,
+          "name": "Check out source",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 3,
+          "name": "Set up Python",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 4,
+          "name": "Set up pnpm",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 5,
+          "name": "Set up Node.js",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 6,
+          "name": "Install API dependencies",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 7,
+          "name": "Install fixture dependencies",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 8,
+          "name": "Install web dependencies",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 9,
+          "name": "Run the complete quality gate",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 15,
+          "name": "Post Set up Node.js",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 16,
+          "name": "Post Set up pnpm",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 17,
+          "name": "Post Set up Python",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 18,
+          "name": "Post Check out source",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 19,
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "scope": "Published-commit quality CI only; does not assert container smoke, registry publication or hosting."
+}

@@ -28,3 +28,12 @@ export function parseRunEvent(raw: MessageEvent<string>): RunEvent | null {
     return null
   }
 }
+
+export function proposalProgress(event: RunEvent) {
+  if (event.type !== 'branch.progress') return null
+  const { attempt, max_attempts: maxAttempts } = event.payload
+  return typeof attempt === 'number' && typeof maxAttempts === 'number'
+    && Number.isSafeInteger(attempt) && Number.isSafeInteger(maxAttempts)
+    && attempt > 0 && maxAttempts >= attempt
+    ? { attempt, maxAttempts } : null
+}

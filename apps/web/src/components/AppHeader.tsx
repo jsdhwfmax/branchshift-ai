@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 export default function AppHeader({ mode }: { mode?: 'mock' | 'live' }) {
   return (
     <header className="app-header">
+      <a className="skip-link" href="#main-content">Skip to content</a>
       <Link className="wordmark" to="/" aria-label="BranchShift home">
         <span className="mark" aria-hidden="true"><i /><i /><i /></span>
         <span>BranchShift</span>

@@ -16,6 +16,9 @@ test('states the bounded decision contract and labels sample replay before launc
   expect(await screen.findByRole('button', { name: /Replay sample/i })).toBeEnabled()
   expect(screen.getByText(/No repository is migrated/)).toBeInTheDocument()
   expect(screen.queryByText('18 tests passing')).not.toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'How this run works' })).toBeVisible()
+  expect(screen.getByText('Tavily')).toBeVisible()
+  expect(screen.getByText(/No providers are called in this sample/)).toBeVisible()
 })
 
 test('keeps launch unavailable until the execution mode is known', () => {

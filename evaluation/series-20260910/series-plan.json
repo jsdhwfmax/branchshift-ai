@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-09-10T05:58:06.688774+00:00",
+  "rounds": 3,
+  "cases": [
+    {
+      "id": "validators",
+      "local_path": "../fixtures/pydantic-v1-app",
+      "project_path": "fixtures/pydantic-v1-app",
+      "public_repo_url": "https://github.com/jsdhwfmax/branchshift-ai",
+      "minimum_tests": 13,
+      "behavior": "Field trimming/email normalization, root validation, aliases and nested models remain valid under a Pydantic 2 runtime."
+    },
+    {
+      "id": "config",
+      "local_path": "fixtures/config",
+      "project_path": "evaluation/fixtures/config",
+      "public_repo_url": "https://github.com/jsdhwfmax/branchshift-ai",
+      "minimum_tests": 5,
+      "behavior": "Alias and field-name population, whitespace trimming, extra-field rejection and ORM attribute input remain unchanged."
+    },
+    {
+      "id": "serialization",
+      "local_path": "fixtures/serialization",
+      "project_path": "evaluation/fixtures/serialization",
+      "public_repo_url": "https://github.com/jsdhwfmax/branchshift-ai",
+      "minimum_tests": 4,
+      "behavior": "Dictionary aliases, exclusion of absent values, nested serialization and JSON datetime output remain unchanged."
+    },
+    {
+      "id": "parsing",
+      "local_path": "fixtures/parsing",
+      "project_path": "evaluation/fixtures/parsing",
+      "public_repo_url": "https://github.com/jsdhwfmax/branchshift-ai",
+      "minimum_tests": 4,
+      "behavior": "Object, JSON, nested payload and validation-error boundaries remain unchanged."
+    },
+    {
+      "id": "compatibility",
+      "local_path": "fixtures/compatibility",
+      "project_path": "evaluation/fixtures/compatibility",
+      "public_repo_url": "https://github.com/jsdhwfmax/branchshift-ai",
+      "minimum_tests": 4,
+      "behavior": "Native and pydantic.v1 imports coexist behind a dictionary boundary, preserving coercion and validation under installed Pydantic 2."
+    }
+  ],
+  "baseline_commit_sha": "92c733a1338cc7abdbcf04ca00be363158fd126c",
+  "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "runtime_config_digest": "451b932c6baf67bb6b5ae8ff38b506e75a9724caca366df8dfdf7d8da5b2b8f4",
+  "orchestrator_revision": "92c733a1338cc7abdbcf04ca00be363158fd126c",
+  "orchestrator_digest": "cb65c342748516f4b7c450cdb83864d8987a2188fa21f25cce488ffb28d431cd",
+  "orchestrator_dirty": true,
+  "max_estimated_inference_usd": 3.0,
+  "budget_scope": "stop between runs on reported estimate or incomplete usage; not an invoice"
+}

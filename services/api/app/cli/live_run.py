@@ -8,9 +8,16 @@ from dataclasses import replace
 from pathlib import Path
 
 from app.config import settings
-from app.domain.models import TERMINAL_RUN_STATUSES, CreateRunRequest, RunStatus
+from app.domain.models import (
+    TERMINAL_RUN_STATUSES,
+    CreateRunRequest,
+    RunEvent,
+    RunStatus,
+    RunSummary,
+)
 from app.orchestrator.run_manager import RunManager
 from app.providers.redaction import redact
+from app.reports import render_markdown_report
 from app.storage.repositories import RunRepository
 
 
@@ -40,6 +47,13 @@ async def execute(repo_url: str, output: Path, *, project_path: str | None = Non
         )
         evidence_path = output / f"{run.id}.json"
         evidence_path.write_text(document + "\n")
+        events = await repository.list_events(run.id)
+        safe_events = [RunEvent.model_validate_json(redact(
+            event.model_dump_json(), [config.nebius_api_key, config.tavily_api_key],
+        )) for event in events]
+        (output / f"{run.id}.md").write_text(render_markdown_report(
+            RunSummary.model_validate_json(document), safe_events,
+        ))
         if run.patch:
             (output / f"{run.id}.patch").write_text(run.patch)
         print(f"STATUS={run.status.value}\nEVIDENCE={evidence_path.resolve()}", flush=True)

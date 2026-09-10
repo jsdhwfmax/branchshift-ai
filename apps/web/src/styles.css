@@ -6,8 +6,8 @@
   --line: #cbd1cd;
   --blueprint: #2457f5;
   --signal: #f2b544;
-  --pass: #0b8a6a;
-  --fault: #d95c59;
+  --pass: #07644e;
+  --fault: #a93230;
   --shadow: 0 16px 50px rgba(23, 32, 30, 0.09);
   color: var(--graphite);
   background: var(--chalk);
@@ -35,7 +35,9 @@ button, input { font: inherit; }
 a { color: inherit; }
 
 button, a, input { outline-offset: 4px; }
-button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--signal); }
+button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--blueprint); outline-offset: 4px; }
+.skip-link { position: absolute; top: -100px; left: 16px; z-index: 10; padding: 12px 16px; color: white; background: var(--graphite); }
+.skip-link:focus { top: 12px; }
 
 .sr-only {
   position: absolute;
@@ -193,7 +195,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
 .project-directory { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
 .project-directory label span { color: var(--muted); text-transform: none; }
 .project-directory input { font: 13px/1.6 'IBM Plex Mono', monospace; padding: 5px 0; }
-.project-directory input::placeholder { color: #87918d; font-weight: 400; }
+.project-directory input::placeholder { color: var(--muted); font-weight: 400; }
 .target-block {
   padding: 16px 20px;
   display: flex;
@@ -242,6 +244,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
 .baseline-node strong, .winner-gate strong { display: block; margin: 8px 0 4px; font-size: 17px; }
 .baseline-node small, .winner-gate small { color: #aeb7b3; }
 .winner-gate { background: var(--blueprint); }
+.winner-gate span, .winner-gate small { color: white; }
 .winner-gate { grid-column: 5; }
 .preview-rails {
   height: 248px;
@@ -331,7 +334,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
 .board-label strong, .winner-node strong { display: block; margin: 8px 0 5px; font-size: 12px; }
 .winner-node { background: #5e6865; transition: background 300ms ease, transform 300ms ease; }
 .winner-node.locked { background: var(--pass); transform: translateX(4px); }
-.winner-node small { font-size: 8px; color: rgba(255, 255, 255, 0.72); }
+.winner-node span, .winner-node small { color: white; }
+.winner-node small { font-size: 8px; }
 .branch-spine { position: relative; height: 320px; }
 .branch-spine::before { content: ''; position: absolute; left: 0; top: 50%; width: 24px; border-top: 2px solid var(--graphite); }
 .branch-spine span { position: absolute; left: 22px; width: 52px; border-top: 2px solid var(--graphite); transform-origin: left; }
@@ -365,7 +369,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
 .lane-copy { min-width: 0; padding: 16px 20px; overflow-wrap: anywhere; }
 .lane-heading { display: flex; align-items: center; gap: 10px; }
 .branch-code { color: var(--branch-color); font-size: 9px; }
-.state-chip { padding: 3px 6px; color: var(--muted); background: #e9ece9; font-size: 10px; text-transform: uppercase; }
+.state-chip { padding: 3px 6px; color: #47534f; background: #e9ece9; font-size: 10px; text-transform: uppercase; }
 .is-winner .state-chip { background: var(--pass); color: white; }
 .lane-copy h3 { margin: 8px 0 4px; font-size: 17px; letter-spacing: -0.02em; }
 .lane-copy p { max-width: 520px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
@@ -432,6 +436,13 @@ tbody th { text-transform: capitalize; }
 .strategy-details { margin-top: 10px; font-size: 11px; line-height: 1.6; }
 .strategy-details summary { cursor: pointer; padding: 5px 0; color: var(--blueprint); }
 .strategy-details ol { margin: 6px 0 0; padding-left: 18px; color: var(--muted); }
+.target-files ul { padding-left: 18px; margin: 6px 0 0; }
+.target-files code { overflow-wrap: anywhere; }
+.run-how { padding-block: 28px; border-bottom: 1px solid var(--line); }
+.run-how h2 { font-size: 24px; }
+.how-scope, .how-model { font-size: 12px; line-height: 1.6; color: var(--muted); }
+.how-model span, .how-model code { display: block; }
+.how-model code { margin-top: 4px; overflow-wrap: anywhere; }
 .branch-diagnostics pre { max-height: 240px; padding: 10px; overflow: auto; background: #eef1ed; font: 10px/1.6 'IBM Plex Mono', monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
 .board-label small { display: block; font-size: 10px; line-height: 1.5; color: #cbd1cd; }
 .branch-provenance { margin: 10px 0 0; font: 10px/1.6 'IBM Plex Mono', monospace; }

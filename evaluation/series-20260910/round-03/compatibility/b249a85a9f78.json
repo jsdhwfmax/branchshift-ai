@@ -1,0 +1,218 @@
+{
+  "id": "b249a85a9f78",
+  "repo_url": "https://github.com/jsdhwfmax/branchshift-ai",
+  "target": "pydantic-v2",
+  "project_path": "evaluation/fixtures/compatibility",
+  "mode": "live",
+  "status": "completed",
+  "created_at": "2026-09-10T06:13:31.678422Z",
+  "updated_at": "2026-09-10T06:14:24.700255Z",
+  "strategies": [
+    {
+      "id": "minimal",
+      "title": "Minimal v2 migration with compatibility layer",
+      "rationale": "Upgrade Pydantic to v2 while keeping the v1 compatibility layer for LegacyItem. Replace deprecated method names (parse_obj\u2192model_validate, dict\u2192model_dump) on the v2 model to avoid deprecation warnings. The v1 model continues to work via pydantic.v1 import. Update dependency pin to >=2,<3.",
+      "ordered_steps": [
+        "Update pyproject.toml: change pydantic dependency from >=1.10.17,<2 to >=2,<3",
+        "Update src/sample_app/models.py: change CurrentItem.parse_obj() to CurrentItem.model_validate() and .dict() to .model_dump()",
+        "Keep LegacyItem using pydantic.v1.BaseModel and its parse_obj/dict methods (they remain functional in v2 compat layer)"
+      ],
+      "source_urls": [
+        "https://pydantic.dev/docs/validation/latest/get-started/migration/#changes-to-pydanticbasemodel"
+      ],
+      "target_files": [
+        "pyproject.toml",
+        "src/sample_app/models.py"
+      ]
+    },
+    {
+      "id": "compatibility",
+      "title": "Unified v2 native models with ValidationError harmonization",
+      "rationale": "Migrate both models to native v2 BaseModel, eliminating the pydantic.v1 import. Use model_config for any config needs. Harmonize ValidationError handling at call sites by catching pydantic.ValidationError (v2) which subclasses ValueError, preserving the existing ValueError contract in tests. Update dependency pin to >=2,<3.",
+      "ordered_steps": [
+        "Update pyproject.toml: change pydantic dependency to >=2,<3",
+        "Update src/sample_app/models.py: change LegacyItem to extend BaseModel (v2) instead of LegacyBaseModel",
+        "Replace all parse_obj() calls with model_validate() and dict() with model_dump() on both models",
+        "Remove pydantic.v1 import",
+        "Ensure both models use native v2 validation which raises pydantic.ValidationError (subclass of ValueError)"
+      ],
+      "source_urls": [
+        "https://pydantic.dev/docs/validation/latest/get-started/migration/#changes-to-pydanticbasemodel",
+        "https://pydantic.dev/docs/validation/latest/get-started/migration/#changes-to-config"
+      ],
+      "target_files": [
+        "pyproject.toml",
+        "src/sample_app/models.py"
+      ]
+    },
+    {
+      "id": "refactor",
+      "title": "Full v2 modernization with model_config and new serialization",
+      "rationale": "Complete migration to v2 idioms: use model_config dict instead of legacy Config class, adopt model_dump for serialization, and leverage v2's improved validation. Both models become native v2 BaseModel subclasses. The bridge function remains a plain dict boundary. Update dependency pin to >=2,<3.",
+      "ordered_steps": [
+        "Update pyproject.toml: change pydantic dependency to >=2,<3",
+        "Update src/sample_app/models.py: convert both CurrentItem and LegacyItem to native v2 BaseModel",
+        "Add model_config = {} to each model class (explicit v2 config style)",
+        "Replace parse_obj with model_validate and dict with model_dump throughout",
+        "Remove pydantic.v1 import entirely",
+        "Keep bridge_payload as dict-to-dict boundary between models"
+      ],
+      "source_urls": [
+        "https://pydantic.dev/docs/validation/latest/get-started/migration/#changes-to-pydanticbasemodel",
+        "https://pydantic.dev/docs/validation/latest/get-started/migration/#changes-to-config"
+      ],
+      "target_files": [
+        "pyproject.toml",
+        "src/sample_app/models.py"
+      ]
+    }
+  ],
+  "branches": [
+    {
+      "strategy_id": "minimal",
+      "status": "passed",
+      "tests_collected": 4,
+      "tests_passed": 4,
+      "tests_failed": 0,
+      "pip_check_passed": true,
+      "lint_findings": 0,
+      "changed_files": 2,
+      "changed_lines": 4,
+      "elapsed_seconds": 6.923755290998088,
+      "patch_applicable": true,
+      "patch": "diff --git a/pyproject.toml b/pyproject.toml\n--- a/pyproject.toml\n+++ b/pyproject.toml\n@@ -6,7 +6,7 @@\n name = \"branchshift-eval-compatibility\"\n version = \"0.1.0\"\n requires-python = \">=3.10\"\n-dependencies = [\"pydantic>=1.10.17,<2\"]\n+dependencies = [\"pydantic>=2,<3\"]\n \n [project.optional-dependencies]\n test = [\"pytest>=8\"]\ndiff --git a/src/sample_app/models.py b/src/sample_app/models.py\n--- a/src/sample_app/models.py\n+++ b/src/sample_app/models.py\n@@ -11,7 +11,7 @@\n \n \n def current_payload(payload):\n-    return CurrentItem.parse_obj(payload).dict()\n+    return CurrentItem.model_validate(payload).model_dump()\n \n \n def legacy_payload(payload):\n",
+      "diagnostics": "....                                                                     [100%]\n4 passed in 0.10s",
+      "failure_reason": null,
+      "pydantic_major": 2,
+      "test_exit_code": 0,
+      "pip_exit_code": 0,
+      "test_contract_preserved": true,
+      "checkpoint_id": "30b52d35-cf6a-4109-a00e-4eed050b6391"
+    },
+    {
+      "strategy_id": "compatibility",
+      "status": "passed",
+      "tests_collected": 4,
+      "tests_passed": 4,
+      "tests_failed": 0,
+      "pip_check_passed": true,
+      "lint_findings": 0,
+      "changed_files": 2,
+      "changed_lines": 9,
+      "elapsed_seconds": 6.665817583001626,
+      "patch_applicable": true,
+      "patch": "diff --git a/pyproject.toml b/pyproject.toml\n--- a/pyproject.toml\n+++ b/pyproject.toml\n@@ -6,7 +6,7 @@\n name = \"branchshift-eval-compatibility\"\n version = \"0.1.0\"\n requires-python = \">=3.10\"\n-dependencies = [\"pydantic>=1.10.17,<2\"]\n+dependencies = [\"pydantic>=2,<3\"]\n \n [project.optional-dependencies]\n test = [\"pytest>=8\"]\ndiff --git a/src/sample_app/models.py b/src/sample_app/models.py\n--- a/src/sample_app/models.py\n+++ b/src/sample_app/models.py\n@@ -1,21 +1,20 @@\n from pydantic import BaseModel\n-from pydantic.v1 import BaseModel as LegacyBaseModel\n \n \n class CurrentItem(BaseModel):\n     quantity: int\n \n \n-class LegacyItem(LegacyBaseModel):\n+class LegacyItem(BaseModel):\n     quantity: int\n \n \n def current_payload(payload):\n-    return CurrentItem.parse_obj(payload).dict()\n+    return CurrentItem.model_validate(payload).model_dump()\n \n \n def legacy_payload(payload):\n-    return LegacyItem.parse_obj(payload).dict()\n+    return LegacyItem.model_validate(payload).model_dump()\n \n \n def bridge_payload(payload):\n",
+      "diagnostics": "....                                                                     [100%]\n4 passed in 0.08s",
+      "failure_reason": null,
+      "pydantic_major": 2,
+      "test_exit_code": 0,
+      "pip_exit_code": 0,
+      "test_contract_preserved": true,
+      "checkpoint_id": "0e7a0015-42f1-4b5a-bc6e-8b3ac3c45eca"
+    },
+    {
+      "strategy_id": "refactor",
+      "status": "passed",
+      "tests_collected": 4,
+      "tests_passed": 4,
+      "tests_failed": 0,
+      "pip_check_passed": true,
+      "lint_findings": 0,
+      "changed_files": 2,
+      "changed_lines": 11,
+      "elapsed_seconds": 6.86874812500173,
+      "patch_applicable": true,
+      "patch": "diff --git a/pyproject.toml b/pyproject.toml\n--- a/pyproject.toml\n+++ b/pyproject.toml\n@@ -6,7 +6,7 @@\n name = \"branchshift-eval-compatibility\"\n version = \"0.1.0\"\n requires-python = \">=3.10\"\n-dependencies = [\"pydantic>=1.10.17,<2\"]\n+dependencies = [\"pydantic>=2,<3\"]\n \n [project.optional-dependencies]\n test = [\"pytest>=8\"]\ndiff --git a/src/sample_app/models.py b/src/sample_app/models.py\n--- a/src/sample_app/models.py\n+++ b/src/sample_app/models.py\n@@ -1,21 +1,22 @@\n from pydantic import BaseModel\n-from pydantic.v1 import BaseModel as LegacyBaseModel\n \n \n class CurrentItem(BaseModel):\n     quantity: int\n+    model_config = {}\n \n \n-class LegacyItem(LegacyBaseModel):\n+class LegacyItem(BaseModel):\n     quantity: int\n+    model_config = {}\n \n \n def current_payload(payload):\n-    return CurrentItem.parse_obj(payload).dict()\n+    return CurrentItem.model_validate(payload).model_dump()\n \n \n def legacy_payload(payload):\n-    return LegacyItem.parse_obj(payload).dict()\n+    return LegacyItem.model_validate(payload).model_dump()\n \n \n def bridge_payload(payload):\n",
+      "diagnostics": "....                                                                     [100%]\n4 passed in 0.08s",
+      "failure_reason": null,
+      "pydantic_major": 2,
+      "test_exit_code": 0,
+      "pip_exit_code": 0,
+      "test_contract_preserved": true,
+      "checkpoint_id": "dfac9dab-9a43-4af7-98e0-c7149d587b1d"
+    }
+  ],
+  "citations": [
+    {
+      "title": "@validator and @root_validator are deprecated",
+      "url": "https://pydantic.dev/docs/validation/latest/get-started/migration/#validator-and-root_validator-are-deprecated",
+      "evidence": "@validator and @root_validator are deprecated @validator has been deprecated, and should be replaced with @field_validator , which provides various new features and improvements. The new @field_validator decorator does not have the each_item keyword argument; validators you want to apply to items within a generic container should be added by annotating the type argument. See validators in Annotated metadata for details. This looks like list[Annotated[int, Field(ge=0)]] Even if you keep using the deprecated @validator decorator, you can no longer add the field or config arguments to the signature of validator functions. If you need access to these, you\u2019ll need to migrate to @field_validator \u2014 see the next section for more details. If you use the always=True keyword argument to a validator function, note that standard validators for the annotated type will also be applied even to defaults, not just the custom validators. For example, despite the fact that the validator below will never error, the following code raises a ValidationError : from pydantic import BaseModel, validator class Model(BaseModel): x: str = 1 @validator('x', always=True) @classmethod def validate_x(cls, v): return v Model() @root_validator has been deprecated, and should be replaced with @model_validator , which also provides new features and improvements. Be aware that the allowed signatures have changed (see the relevant documentation ). Under some circumstances (such as assignment when model_config['validate_assignment'] is True ), the @model_validator decorator will receive an instance of the model, not a dict of values. You may need to be careful to handle this case. Even if you keep using the deprecated @root_validator decorator, due to refactors in validation logic, you can no longer run with skip_on_failure=False (which is the default value of this keyword argument, so must be set explicitly to True )."
+    },
+    {
+      "title": "Changes to config",
+      "url": "https://pydantic.dev/docs/validation/latest/get-started/migration/#changes-to-config",
+      "evidence": "Changes to config In Pydantic V2, to specify config on a model, you should set a class attribute called model_config to be a dict with the key/value pairs you want to be used as the config. The Pydantic V1 behavior to create a class called Config in the namespace of the parent BaseModel subclass is now deprecated. When subclassing a model, the model_config attribute is inherited. This is helpful in the case where you\u2019d like to use a base class with a given configuration for many models. Note, if you inherit from multiple BaseModel subclasses, like class MyModel(Model1, Model2) , the non-default settings in the model_config attribute from the two models will be merged, and for any settings defined in both, those from Model2 will override those from Model1 . The following config settings have been removed: allow_mutation \u2014 this has been removed. You should be able to use frozen equivalently (inverse of current use). error_msg_templates fields \u2014 this was the source of various bugs, so has been removed. You should be able to use Annotated on fields to modify them as desired. getter_dict \u2014 orm_mode has been removed, and this implementation detail is no longer necessary. smart_union - the default union_mode in Pydantic V2 is 'smart' . underscore_attrs_are_private \u2014 the Pydantic V2 behavior is now the same as if this was always set to True in Pydantic V1. json_loads json_dumps copy_on_model_validation post_init_call The following config settings have been renamed: allow_population_by_field_name \u2192 populate_by_name (or validate_by_name starting in v2.11) anystr_lower \u2192 str_to_lower anystr_strip_whitespace \u2192 str_strip_whitespace anystr_upper \u2192 str_to_upper keep_untouched \u2192 ignored_types max_anystr_length \u2192 str_max_length min_anystr_length \u2192 str_min_length orm_mode \u2192 from_attributes schema_extra \u2192 json_schema_extra validate_all \u2192 validate_default See the ConfigDict API reference for more details."
+    },
+    {
+      "title": "Changes to pydantic.BaseModel",
+      "url": "https://pydantic.dev/docs/validation/latest/get-started/migration/#changes-to-pydanticbasemodel",
+      "evidence": "Changes to pydantic.BaseModel Various method names have been changed; all non-deprecated BaseModel methods now have names matching either the format model_.* or __.*pydantic.*__ . Where possible, we have retained the deprecated methods with their old names to help ease migration, but calling them will emit DeprecationWarning s. Pydantic V1 Pydantic V2 __fields__ model_fields __private_attributes__ __pydantic_private__ __validators__ __pydantic_validator__ construct() model_construct() copy() model_copy() dict() model_dump() json_schema() model_json_schema() json() model_dump_json() parse_obj() model_validate() update_forward_refs() model_rebuild() Some of the built-in data-loading functionality has been slated for removal. In particular, parse_raw and parse_file are now deprecated. In Pydantic V2, model_validate_json works like parse_raw . Otherwise, you should load the data and then pass it to model_validate . The from_orm method has been deprecated; you can now just use model_validate (equivalent to parse_obj from Pydantic V1) to achieve something similar, as long as you\u2019ve set from_attributes=True in the model config. The __eq__ method has changed for models. Models can only be equal to other BaseModel instances. For two model instances to be equal, they must have the same: Type (or, in the case of generic models, non-parametrized generic origin type) Field values Extra values (only relevant when model_config['extra'] == 'allow' ) Private attribute values; models with different values of private attributes are no longer equal. Models are no longer equal to the dicts containing their data. Non-generic models of different types are never equal. Generic models with different origin types are never equal. We don\u2019t require exact type equality so that, for example, instances of MyGenericModel[Any] could be equal to instances of MyGenericModel[int] . We have replaced the use of the __root__ field to specify a \u201ccustom root model\u201d with a new type called RootModel which is intended to replace the functionality of using a field called __root__ in Pydantic V1. Note, RootModel types no longer support the arbitrary_types_allowed config setting. See this issue comment for an explanation. We have significantly expanded Pydantic\u2019s capabilities related to customizing serialization. In particular, we have added the @field_serializer , @model_serializer , and @computed_field decorators, which each address various shortcomings from Pydantic V1. See Custom serializers for the usage docs of these new decorators. Due to performance overhead and implementation complexity, we have now deprecated support for specifying json_encoders in the model config. This functionality was originally added for the purpose of achieving custom serialization logic, and we think the new serialization decorators are a better choice in most common scenarios. We have changed the behavior related to serializing subclasses of models when they occur as nested fields in a parent model. In V1, w"
+    },
+    {
+      "title": "Migration Guide | Pydantic Docs",
+      "url": "https://pydantic.dev/docs/validation/latest/get-started/migration",
+      "evidence": "Some of the built-in data-loading functionality has been slated for removal. In particular, `parse_raw` and `parse_file` are now deprecated. In Pydantic V2, `model_validate_json` works like `parse_raw`. Otherwise, you should load the data and then pass it to `model_validate`. The `from_orm` method has been deprecated; you can now just use `model_validate` (equivalent to `parse_obj` from Pydantic V1) to achieve something similar, as long as you\u2019ve set `from_attributes=True` in the model config. The `__eq__` method has changed for models. + Models can only be equal to other `BaseModel` instances. + For two model instances to be equal, they must have the same: - Type (or, in the case of generic models, non-parametrized generic origin type) - Field values [...] #### Changes to `@validator`\u2019s allowed signatures In Pydantic V1, functions wrapped by `@validator` could receive keyword arguments with metadata about what was being validated. Some of these arguments have been removed from `@field_validator` in Pydantic V2: `config`: Pydantic V2\u2019s config is now a dictionary instead of a class, which means this argument is no longer backwards compatible. If you need to access the configuration you should migrate to `@field_validator` and use `info.config`. `field`: this argument used to be a `ModelField` object, which was a quasi-internal class that no longer exists in Pydantic V2. Most of this information can still be accessed by using the field name from `info.field_name` to index into"
+    }
+  ],
+  "winner_id": "minimal",
+  "patch": "diff --git a/pyproject.toml b/pyproject.toml\n--- a/pyproject.toml\n+++ b/pyproject.toml\n@@ -6,7 +6,7 @@\n name = \"branchshift-eval-compatibility\"\n version = \"0.1.0\"\n requires-python = \">=3.10\"\n-dependencies = [\"pydantic>=1.10.17,<2\"]\n+dependencies = [\"pydantic>=2,<3\"]\n \n [project.optional-dependencies]\n test = [\"pytest>=8\"]\ndiff --git a/src/sample_app/models.py b/src/sample_app/models.py\n--- a/src/sample_app/models.py\n+++ b/src/sample_app/models.py\n@@ -11,7 +11,7 @@\n \n \n def current_payload(payload):\n-    return CurrentItem.parse_obj(payload).dict()\n+    return CurrentItem.model_validate(payload).model_dump()\n \n \n def legacy_payload(payload):\n",
+  "report": "Minimal won at commit 92c733a1338c: 4/4 tests, 0 lint findings, 4 changed lines.",
+  "failure_reason": null,
+  "baseline_commit_sha": "92c733a1338cc7abdbcf04ca00be363158fd126c",
+  "baseline_checkpoint_id": "644e2fa3-ac56-4d54-807c-8ca6cf8aac92",
+  "baseline_tests_collected": 4,
+  "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "provider_usage": {
+    "requests": 4,
+    "input_tokens": 12746,
+    "output_tokens": 4710,
+    "model_usage_version": 1,
+    "responses_with_usage": 4,
+    "sandbox_usage_version": 1,
+    "sandbox_sdk_calls_attempted": 11,
+    "sandbox_sdk_calls_completed": 11,
+    "sandbox_sdk_calls_failed": 0,
+    "sandbox_sdk_calls_cancelled": 0,
+    "sandbox_image_use_attempted": 1,
+    "sandbox_image_use_completed": 1,
+    "sandbox_image_use_failed": 0,
+    "sandbox_image_use_cancelled": 0,
+    "sandbox_run_attempted": 6,
+    "sandbox_run_completed": 6,
+    "sandbox_run_failed": 0,
+    "sandbox_run_cancelled": 0,
+    "sandbox_read_attempted": 4,
+    "sandbox_read_completed": 4,
+    "sandbox_read_failed": 0,
+    "sandbox_read_cancelled": 0,
+    "sandbox_run_exit_zero": 6,
+    "sandbox_run_exit_nonzero": 0
+  },
+  "baseline_test_contract_digest": "8e58e20ee8acacaa6117ced3f3f64b2992dfca16b38931ce57f6a8cd72ec007d",
+  "revalidated_checkpoint_id": "3a208d20-f71f-4b0b-ad1b-4bf4ce331856",
+  "revalidation": {
+    "strategy_id": "minimal",
+    "status": "passed",
+    "tests_collected": 4,
+    "tests_passed": 4,
+    "tests_failed": 0,
+    "pip_check_passed": true,
+    "lint_findings": 0,
+    "changed_files": 2,
+    "changed_lines": 4,
+    "elapsed_seconds": 6.04147570799978,
+    "patch_applicable": true,
+    "patch": "diff --git a/pyproject.toml b/pyproject.toml\n--- a/pyproject.toml\n+++ b/pyproject.toml\n@@ -6,7 +6,7 @@\n name = \"branchshift-eval-compatibility\"\n version = \"0.1.0\"\n requires-python = \">=3.10\"\n-dependencies = [\"pydantic>=1.10.17,<2\"]\n+dependencies = [\"pydantic>=2,<3\"]\n \n [project.optional-dependencies]\n test = [\"pytest>=8\"]\ndiff --git a/src/sample_app/models.py b/src/sample_app/models.py\n--- a/src/sample_app/models.py\n+++ b/src/sample_app/models.py\n@@ -11,7 +11,7 @@\n \n \n def current_payload(payload):\n-    return CurrentItem.parse_obj(payload).dict()\n+    return CurrentItem.model_validate(payload).model_dump()\n \n \n def legacy_payload(payload):\n",
+    "diagnostics": "....                                                                     [100%]\n4 passed in 0.10s",
+    "failure_reason": null,
+    "pydantic_major": 2,
+    "test_exit_code": 0,
+    "pip_exit_code": 0,
+    "test_contract_preserved": true,
+    "checkpoint_id": "3a208d20-f71f-4b0b-ad1b-4bf4ce331856"
+  },
+  "orchestrator_revision": "92c733a1338cc7abdbcf04ca00be363158fd126c",
+  "orchestrator_digest": "cb65c342748516f4b7c450cdb83864d8987a2188fa21f25cce488ffb28d431cd",
+  "orchestrator_dirty": true,
+  "runtime_config_digest": "451b932c6baf67bb6b5ae8ff38b506e75a9724caca366df8dfdf7d8da5b2b8f4"
+}

@@ -30,6 +30,13 @@ def _limit_env(name: str, default: int) -> int:
     return value
 
 
+def _positive_int_env(name: str, default: int) -> int:
+    value = _limit_env(name, default)
+    if value < 1:
+        raise ValueError(f"{name} must be a positive integer")
+    return value
+
+
 @dataclass(frozen=True)
 class Settings:
     mode: str = os.getenv("BRANCHSHIFT_MODE", "mock")
@@ -37,6 +44,7 @@ class Settings:
     mock_step_delay_seconds: float = _float_env("MOCK_STEP_DELAY_SECONDS", 0.18)
     run_timeout_seconds: int = _int_env("RUN_TIMEOUT_SECONDS", 900)
     max_concurrent_runs: int = _int_env("MAX_CONCURRENT_RUNS", 2)
+    max_repository_bytes: int = _positive_int_env("MAX_REPOSITORY_BYTES", 50 * 1024 * 1024)
     http_max_body_bytes: int = _limit_env("HTTP_MAX_BODY_BYTES", 8192)
     http_daily_run_limit: int = _limit_env("HTTP_DAILY_RUN_LIMIT", 5)
     http_lifetime_run_limit: int = _limit_env("HTTP_LIFETIME_RUN_LIMIT", 20)
@@ -61,6 +69,8 @@ class Settings:
     contree_image: str = os.getenv("CONTREE_IMAGE", "python:3.13-slim")
 
     def __post_init__(self) -> None:
+        if type(self.max_repository_bytes) is not int or self.max_repository_bytes < 1:
+            raise ValueError("MAX_REPOSITORY_BYTES must be a positive integer")
         for name in (
             "http_daily_run_limit", "http_lifetime_run_limit", "http_max_pending_runs",
             "http_client_daily_run_limit", "http_client_max_outstanding_runs",

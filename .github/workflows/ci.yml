@@ -47,3 +47,9 @@ jobs:
 
       - name: Run the complete quality gate
         run: make check
+
+      - name: Install Chromium for browser checks
+        run: pnpm --dir apps/web exec playwright install --with-deps chromium
+
+      - name: Check desktop and mobile product flows
+        run: pnpm --dir apps/web exec playwright test

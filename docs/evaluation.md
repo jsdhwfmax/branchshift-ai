@@ -1,13 +1,20 @@
 # Pydantic migration evaluation
 
-Updated 10 September 2026. The [attempt manifest](../evaluation/attempts.json)
-contains **16 autonomous live development attempts: 9 failures and 7 qualified
-successes across five controlled fixtures**. The original validators case has
-three consecutive successes with the same baseline, model, source content and
-runtime configuration; each of the other four cases has one success. This
-completes five-case coverage and that three-run streak, not three successful
-full-suite repetitions or a general reliability estimate. Aggregation itself
-reads retained local exports and calls no providers.
+Updated 10 September 2026. The separate
+[predeclared three-round cohort](../evaluation/series-20260910/README.md)
+completed **15/15 qualified live migrations**, all five cases attempted three
+times against frozen baseline/runtime `92c733a`. Its median ledger duration is
+53.022 seconds; p95 114.892 seconds. Versioned collection records 79 model
+requests with complete returned usage and 176 Sandbox adapter SDK calls.
+The response-token inference estimate is USD 0.654327, excluding other services
+and taxes. That small controlled cohort has its own plan, manifest, raw exports
+and failures at candidate level; it is not a general reliability claim.
+
+The sections below describe the **earlier 16-attempt development cohort**:
+9 failures and 7 qualified successes while code/model settings changed.
+Its original aggregate remains unchanged, and none of its partial-case counts
+should be mistaken for the newer complete series. Aggregation reads retained
+exports and calls no providers.
 
 ## Recorded attempts and the three-run streak
 
