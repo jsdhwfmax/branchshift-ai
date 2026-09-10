@@ -376,6 +376,7 @@ class RunManager:
             token=self._settings.nebius_api_key,
             project_id=self._settings.nebius_project_id,
             base_url=self._settings.contree_api_url,
+            usage=self._usage[run_id],
         ) as sandbox:
             await self._repository.set_status(
                 run_id,

@@ -1,19 +1,65 @@
 from __future__ import annotations
 
 import json
+import sqlite3
 from collections.abc import AsyncIterator
 
 from fastapi import APIRouter, Header, HTTPException, Request, Response, status
 from fastapi.responses import PlainTextResponse, StreamingResponse
+from pydantic import BaseModel
 
 from app.domain.models import TERMINAL_RUN_STATUSES, CreateRunRequest, RunSummary
+from app.storage.admission import AdmissionDenied, http_admission
 
 router = APIRouter(prefix="/api/runs", tags=["runs"])
 
 
-@router.post("", response_model=RunSummary, status_code=status.HTTP_202_ACCEPTED)
+class RunAdmissionError(BaseModel):
+    detail: str
+
+
+@router.post(
+    "", response_model=RunSummary, status_code=status.HTTP_202_ACCEPTED,
+    responses={
+        413: {
+            "model": RunAdmissionError,
+            "description": "The actual request body exceeds the configured byte limit.",
+        },
+        429: {
+            "model": RunAdmissionError,
+            "description": (
+                "A persistent public/client allowance or unfinished-run limit is reached."
+            ),
+            "headers": {"Retry-After": {
+                "description": (
+                    "Optional retry delay in seconds; absent for exhausted lifetime quota."
+                ),
+                "schema": {"type": "string", "pattern": "^[0-9]+$"},
+            }},
+        },
+        503: {
+            "model": RunAdmissionError,
+            "description": "Admission storage is unavailable; no provider execution was started.",
+            "headers": {"Retry-After": {
+                "description": "Suggested retry delay in seconds.",
+                "schema": {"type": "string", "pattern": "^[0-9]+$"},
+            }},
+        },
+    },
+)
 async def create_run(payload: CreateRunRequest, request: Request) -> RunSummary:
-    summary: RunSummary = await request.app.state.manager.create(payload)
+    peer = request.client.host if request.client is not None else "unknown-peer"
+    try:
+        with http_admission(request.app.state.settings, peer):
+            summary: RunSummary = await request.app.state.manager.create(payload)
+    except AdmissionDenied as exc:
+        headers = {"Retry-After": str(exc.retry_after)} if exc.retry_after is not None else None
+        raise HTTPException(status_code=429, detail=str(exc), headers=headers) from exc
+    except sqlite3.OperationalError as exc:
+        raise HTTPException(
+            status_code=503, detail="Run admission storage is unavailable. Try again shortly.",
+            headers={"Retry-After": "1"},
+        ) from exc
     return summary
 
 

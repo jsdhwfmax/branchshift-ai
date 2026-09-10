@@ -1,0 +1,9 @@
+# Logically unbounded workload, rate-limited and stopped by the trusted 8-second alarm.
+import sys
+import time
+
+emit({"phase": "started", "workload": "infinite_output"})
+while True:
+    sys.stdout.write("BOUNDARY_OUTPUT_" + "x" * 1_009 + "\n")
+    sys.stdout.flush()
+    time.sleep(0.005)

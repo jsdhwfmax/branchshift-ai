@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "observed_on": "2026-09-10",
+  "source_url": "https://tokenfactory.nebius.com/organization/prices",
+  "source_kind": "authenticated official billing price table, observed through browser UI",
+  "currency": "USD",
+  "unit": "per 1000000 tokens",
+  "region_shown": "eu-north1",
+  "taxes_included": false,
+  "rates": {
+    "nvidia/Nemotron-3-Ultra-550b-a55b": {
+      "input": 1.0,
+      "output": 3.0,
+      "valid_from_utc": "2026-06-01",
+      "lane": "standard synchronous inference; not Batch"
+    }
+  },
+  "limitations": [
+    "Calculations estimate response-reported inference usage only, not an invoice.",
+    "Missing usage, taxes, Tavily, Cloud hosting and unverified Sandbox charges are excluded.",
+    "Recheck the applicable rates before using this card for a later release."
+  ]
+}

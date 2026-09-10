@@ -1,0 +1,12 @@
+# HOST_CANARY_PATH names only a fresh fake /tmp canary made by the harness.
+from pathlib import Path
+
+try:
+    # Never enumerate host directories or inspect credential/configuration locations.
+    Path(HOST_CANARY_PATH).read_bytes()
+except FileNotFoundError:
+    emit({"host_fake_file_readable": False, "observation": "not_found"})
+except PermissionError:
+    emit({"host_fake_file_readable": False, "observation": "permission_denied"})
+else:
+    emit({"host_fake_file_readable": True, "observation": "readable"})

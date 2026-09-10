@@ -7,6 +7,7 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.body_limit import RunBodyLimitMiddleware
 from app.api.health import router as health_router
 from app.api.runs import router as runs_router
 from app.config import Settings, settings
@@ -35,6 +36,7 @@ def create_app(config: Settings = settings, *, web_dist: Path | None = None) -> 
     application.state.settings = config
     application.state.repository = repository
     application.state.manager = manager
+    application.add_middleware(RunBodyLimitMiddleware, max_bytes=config.http_max_body_bytes)
     application.add_middleware(
         CORSMiddleware,
         allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],

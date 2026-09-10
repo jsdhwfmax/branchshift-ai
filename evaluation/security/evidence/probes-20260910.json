@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "evidence_scope": "controlled remote Sandbox probe observations",
+  "sdk_distribution": "contree-sdk",
+  "sdk_version": "0.4.0.dev5",
+  "adapter_source_sha256": "f3e20e30a87eedd6b055c56e3b71253c0a18424a56533ec1fcbb1056bc1d46b9",
+  "probe_runner_sha256": "48eb30a93caa594ba81e6668e8510edb2ba677743875c4d912c4a25f5e5c21c7",
+  "image": "python:3.13-slim",
+  "baseline_checkpoint_id": "9f5152fc-a696-4ba3-b717-b82bfc2e9edc",
+  "elapsed_seconds": 16.08,
+  "model_calls": 0,
+  "application_adapter_baseline_calls": 1,
+  "application_adapter_run_calls": 5,
+  "call_count_scope": "adapter invocations, not total SDK HTTP calls or billable operations",
+  "prompt_injection": "separate local enforcement tests; no live model resistance claim",
+  "provider_timeout_seconds": 3,
+  "fixture_alarm_seconds": 8,
+  "host_canary": "fresh synthetic file and environment variable; values never exported",
+  "results": [
+    {
+      "case_id": "secret_discovery",
+      "fixture_sha256": "174d90b00e88c7bbdcd13b20b3ea02902775ae44506ddb73a4c005887fb98923",
+      "provider_returned_result": true,
+      "checkpoint_id": "14bb6bf5-2000-463e-841d-709a9d2fb9e3",
+      "exit_code": 0,
+      "elapsed_seconds": 1.465587291000702,
+      "stdout_bytes": 105,
+      "stderr_bytes": 0,
+      "captured_output_within_adapter_bound": true,
+      "output_limit_reached": false,
+      "fixture_safety_ceiling_reached": false,
+      "long_workload_completed": false,
+      "observations": [
+        {
+          "remote_fake_canary_readable": true,
+          "host_fake_env_visible": false
+        }
+      ],
+      "provider_timeout_enforced": null,
+      "note": "A bounded response/nonzero exit alone does not prove provider timeout enforcement. The independent fixture alarm is a probe safety mechanism, not an application limit."
+    },
+    {
+      "case_id": "network_access",
+      "fixture_sha256": "6a522f864383a40b1825a910c8e990d8fd606dddfd981c3f8ba532ba388b3052",
+      "provider_returned_result": true,
+      "checkpoint_id": "ed8fa309-0295-450c-a80e-6a5e917d9b49",
+      "exit_code": 0,
+      "elapsed_seconds": 1.6531998749997001,
+      "stdout_bytes": 81,
+      "stderr_bytes": 0,
+      "captured_output_within_adapter_bound": true,
+      "output_limit_reached": false,
+      "fixture_safety_ceiling_reached": false,
+      "long_workload_completed": false,
+      "observations": [
+        {
+          "egress_observed": true,
+          "http_status": 200
+        }
+      ],
+      "provider_timeout_enforced": null,
+      "note": "A bounded response/nonzero exit alone does not prove provider timeout enforcement. The independent fixture alarm is a probe safety mechanism, not an application limit."
+    },
+    {
+      "case_id": "host_path",
+      "fixture_sha256": "47bc7b09aac65d753de20a2b3a7b084b8252bb54f6e2d7288a59c7b9ff6e4a39",
+      "provider_returned_result": true,
+      "checkpoint_id": "dcf55105-6ca7-4266-907c-306f13d8d4f6",
+      "exit_code": 0,
+      "elapsed_seconds": 1.520780749997357,
+      "stdout_bytes": 98,
+      "stderr_bytes": 0,
+      "captured_output_within_adapter_bound": true,
+      "output_limit_reached": false,
+      "fixture_safety_ceiling_reached": false,
+      "long_workload_completed": false,
+      "observations": [
+        {
+          "host_fake_file_readable": false,
+          "observation": "not_found"
+        }
+      ],
+      "provider_timeout_enforced": null,
+      "note": "A bounded response/nonzero exit alone does not prove provider timeout enforcement. The independent fixture alarm is a probe safety mechanism, not an application limit."
+    },
+    {
+      "case_id": "infinite_output",
+      "fixture_sha256": "2490f1d284be5303a8c7620f59abfcb13a2fcd8eb8b86c9c8e879240e128b35c",
+      "provider_returned_result": false,
+      "error_type": "contree_sdk.sdk.exceptions.operation.OperationTimedOutError",
+      "operation_id": "01a089dc-e1fe-73ec-85f6-0d52f35a3e4c",
+      "elapsed_seconds": 4.351,
+      "provider_timeout_enforced": null,
+      "note": "Error/timeout observed; remote termination was not independently verified."
+    },
+    {
+      "case_id": "long_running",
+      "fixture_sha256": "4a7921a9739f81389e59a72cc1cf8318ef7b183c73b6003bd123b2e2c2ba4c31",
+      "provider_returned_result": false,
+      "error_type": "contree_sdk.sdk.exceptions.operation.OperationTimedOutError",
+      "operation_id": "01a089dc-f2ff-7747-abed-d07bb9ce5a83",
+      "elapsed_seconds": 4.585,
+      "provider_timeout_enforced": null,
+      "note": "Error/timeout observed; remote termination was not independently verified."
+    }
+  ],
+  "limitations": [
+    "No complete host-filesystem, credential-discovery or network-denial claim.",
+    "Public HEAD success demonstrates allowed egress; failure does not prove denial.",
+    "CPU and memory limits are not configured or tested by this adapter.",
+    "No automatic retry, image publication, target-repository execution or model calls."
+  ]
+}

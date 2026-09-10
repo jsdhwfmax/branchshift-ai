@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "evidence_scope": "read-only status of two previously executed security probe operations",
+  "collected_at_utc": "2026-09-10T05:51:34.512662+00:00",
+  "source_probe_report_sha256": "c93a535b21edcf6598d0707859a79014c82d47a962f26f55fc2112371eeac764",
+  "sdk_distribution": "contree-sdk",
+  "sdk_version": "0.4.0.dev5",
+  "method": "Contree API get_operation_status(operation_id, inflight=False)",
+  "read_only_status_requests": 2,
+  "new_execution_requests": 0,
+  "os_level_process_termination_independently_verified": false,
+  "results": [
+    {
+      "case_id": "infinite_output",
+      "operation_id": "01a089dc-e1fe-73ec-85f6-0d52f35a3e4c",
+      "server_status": "SUCCESS",
+      "server_terminal": true,
+      "operation_duration_seconds": 3.334,
+      "requested_timeout_seconds": 3,
+      "requested_truncate_output_at_bytes": 32000,
+      "process_result": {
+        "exit_code": -1,
+        "signal": 9,
+        "timed_out": true,
+        "stopped": false,
+        "continued": false,
+        "core_dump": false
+      },
+      "stdout": {
+        "available": true,
+        "encoding": "ascii",
+        "captured_bytes": 32000,
+        "server_reported_truncated": true
+      },
+      "stderr": {
+        "available": true,
+        "encoding": "ascii",
+        "captured_bytes": 0,
+        "server_reported_truncated": false
+      }
+    },
+    {
+      "case_id": "long_running",
+      "operation_id": "01a089dc-f2ff-7747-abed-d07bb9ce5a83",
+      "server_status": "SUCCESS",
+      "server_terminal": true,
+      "operation_duration_seconds": 3.312,
+      "requested_timeout_seconds": 3,
+      "requested_truncate_output_at_bytes": 32000,
+      "process_result": {
+        "exit_code": -1,
+        "signal": 9,
+        "timed_out": true,
+        "stopped": false,
+        "continued": false,
+        "core_dump": false
+      },
+      "stdout": {
+        "available": true,
+        "encoding": "ascii",
+        "captured_bytes": 115,
+        "server_reported_truncated": false
+      },
+      "stderr": {
+        "available": true,
+        "encoding": "ascii",
+        "captured_bytes": 0,
+        "server_reported_truncated": false
+      }
+    }
+  ]
+}

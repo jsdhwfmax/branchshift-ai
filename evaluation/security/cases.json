@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {"id": "prompt_injection", "file": "fixtures/prompt_injection.py.txt", "mode": "local_enforcement", "timeout_seconds": null},
+    {"id": "secret_discovery", "file": "fixtures/secret_discovery.py.txt", "mode": "remote", "timeout_seconds": 3},
+    {"id": "network_access", "file": "fixtures/network_access.py.txt", "mode": "remote", "timeout_seconds": 3},
+    {"id": "host_path", "file": "fixtures/host_path.py.txt", "mode": "remote", "timeout_seconds": 3},
+    {"id": "infinite_output", "file": "fixtures/infinite_output.py.txt", "mode": "remote", "timeout_seconds": 3},
+    {"id": "long_running", "file": "fixtures/long_running.py.txt", "mode": "remote", "timeout_seconds": 3}
+  ]
+}

@@ -26,6 +26,31 @@ def _text(value: object) -> str:
     return value if isinstance(value, str) and re.fullmatch(r"[\w./:@+-]{1,200}", value) else ""
 
 
+def sdk_call_counts(usage: dict[str, Any]) -> dict[str, int] | None:
+    """Versioned adapter call observations, not SDK polling or billable operations."""
+    if type(usage.get("sandbox_usage_version")) is not int or usage["sandbox_usage_version"] != 1:
+        return None
+    outcomes = ("attempted", "completed", "failed", "cancelled")
+    counts = {name: _count(usage.get(f"sandbox_sdk_calls_{name}")) for name in outcomes}
+    if any(value is None for value in counts.values()):
+        return None
+    result = {name: int(value) for name, value in counts.items() if value is not None}
+    if result["attempted"] != sum(result[name] for name in outcomes[1:]):
+        return None
+    operations = []
+    for operation in ("image_use", "run", "read"):
+        group = {name: _count(usage.get(f"sandbox_{operation}_{name}")) for name in outcomes}
+        if any(value is None for value in group.values()):
+            return None
+        observed = {name: int(value) for name, value in group.items() if value is not None}
+        if observed["attempted"] != sum(observed[name] for name in outcomes[1:]):
+            return None
+        operations.append(observed)
+    if any(sum(group[name] for group in operations) != result[name] for name in outcomes):
+        return None
+    return result
+
+
 def _timestamp(value: object) -> datetime:
     if not isinstance(value, str):
         raise ValueError("A retained run is missing its timestamp")
@@ -139,6 +164,8 @@ def assess(run: dict[str, Any], case: dict[str, Any]) -> dict[str, Any]:
         "observed_model_requests": _count(usage.get("requests")),
         "observed_input_tokens": _count(usage.get("input_tokens")),
         "observed_output_tokens": _count(usage.get("output_tokens")),
+        "observed_model_responses_with_usage": _count(usage.get("responses_with_usage")),
+        "observed_sandbox_sdk_calls": sdk_call_counts(usage),
         "sandbox_operations": None, "total_cost_usd": None,
     }
 
@@ -206,6 +233,15 @@ def aggregate(cases: list[dict[str, Any]], attempts: list[dict[str, Any]],
     for field in ("observed_model_requests", "observed_input_tokens", "observed_output_tokens"):
         known = [r[field] for r in live if r[field] is not None]
         tokens[field] = {"sum": sum(known) if known else None, "records_with_field": len(known)}
+    counted = [r["observed_sandbox_sdk_calls"] for r in live
+               if r["observed_sandbox_sdk_calls"] is not None]
+    sdk_counts = {
+        "records_with_complete_counts": len(counted),
+        "scope": "adapter SDK calls; excludes internal polling/retries and billable operations",
+        "totals": {name: sum(row[name] for row in counted) for name in (
+            "attempted", "completed", "failed", "cancelled",
+        )} if counted else None,
+    }
     return {
         "schema_version": 1, "evidence_scope": "local aggregation of supplied retained JSON",
         "attempt_count": len(rows), "live_terminal_attempts": len(live),
@@ -221,6 +257,7 @@ def aggregate(cases: list[dict[str, Any]], attempts: list[dict[str, Any]],
         "median_ledger_seconds": median(durations) if durations else None,
         "p95_ledger_seconds": durations[math.ceil(len(durations) * .95) - 1] if durations else None,
         "observed_usage": tokens, "total_cost_usd": None, "sandbox_operations": None,
+        "observed_sandbox_sdk_calls": sdk_counts,
         "cases": summaries, "attempts": rows,
     }
 
@@ -266,7 +303,12 @@ def render(report: dict[str, Any]) -> str:
     for name, metric in report["observed_usage"].items():
         lines.append(f"- {name}: {cell(metric['sum'])}; field present in "
                      f"{metric['records_with_field']} terminal live records.")
-    lines += ["", "Total cost and Sandbox operation counts: **unknown**, not zero.",
+    sdk_counts = report.get("observed_sandbox_sdk_calls", {})
+    lines += ["", "Observed Sandbox adapter SDK calls: "
+              f"{cell(sdk_counts.get('totals'))}; complete counters in "
+              f"{sdk_counts.get('records_with_complete_counts', 0)} terminal live records.",
+              "These count adapter calls, excluding SDK polling/retries and billable units.",
+              "Total cost and billable Sandbox operation counts: **unknown**, not zero.",
               "Revalidation is a retained-ledger assertion; this tool does not replay the patch "
               "or independently authenticate provider evidence.",
               "Streaks require the same case/path, baseline commit, NVIDIA model, orchestrator "

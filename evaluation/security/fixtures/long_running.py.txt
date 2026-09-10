@@ -1,0 +1,6 @@
+# Single sleeping process: no forks, busy loop or external resource consumption.
+import time
+
+emit({"phase": "started", "workload": "long_running", "requested_sleep_seconds": 60})
+time.sleep(60)
+emit({"phase": "completed"})

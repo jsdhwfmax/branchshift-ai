@@ -13,6 +13,7 @@ from app.domain.models import (
     assert_transition,
     utc_now,
 )
+from app.storage.admission import admit_http_run, initialize_admission
 
 
 def _database_path(database_url: str) -> str:
@@ -47,14 +48,17 @@ class RunRepository:
             );
             """
         )
+        initialize_admission(self._connection)
 
     async def create_run(self, summary: RunSummary) -> RunSummary:
         async with self._lock:
-            self._connection.execute(
-                "INSERT INTO runs(id, document) VALUES (?, ?)",
-                (summary.id, summary.model_dump_json()),
-            )
-            self._connection.commit()
+            with self._connection:
+                self._connection.execute("BEGIN IMMEDIATE")
+                admit_http_run(self._connection, summary.id)
+                self._connection.execute(
+                    "INSERT INTO runs(id, document) VALUES (?, ?)",
+                    (summary.id, summary.model_dump_json()),
+                )
         await self.append_event(
             summary.id,
             "run.status",

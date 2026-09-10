@@ -145,7 +145,7 @@ arguments, repository files or image layers:
 | --- | --- |
 | `BRANCHSHIFT_MODE` | `live` for the genuine public demo; image defaults to `mock` for offline checking |
 | `DATABASE_URL` | `sqlite:////data/runs.db` on the verified mount |
-| `MAX_CONCURRENT_RUNS` | `1` initially; add admission limits because concurrency alone does not cap total spending |
+| `MAX_CONCURRENT_RUNS` | `1` initially; executing slots, combined with the persistent HTTP admission controls below |
 | `RUN_TIMEOUT_SECONDS` | `900` initially; enforce provider and output budgets as well |
 | `NEBIUS_API_KEY` | Runtime secret; authorized Token Factory credential |
 | `NEBIUS_PROJECT_ID` | Correct Token Factory project ID; runtime configuration |
@@ -160,6 +160,73 @@ The application accepts the live provider values directly as environment
 variables. Use Nebius's documented secret-injection mechanism rather than
 passing credentials in a shell command. Do not copy the development `.env`
 into the image. [Endpoint configuration and secrets](https://docs.nebius.com/serverless/endpoints/manage).
+
+### Public run admission configuration
+
+`POST /api/runs` checks actual request bytes before parsing JSON or admitting a
+run. This includes requests without `Content-Length`, false length headers and
+chunked bodies. An oversized body receives **413**. Validated creates then use
+one SQLite `BEGIN IMMEDIATE` transaction to check all limits and insert the
+admission record plus run. An exceeded limit receives **429** with an explanation
+and, for daily or occupied-slot limits, `Retry-After`. Rejection creates no run
+and starts no provider work. Unavailable admission storage fails closed with
+**503**. Invalid request data does not consume quota.
+
+| Variable | Application default | Meaning |
+| --- | --- | --- |
+| `HTTP_MAX_BODY_BYTES` | `8192` | Actual bytes permitted for a create request; must be positive |
+| `HTTP_DAILY_RUN_LIMIT` | `5` | Global accepted HTTP attempts per UTC calendar day |
+| `HTTP_LIFETIME_RUN_LIMIT` | `20` | Global accepted HTTP attempts since admission tracking was installed on this database |
+| `HTTP_MAX_PENDING_RUNS` | `2` | Waiting slots beyond `MAX_CONCURRENT_RUNS`; zero permits no extra queue |
+| `HTTP_CLIENT_DAILY_RUN_LIMIT` | `2` | Accepted attempts per client per UTC calendar day |
+| `HTTP_CLIENT_MAX_OUTSTANDING_RUNS` | `1` | Maximum unfinished HTTP runs for one client |
+| `FORWARDED_ALLOW_IPS` | Explicitly set to an empty string | Disable Uvicorn's forwarded-client rewriting unless a sanitizing proxy and its exact trust boundary have been verified |
+
+These are conservative application defaults, **not an approved deployment
+budget**. Record actual chosen values with the deployment estimate. Run counts
+bound attempts, not dollar cost; provider/output/timeout budgets remain separate.
+Zero daily, lifetime or client allowances close admission without affecting
+`GET` run summaries, SSE history, reports, patches or health. Keep judge evidence
+reachable when public capacity is exhausted; any additional evaluator capacity
+requires an operator budget decision, not a secret browser bypass.
+
+The SQLite ledger counts failed and cancelled attempts, including runs stopped
+during a restart. Completion frees outstanding slots but never refunds daily or
+lifetime allowance. Daily accounting rolls at **00:00 UTC**, using the server
+clock. History and the client HMAC salt live beside run evidence in the same
+database and must survive restart, deployment replacement and backup/restore.
+Do not delete or rotate that database to refresh quota. Existing runs from before
+this feature are not retroactively charged, but every nonterminal run occupies
+capacity. The slot check reserves active capacity immediately, before a newly
+accepted background task starts; total unfinished work cannot exceed executing
+slots plus pending slots through this HTTP entry point.
+
+The application ignores `Forwarded` and `X-Forwarded-For` request headers. It
+keys client limits from the ASGI client address using a persisted random HMAC
+salt; no raw IP or client key appears in public run evidence. Set
+`FORWARDED_ALLOW_IPS=""` in the **host/process environment before Uvicorn starts**;
+loading it only from application `.env` may happen after server configuration.
+ASGI already reflects any server-level proxy rewriting, so trusting arbitrary
+forwarded headers upstream defeats peer-based limits. With rewriting disabled,
+visitors behind an ingress proxy or shared NAT may share a client quota. This is
+a bounded spending control, not a unique-person identity mechanism. IPv4-mapped
+IPv6 addresses are normalized to the equivalent IPv4 client.
+
+SQLite transactions serialize admission across connections and keep checks plus
+run insertion atomic through interruption. Continue to deploy **one instance and
+one worker**: the execution semaphore and startup recovery are process-local,
+and multiple workers against this database are not supported. Startup cancels
+interrupted runs before serving requests; this releases their slots while
+retaining charged history. Graceful shutdown does the same. A remote operation
+already submitted before a crash may outlive the local process; admission
+accounting does not establish provider-side cancellation or exact spending.
+
+Direct operator/CLI calls to `RunManager.create` deliberately bypass **HTTP**
+admission. There is no HTTP parameter, mode switch or forwarded-header bypass.
+Use a separate experiment database/process for CLI evaluations while the public
+service runs, and budget those provider calls separately. CLI runs sharing the
+database are included in HTTP outstanding-slot checks, but concurrent CLI
+processes are not controlled by the public worker's execution semaphore.
 
 The container exposes one origin, so no production `VITE_API_BASE` is required.
 Keep any ingress authentication compatible with browser API requests and SSE;

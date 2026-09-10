@@ -5,6 +5,7 @@ from copy import deepcopy
 import pytest
 
 from app.cli.evaluate import aggregate, assess, render
+from app.cli.series import estimate_inference, summarize_series
 
 
 def case(case_id="validators", **overrides):
@@ -130,3 +131,69 @@ def test_empty_manifest_reports_no_evidence(tmp_path):
     assert report["qualified_successes"] == report["live_terminal_attempts"] == 0
     assert report["median_ledger_seconds"] is None
     assert report["observed_usage"]["observed_input_tokens"]["sum"] is None
+
+
+def test_complete_three_rounds_include_failed_attempts_without_claiming_three_successes(tmp_path):
+    cases = [case(f"case-{n}", project_path=f"case-{n}") for n in range(5)]
+    plan = {
+        "cases": cases, "rounds": 3, "baseline_commit_sha": "a" * 40,
+        "orchestrator_digest": "d" * 64, "runtime_config_digest": "e" * 64,
+        "model_id": "nvidia/synthetic-test-model",
+    }
+    attempts = []
+    for round_id in range(1, 4):
+        for definition in cases:
+            run = synthetic_run(f"synthetic-{round_id}-{definition['id']}",
+                                project_path=definition["project_path"])
+            if round_id == 3 and definition["id"] == "case-4":
+                run["status"] = "failed"
+            path = tmp_path / f"{run['id']}.json"
+            path.write_text(json.dumps(run))
+            attempts.append({"round": round_id, "case_id": definition["id"], "path": path.name})
+    rate_card = {"rates": {"nvidia/synthetic-test-model": {"input": 1, "output": 3}}}
+    report = summarize_series(plan, attempts, tmp_path, rate_card)
+    assert report["series"]["all_planned_slots_have_terminal_live_results"] is True
+    assert report["series"]["all_recorded_runtime_fingerprints_match_plan"] is True
+    assert report["qualified_successes"] == 14
+    assert report["three_successes_per_case"] is False
+    assert report["series"]["reported_usage_covers_all_model_requests"] is False
+    incomplete = summarize_series(plan, attempts[:-1], tmp_path, rate_card)
+    assert incomplete["series"]["all_planned_slots_have_terminal_live_results"] is False
+    assert incomplete["series"]["missing_slots"] == [{"round": 3, "case_id": "case-4"}]
+    with pytest.raises(ValueError, match="duplicate"):
+        summarize_series(plan, attempts + [attempts[0]], tmp_path, rate_card)
+    run["orchestrator_digest"] = "f" * 64
+    path.write_text(json.dumps(run))
+    mixed = summarize_series(plan, attempts, tmp_path, rate_card)
+    assert mixed["series"]["all_recorded_runtime_fingerprints_match_plan"] is False
+
+
+def test_inference_estimate_has_explicit_coverage_and_no_rate_means_unknown():
+    run = synthetic_run(provider_usage={
+        "requests": 2, "responses_with_usage": 1, "model_usage_version": 1,
+        "input_tokens": 1_000_000, "output_tokens": 100_000,
+    })
+    rates = {run["model_id"]: {"input": 1, "output": 3}}
+    result = estimate_inference(run, rates)
+    assert result["estimated_reported_inference_usd"] == 1.3
+    assert result["reported_usage_covers_all_model_requests"] is False
+    assert estimate_inference(run, {})["estimated_reported_inference_usd"] is None
+    run["provider_usage"]["responses_with_usage"] = 2
+    assert estimate_inference(run, rates)["reported_usage_covers_all_model_requests"] is True
+
+
+def test_sdk_calls_require_version_and_complete_terminal_accounting(tmp_path):
+    usage = {"sandbox_usage_version": 1, "sandbox_sdk_calls_attempted": 3,
+             "sandbox_sdk_calls_completed": 1, "sandbox_sdk_calls_failed": 1,
+             "sandbox_sdk_calls_cancelled": 1}
+    for operation, result in (("image_use", "completed"), ("run", "failed"), ("read", "cancelled")):
+        for outcome in ("attempted", "completed", "failed", "cancelled"):
+            usage[f"sandbox_{operation}_{outcome}"] = int(outcome in ("attempted", result))
+    run = synthetic_run(provider_usage=usage)
+    report = aggregate([case()], retained(tmp_path, [run]), tmp_path)
+    assert report["observed_sandbox_sdk_calls"]["totals"] == {
+        "attempted": 3, "completed": 1, "failed": 1, "cancelled": 1,
+    }
+    run["provider_usage"]["sandbox_sdk_calls_attempted"] = 4
+    assert assess(run, case())["observed_sandbox_sdk_calls"] is None
+    assert assess(synthetic_run(), case())["observed_sandbox_sdk_calls"] is None

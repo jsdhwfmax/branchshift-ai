@@ -29,6 +29,7 @@ class NebiusModelProvider:
         self._enable_thinking = enable_thinking
         self.usage: dict[str, int] = {
             "requests": 0, "input_tokens": 0, "output_tokens": 0,
+            "model_usage_version": 1, "responses_with_usage": 0,
         }
 
     async def complete_json(
@@ -74,12 +75,18 @@ class NebiusModelProvider:
         try:
             envelope = response.json()
             usage = envelope.get("usage", {})
+            if not isinstance(usage, dict):
+                usage = {}
+            if all(type(usage.get(name)) is int and usage[name] >= 0 for name in (
+                "prompt_tokens", "completion_tokens",
+            )):
+                self.usage["responses_with_usage"] += 1
             for provider_name, local_name in (
                 ("prompt_tokens", "input_tokens"),
                 ("completion_tokens", "output_tokens"),
             ):
                 count = usage.get(provider_name)
-                if isinstance(count, int) and count >= 0:
+                if type(count) is int and count >= 0:
                     self.usage[local_name] += count
             message = envelope["choices"][0]["message"]
         except (KeyError, IndexError, TypeError, ValueError) as exc:

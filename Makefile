@@ -3,6 +3,7 @@
 PYTHON ?= python3.13
 API_VENV ?= .venv
 FIXTURE_VENV ?= fixtures/pydantic-v1-app/.venv
+WEB_DIR ?= apps/web
 
 install:
 	$(PYTHON) -m venv $(API_VENV)
@@ -16,7 +17,7 @@ api-dev:
 	$(API_VENV)/bin/uvicorn app.main:app --reload --app-dir services/api --port 8000
 
 web-dev:
-	pnpm --dir apps/web dev
+	pnpm --dir $(WEB_DIR) dev
 
 dev:
 	@echo "Run 'make api-dev' and 'make web-dev' in separate terminals."
@@ -24,14 +25,14 @@ dev:
 test:
 	$(API_VENV)/bin/python -m pytest services/api/tests -q
 	$(FIXTURE_VENV)/bin/python -m pytest fixtures/pydantic-v1-app/tests -q
-	pnpm --dir apps/web exec vitest run
+	pnpm --dir $(WEB_DIR) exec vitest run
 
 lint:
 	$(API_VENV)/bin/ruff check services/api/app services/api/tests
 	$(API_VENV)/bin/python -m mypy services/api/app
-	pnpm --dir apps/web lint
+	pnpm --dir $(WEB_DIR) lint
 
 build:
-	pnpm --dir apps/web build
+	pnpm --dir $(WEB_DIR) build
 
 check: lint test build

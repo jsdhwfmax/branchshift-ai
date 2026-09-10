@@ -1,0 +1,12 @@
+# Exactly one public HEAD request; no redirects, response body, credentials or retries.
+import http.client
+
+connection = http.client.HTTPSConnection("example.com", timeout=2)
+try:
+    connection.request("HEAD", "/", headers={"User-Agent": "BranchShift-boundary-probe/1"})
+    response = connection.getresponse()
+    emit({"egress_observed": True, "http_status": response.status})
+except (OSError, http.client.HTTPException) as exc:
+    emit({"egress_observed": None, "error_type": type(exc).__name__})
+finally:
+    connection.close()
