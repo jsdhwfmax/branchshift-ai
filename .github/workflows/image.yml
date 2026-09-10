@@ -90,7 +90,7 @@ jobs:
                       health = json.loads(fetch('/api/health/integrations'))
                       assert health['mode'] == 'mock' and health['ready']
                       return
-                  except (urllib.error.URLError, TimeoutError):
+                  except (urllib.error.URLError, TimeoutError, ConnectionError):
                       if time.monotonic() >= deadline:
                           raise
                       time.sleep(0.25)
