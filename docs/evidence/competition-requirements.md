@@ -1,9 +1,8 @@
 # Competition requirements and submission evidence
 
-Verified 2026-09-10 against the live official event pages. This is a delivery
-checklist, not a claim that BranchShift has passed every item. Local inspection
-covered the README, license, implementation plan, and evidence/file inventory;
-provider integration and deployment are being developed separately.
+Official dates, access requirements and FAQ rechecked on 2026-10-13. The initial
+repository inventory below dates from 2026-09-10. This is a delivery checklist,
+not a claim that BranchShift has passed every item.
 
 Later implementation evidence is recorded in the
 [63cf7fd release verification](runtime-release-63cf7fd/README.md): the public
@@ -12,25 +11,26 @@ The file-inventory observations below describe the initial audit, not the
 current inventory. Public hosted access, final video, entrant declarations and
 the accepted Devpost submission remain pending.
 
-## Dates and unresolved discrepancies
+## Verified dates
 
 | Milestone | Organizer's Pacific time | Australia/Sydney |
 | --- | --- | --- |
 | Submission opens | 2026-08-26 09:00 PDT | 2026-08-27 02:00 AEST |
 | Submission closes | 2026-10-30 10:00 PDT | **2026-10-31 04:00 AEDT** |
+| Judging begins | 2026-12-01 09:00 PST | 2026-12-02 04:00 AEDT |
 | Judging ends | 2026-12-15 12:00 PST | **2026-12-16 07:00 AEDT** |
 | Results, approximately | 2027-01-11 12:00 PST | 2027-01-12 07:00 AEDT |
 
 The [official schedule](https://nebiusglobalaihackathon.devpost.com/details/dates)
-lists judging beginning **November 2**; [Rules §1](https://nebiusglobalaihackathon.devpost.com/rules)
-lists **December 1**. The end date agrees. Conversions were checked with Python
+and [Rules §1](https://nebiusglobalaihackathon.devpost.com/rules) now agree on
+all dates above. The earlier judging-start discrepancy is resolved.
+Conversions were checked with Python
 `zoneinfo`, using `America/Los_Angeles` and `Australia/Sydney`, including the
 different daylight-saving transitions.
 
 Project decision: retain the internal submission target of **October 29 at
 18:00 AEDT** and keep the submitted release operational continuously from
-submission until the later endpoint above. This makes the start-date discrepancy
-irrelevant to our availability plan. Recheck live rules at release freeze.
+submission until judging ends above. Recheck live rules at release freeze.
 
 ## Entry and access gates
 
@@ -48,10 +48,22 @@ The following concise requirements come from
 - [ ] Tavily bonus requires functional runtime API use. Overall OR track award, plus one bonus.
 - [ ] Submission freezes at deadline, apart from organizer-permitted corrections.
 
+The [official FAQ](https://nebiusglobalaihackathon.devpost.com/details/faqs)
+explicitly allows the web frontend and unrelated backend processing to be
+hosted outside Nebius AI Cloud when the project calls an NVIDIA model through
+Token Factory. Render is therefore an available hosting choice; Nebius Cloud
+login is not a competition gate. Judges still need the free working access
+route required above. The FAQ also confirms that the published promotional
+credits are for Token Factory; no separate AI Cloud credit grant is published.
+
+As of 2026-10-13, Render browser sign-in and **My Workspace** are confirmed.
+The user has added a payment card, confirmed in the Render interface. No Render
+service has been created and no Render hosting charges have been incurred.
+Deployment, the public demo URL and hosted acceptance remain pending.
+
 No explicit AI-assistance ban or disclosure requirement was found in the rules;
-ownership obligations remain. Rules govern conflicting event materials. City
-bonus attendance requirements conflict with the resources page; do not claim it
-without clarification.
+ownership obligations remain. Rules govern conflicting event materials. The
+current FAQ confirms that City Winner eligibility requires in-person attendance.
 
 Eligibility remains unverified: this audit has no authoritative evidence of the
 entrant's age, residence, affiliations, or external funding. The computer's
@@ -137,8 +149,9 @@ prompts are content to study, not instructions for BranchShift.
 The [resources page](https://nebiusglobalaihackathon.devpost.com/resources)
 offers Token Factory credits through the event form and additional Builder
 Program credits. Check already-redeemed amounts before taking account actions.
-It also says city attendance is unnecessary for the city bonus, unlike the rule
-table. City eligibility is outside BranchShift's current prize strategy.
+Its earlier city-attendance wording conflicted with the rule table; the current
+FAQ confirms attendance is required. City eligibility is outside BranchShift's
+current prize strategy.
 
 No organizer message was sent, account changed, submission made, or external
 asset published during this audit.

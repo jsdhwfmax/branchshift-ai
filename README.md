@@ -163,8 +163,27 @@ same-origin Python/UI image and persistence requirements. At commit `92c733a`,
 [CI](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34443169993) and
 [image build, smoke and publication](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34443329138)
 passed. The published Linux `amd64` image manifest is anonymously accessible.
-Nebius deployment, Cloud persistence and public judge-access checks remain
+Hosted deployment, persistent-disk retention and judge-access checks remain
 pending; a published image is not a hosted demo.
+
+The [Render configuration](render.yaml) prepares one Docker service with a
+1 GB persistent disk and explicit Ultra/thinking settings matching the live
+evaluation. It starts with new runs closed (`HTTP_DAILY_RUN_LIMIT=0`) until
+billing, mounted-disk writes and provider access have been verified. Attempt
+quotas are not dollar spending caps. Set the final private judge allowance
+before submission; the commissioning configuration is not a usable live demo.
+
+For private judge access, set `BRANCHSHIFT_REQUIRE_AUTH=true` and both
+`BRANCHSHIFT_AUTH_USERNAME` and `BRANCHSHIFT_AUTH_PASSWORD` in backend secrets.
+Use a dedicated randomly generated password of at least 32 characters (at
+least 12 distinct characters), and serve the site over HTTPS. Missing or
+invalid credentials fail startup. Only exact `GET /api` is public for health
+checks; pages, evidence, downloads and API execution require authentication.
+Authenticated browser writes must come from the same origin. The proxy must
+preserve the public Host header; untrusted forwarding headers are ignored.
+Supply the judge credentials privately with the submission, never in source
+or a public URL. Both credentials omitted and `BRANCHSHIFT_REQUIRE_AUTH=false`
+preserves unauthenticated local development.
 
 ## Hackathon technology
 

@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.body_limit import RunBodyLimitMiddleware
 from app.api.health import router as health_router
+from app.api.judge_auth import JudgeAuthMiddleware
 from app.api.runs import router as runs_router
 from app.config import Settings, settings
 from app.orchestrator.run_manager import RunManager
@@ -44,6 +45,12 @@ def create_app(config: Settings = settings, *, web_dist: Path | None = None) -> 
         allow_methods=["GET", "POST"],
         allow_headers=["Content-Type", "Last-Event-ID"],
     )
+    if config.auth_username is not None and config.auth_password is not None:
+        # Last added is outermost: reject unauthenticated requests before body reads,
+        # CORS handling, API parsing, admission or the mounted static application.
+        application.add_middleware(
+            JudgeAuthMiddleware, username=config.auth_username, password=config.auth_password,
+        )
     application.include_router(health_router)
     application.include_router(runs_router)
 

@@ -1,0 +1,68 @@
+# One service in the user-confirmed Render workspace; no preview resources.
+# Cost candidate: $7/month compute + $0.25/month for 1 GB persistent storage.
+# This is not a dollar spending cap. Verify billing/tax and stop billing after
+# the required judge-access period (2026-12-15 12:00 America/Los_Angeles).
+previews:
+  generation: "off"
+
+services:
+  - type: web
+    name: branchshift
+    runtime: docker
+    repo: https://github.com/jsdhwfmax/branchshift-ai
+    branch: main
+    region: singapore
+    plan: 0.5c-512mb
+    numInstances: 1
+    dockerfilePath: ./Containerfile
+    dockerContext: .
+    autoDeployTrigger: "off"
+    healthCheckPath: /api
+    maxShutdownDelaySeconds: 60
+    disk:
+      name: branchshift-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: PORT
+        value: "8000"
+      - key: BRANCHSHIFT_MODE
+        value: live
+      - key: DATABASE_URL
+        value: sqlite:////data/runs.db
+      - key: MAX_CONCURRENT_RUNS
+        value: "1"
+      - key: RUN_TIMEOUT_SECONDS
+        value: "900"
+      - key: HTTP_MAX_BODY_BYTES
+        value: "8192"
+      # Commissioning only: no provider execution until credits/billing and
+      # persistent storage have been checked. Zero means closed, not unlimited.
+      - key: HTTP_DAILY_RUN_LIMIT
+        value: "0"
+      - key: HTTP_LIFETIME_RUN_LIMIT
+        value: "20"
+      - key: HTTP_MAX_PENDING_RUNS
+        value: "0"
+      - key: HTTP_CLIENT_DAILY_RUN_LIMIT
+        value: "5"
+      - key: HTTP_CLIENT_MAX_OUTSTANDING_RUNS
+        value: "1"
+      - key: FORWARDED_ALLOW_IPS
+        value: ""
+      - key: NEMOTRON_MODEL
+        value: nvidia/Nemotron-3-Ultra-550b-a55b
+      - key: NEMOTRON_ENABLE_THINKING
+        value: "true"
+      - key: BRANCHSHIFT_REQUIRE_AUTH
+        value: "true"
+      - key: BRANCHSHIFT_AUTH_USERNAME
+        sync: false
+      - key: BRANCHSHIFT_AUTH_PASSWORD
+        sync: false
+      - key: NEBIUS_API_KEY
+        sync: false
+      - key: NEBIUS_PROJECT_ID
+        sync: false
+      - key: TAVILY_API_KEY
+        sync: false
