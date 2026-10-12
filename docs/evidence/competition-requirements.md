@@ -57,9 +57,14 @@ route required above. The FAQ also confirms that the published promotional
 credits are for Token Factory; no separate AI Cloud credit grant is published.
 
 As of 2026-10-13, Render browser sign-in and **My Workspace** are confirmed.
-The user has added a payment card, confirmed in the Render interface. No Render
-service has been created and no Render hosting charges have been incurred.
-Deployment, the public demo URL and hosted acceptance remain pending.
+The user has added a payment card, confirmed in the Render interface. The first
+Render deployment at `6137d89` is live at
+https://branchshift.onrender.com with private judge authentication. Anonymous
+access is rejected, authenticated HTTP asset/route checks pass, and nonroot
+SQLite WAL writes on the attached disk pass. New runs remain closed during
+commissioning. Browser acceptance, replacement retention, a real hosted run
+and final judge capacity remain pending. This is a paid service; the approved
+additional cloud-service budget is USD 20 total, not per month.
 
 No explicit AI-assistance ban or disclosure requirement was found in the rules;
 ownership obligations remain. Rules govern conflicting event materials. The

@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import PurePosixPath
 from types import GenericAlias
-from typing import Annotated
+from typing import Annotated, Any
 
 from pydantic import AfterValidator, BaseModel, Field, HttpUrl, create_model, model_validator
 
@@ -69,16 +69,14 @@ def evidence_plan_schema(
             raise ValueError("Strategy cites a source outside the retained evidence")
         return value
 
-    bounded_strategy = create_model(
-        "EvidenceMigrationStrategy",
-        __base__=MigrationStrategy,
-        target_files=(
+    strategy_fields: dict[str, Any] = {
+        "target_files": (
             list[Annotated[
                 str, Field(json_schema_extra={"enum": sorted(files)}), AfterValidator(retained_path)
             ]],
             Field(min_length=1, max_length=min(40, len(files))),
         ),
-        source_urls=(
+        "source_urls": (
             list[Annotated[
                 HttpUrl,
                 Field(json_schema_extra={"enum": sorted(urls)}),
@@ -86,11 +84,15 @@ def evidence_plan_schema(
             ]],
             Field(min_length=1, max_length=len(urls)),
         ),
+    }
+    bounded_strategy = create_model(
+        "EvidenceMigrationStrategy", __base__=MigrationStrategy, **strategy_fields
     )
+    plan_fields: dict[str, Any] = {
+        "strategies": (GenericAlias(list, bounded_strategy), Field(min_length=3, max_length=3)),
+    }
     return create_model(
-        "EvidenceStrategyPlan",
-        __base__=StrategyPlan,
-        strategies=(GenericAlias(list, bounded_strategy), Field(min_length=3, max_length=3)),
+        "EvidenceStrategyPlan", __base__=StrategyPlan, **plan_fields
     )
 
 

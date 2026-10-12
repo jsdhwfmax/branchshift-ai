@@ -7,7 +7,7 @@ from collections.abc import Awaitable, Callable
 from difflib import unified_diff
 from pathlib import PurePosixPath
 from types import GenericAlias
-from typing import Annotated
+from typing import Annotated, Any
 
 from pydantic import AfterValidator, BaseModel, Field, JsonValue, ValidationError, create_model
 
@@ -83,10 +83,8 @@ def evidence_patch_schema(
         return value
 
     allowed_paths: list[JsonValue] = [path for path in sorted(files)]
-    replacement = create_model(
-        "EvidenceFileReplacement",
-        __base__=FileReplacement,
-        path=(
+    replacement_fields: dict[str, Any] = {
+        "path": (
             Annotated[
                 str,
                 Field(json_schema_extra={"enum": allowed_paths}),
@@ -94,15 +92,17 @@ def evidence_patch_schema(
             ],
             Field(min_length=1, max_length=500),
         ),
+    }
+    replacement = create_model(
+        "EvidenceFileReplacement", __base__=FileReplacement, **replacement_fields
     )
-    return create_model(
-        "EvidencePatchProposal",
-        __base__=PatchProposal,
-        replacements=(
+    proposal_fields: dict[str, Any] = {
+        "replacements": (
             GenericAlias(list, replacement),
             Field(min_length=0 if manifest_changed else 1, max_length=min(40, len(files))),
         ),
-    )
+    }
+    return create_model("EvidencePatchProposal", __base__=PatchProposal, **proposal_fields)
 
 
 def proposal_to_patch(
