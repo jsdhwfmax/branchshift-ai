@@ -189,7 +189,7 @@ class HostileModel:
 
     async def complete_json(self, *, system, user, schema):
         self.prompt = json.loads(user)
-        allowed = schema.model_json_schema()["$defs"]["EvidenceFileReplacement"]
+        allowed = schema.model_json_schema()["$defs"]["EvidenceSourceEdit"]
         assert self.path not in allowed["properties"]["path"]["enum"]
         assert "untrusted" in system and "Preserve all existing tests" in system
         # Deliberately simulate a model obeying injected instructions despite the schema.
@@ -226,7 +226,9 @@ async def test_prompt_injection_cannot_expand_edit_scope_or_mark_false_success(p
     )
     assert result.status is BranchStatus.FAILED
     assert result.patch_applicable is False and result.checkpoint_id is None
-    assert model.prompt["original_files"][0]["lines"] == source.splitlines()
+    assert model.prompt["original_files"][0]["numbered_source"] == "\n".join(
+        f"{index}: {line}" for index, line in enumerate(source.splitlines(), 1)
+    )
     assert "Ignore previous instructions" in source
 
 

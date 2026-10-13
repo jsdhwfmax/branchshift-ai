@@ -9,8 +9,10 @@ from pydantic import ValidationError
 from app.domain.models import BranchStatus, Citation, MigrationStrategy, http_url
 from app.orchestrator.branch_runner import (
     BranchRunner,
+    EditProposal,
     FileReplacement,
     PatchProposal,
+    SourceEdit,
     evidence_patch_schema,
     proposal_to_patch,
 )
@@ -36,13 +38,19 @@ def proposal(path="src/app/models.py", lines=None):
     )
 
 
+def edit_proposal(path="src/app/models.py"):
+    return EditProposal(edits=[SourceEdit(
+        path=path, start_line=1, end_line=2, lines=["from pydantic import field_validator"],
+    )], summary="bounded edit")
+
+
 class FakeModel:
     def __init__(self, proposals: list[PatchProposal]) -> None:
         self.proposals = proposals
         self.users: list[str] = []
 
     async def complete_json(self, *, system: str, user: str, schema):
-        assert issubclass(schema, PatchProposal)
+        assert issubclass(schema, EditProposal)
         assert "unified diff" in system
         self.users.append(user)
         return self.proposals.pop(0)
@@ -486,7 +494,7 @@ async def test_junit_error_survives_long_output_and_reaches_repair_prompt():
     assert "--tb=short --disable-warnings" in sandbox.commands[0]
     context = json.loads(model.users[1])
     assert "+from pydantic import field_validator" in context["previous_candidate_diff"]
-    assert context["original_files"][0]["lines"] == ["from pydantic import validator"]
+    assert context["original_files"][0]["numbered_source"] == "1: from pydantic import validator"
 
 
 def test_previous_candidate_context_is_bounded_and_labeled_separately():
@@ -495,7 +503,7 @@ def test_previous_candidate_context_is_bounded_and_labeled_separately():
     ))
     assert len(payload["previous_candidate_diff"]) == 12_000
     assert payload["previous_candidate_diff_truncated"] is True
-    assert payload["original_files"][0]["lines"] == ["from pydantic import validator"]
+    assert payload["original_files"][0]["numbered_source"] == "1: from pydantic import validator"
 
 
 async def test_unsafe_repair_does_not_reuse_an_unrelated_previous_candidate_diff():
@@ -548,18 +556,18 @@ def test_editor_schema_enum_contains_only_declared_retained_non_test_sources():
     plan.target_files.append("tests/test_model.py")
     schema = evidence_patch_schema(plan, retained)
     encoded = schema.model_json_schema()
-    paths = encoded["$defs"]["EvidenceFileReplacement"]["properties"]["path"]
+    paths = encoded["$defs"]["EvidenceSourceEdit"]["properties"]["path"]
     assert paths["enum"] == ["src/app/models.py"]
-    assert encoded["properties"]["replacements"]["minItems"] == 0
-    schema.model_validate(proposal().model_dump())
+    assert encoded["properties"]["edits"]["minItems"] == 0
+    schema.model_validate(edit_proposal().model_dump())
     for path in ["pyproject.toml", "tests/test_model.py", "src/other.py", "invented.py"]:
         with pytest.raises(ValidationError):
-            schema.model_validate(proposal(path).model_dump())
+            schema.model_validate(edit_proposal(path).model_dump())
 
 
 def test_empty_source_proposal_requires_a_real_automatic_manifest_change():
     plan, retained = manifest_evidence()
-    empty = PatchProposal(replacements=[], summary="No source changes necessary")
+    empty = EditProposal(edits=[], summary="No source changes necessary")
     schema = evidence_patch_schema(plan, retained)
     schema.model_validate(empty.model_dump())
     patch = proposal_to_patch(empty, plan, retained)
@@ -575,9 +583,9 @@ def test_manifest_only_strategy_schema_allows_only_an_empty_source_array():
     plan, retained = manifest_evidence()
     plan.target_files = ["pyproject.toml"]
     schema = evidence_patch_schema(plan, retained)
-    constraints = schema.model_json_schema()["properties"]["replacements"]
+    constraints = schema.model_json_schema()["properties"]["edits"]
     assert constraints["maxItems"] == constraints["minItems"] == 0
-    schema.model_validate({"replacements": [], "summary": "Dependency update only"})
+    schema.model_validate({"edits": [], "summary": "Dependency update only"})
     with pytest.raises(ValidationError):
         schema.model_validate(proposal("pyproject.toml").model_dump())
 
@@ -628,7 +636,7 @@ async def test_invalid_python_repair_receives_actual_rejected_source_with_line_n
         ),
         "truncated": False,
     }]
-    assert repair["original_files"][0]["lines"] == ["from pydantic import validator"]
+    assert repair["original_files"][0]["numbered_source"] == "1: from pydantic import validator"
 
 
 def test_rejected_source_context_is_bounded():
