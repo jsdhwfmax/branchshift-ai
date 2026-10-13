@@ -332,10 +332,22 @@ class BranchRunner:
                 diagnostics = f"Patch safety validation failed: {exc}"
                 continue
             except ProviderUnavailable as exc:
-                if str(exc) != "Model returned invalid structured content":
+                output_limited = str(exc) == (
+                    "Model response reached the output token limit (finish_reason=length)"
+                )
+                if not output_limited and str(exc) != "Model returned invalid structured content":
                     raise
                 diagnostic_patch = None
                 diagnostic_proposal = None
+                if output_limited:
+                    diagnostics = (
+                        f"{exc}. No complete candidate was available to validate. "
+                        "Return the fewest necessary non-repeating small edits, excluding "
+                        "unchanged context and docstrings. Do not fill the maximum edit count. "
+                        "Include every still-needed change relative to the original baseline; "
+                        "do not omit required migration work or return a partial candidate."
+                    )
+                    continue
                 diagnostics = (
                     "Patch safety validation failed: response violated the source edit "
                     "schema. Use only the declared editable source path enum; dependency "

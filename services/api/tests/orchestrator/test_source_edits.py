@@ -172,7 +172,10 @@ class RecordedModel:
 
     async def complete_json(self, *, system, user, schema):
         self.requests.append({"system": system, "user": user, "schema": schema.model_json_schema()})
-        return schema.model_validate(self.proposals.pop(0).model_dump())
+        candidate = self.proposals.pop(0)
+        if isinstance(candidate, ProviderUnavailable):
+            raise candidate
+        return schema.model_validate(candidate.model_dump())
 
 
 class RecordedSandbox:
@@ -237,3 +240,56 @@ async def test_oversized_required_source_fails_before_a_model_call():
     with pytest.raises(ProviderUnavailable, match="100000-byte"):
         await BranchRunner(model, RecordedSandbox()).run(SandboxState("baseline"), plan, evidence)
     assert model.requests == []
+
+
+OUTPUT_LIMIT = "Model response reached the output token limit (finish_reason=length)"
+
+
+async def test_explicit_output_limit_repairs_with_active_edit_then_executes_once():
+    plan, evidence = inputs()
+    model = RecordedModel([ProviderUnavailable(OUTPUT_LIMIT), proposal(edit())])
+    sandbox = RecordedSandbox()
+    parent = SandboxState("baseline")
+    result = await BranchRunner(model, sandbox, max_attempts=2).run(parent, plan, evidence)
+    assert result.status is BranchStatus.PASSED
+    assert len(model.requests) == 2
+    assert sandbox.parents == [parent]
+    repair = json.loads(model.requests[1]["user"])
+    assert OUTPUT_LIMIT in repair["previous_attempt"]
+    assert "non-repeating small edits" in repair["previous_attempt"]
+    assert repair["previous_candidate_diff"] is None
+    assert repair["previous_candidate_sources"] == repair["previous_candidate_edits"] == []
+    assert set(model.requests[1]["schema"]["properties"]) == {"edits", "summary"}
+
+
+async def test_explicit_output_limits_exhaust_existing_attempt_bound_without_execution():
+    plan, evidence = inputs()
+    model = RecordedModel([ProviderUnavailable(OUTPUT_LIMIT), ProviderUnavailable(OUTPUT_LIMIT)])
+    sandbox = RecordedSandbox()
+    result = await BranchRunner(model, sandbox, max_attempts=2).run(
+        SandboxState("baseline"), plan, evidence
+    )
+    assert result.status is BranchStatus.FAILED
+    assert len(model.requests) == 2
+    assert sandbox.parents == []
+    assert result.patch is None
+    assert "2 attempts" in result.failure_reason
+    assert OUTPUT_LIMIT in result.diagnostics
+
+
+@pytest.mark.parametrize("message", [
+    "Nebius request failed",
+    "Nebius request failed with HTTP 401",
+    "Model returned an invalid response envelope",
+])
+async def test_other_provider_errors_do_not_repair_or_execute(message):
+    plan, evidence = inputs()
+    model = RecordedModel([ProviderUnavailable(message)])
+    sandbox = RecordedSandbox()
+    with pytest.raises(ProviderUnavailable) as caught:
+        await BranchRunner(model, sandbox, max_attempts=3).run(
+            SandboxState("baseline"), plan, evidence
+        )
+    assert str(caught.value) == message
+    assert len(model.requests) == 1
+    assert sandbox.parents == []
