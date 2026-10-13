@@ -155,6 +155,38 @@ def test_request_schema_enumerates_only_retained_files_and_sources(evidence, cit
     fields = schema["$defs"][strategy_ref]["properties"]
     assert fields["target_files"]["items"]["enum"] == ["pyproject.toml", "src/app/models.py"]
     assert fields["source_urls"]["items"]["enum"] == [str(SOURCE)]
+    assert fields["ordered_steps"]["minItems"] == 1
+    assert fields["ordered_steps"]["maxItems"] == 8
+
+
+@pytest.mark.parametrize("strategy_index", [0, 1, 2], ids=["minimal", "compatibility", "refactor"])
+@pytest.mark.parametrize("step_count", [0, 1, 8, 9, 11])
+def test_ordered_step_bounds_match_domain_decoding_and_planner_gate(
+    evidence, citations, strategy_index, step_count,
+):
+    from pydantic import ValidationError
+
+    payload = valid_plan().model_dump(mode="json")
+    candidate = payload["strategies"][strategy_index]
+    candidate["ordered_steps"] = [f"Migration step {index}" for index in range(step_count)]
+    response_schema = evidence_plan_schema(evidence, citations)
+
+    if 1 <= step_count <= 8:
+        MigrationStrategy.model_validate(candidate)
+        decoded = response_schema.model_validate(payload)
+        assert MigrationPlanner._validate(decoded.strategies, evidence, citations)
+    else:
+        # The real 11-step proposal must be rejected by the advertised decoding
+        # schema, before it reaches the separate business gate and costs a repair.
+        with pytest.raises(ValidationError, match="ordered_steps"):
+            MigrationStrategy.model_validate(candidate)
+        with pytest.raises(ValidationError, match="ordered_steps"):
+            response_schema.model_validate(payload)
+
+        mutated = valid_plan()
+        mutated.strategies[strategy_index].ordered_steps = candidate["ordered_steps"]
+        with pytest.raises(ValueError, match="between 1 and 8 ordered steps"):
+            MigrationPlanner._validate(mutated.strategies, evidence, citations)
 
 
 @pytest.mark.parametrize(

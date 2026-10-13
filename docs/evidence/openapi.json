@@ -564,6 +564,8 @@
             "items": {
               "type": "string"
             },
+            "maxItems": 8,
+            "minItems": 1,
             "title": "Ordered Steps",
             "type": "array"
           },

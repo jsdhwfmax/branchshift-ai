@@ -106,7 +106,7 @@ class MigrationStrategy(BaseModel):
     id: Literal["minimal", "compatibility", "refactor"]
     title: str
     rationale: str
-    ordered_steps: list[str]
+    ordered_steps: list[str] = Field(min_length=1, max_length=8)
     source_urls: list[HttpUrl]
     target_files: list[str] = Field(min_length=1, max_length=40)
 
