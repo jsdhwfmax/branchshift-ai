@@ -224,3 +224,60 @@ async def test_provider_schema_rejection_gets_one_bounded_repair(evidence, citat
     assert len(result) == 3
     assert len(provider.calls) == 2
     assert "allowed enums" in provider.calls[1]["user"]
+
+
+@pytest.mark.parametrize("step", [
+    # Exact unsupported file request from the retained external compatibility plan.
+    "Create src/pydantic_yaml/compat/pydantic_shim.py with version detection and unified imports",
+    "Update src/app/helper.py.",
+    "Run tests/test_models.py.",
+    "Update ./src/app/models.py.",
+    "Update ../src/app/models.py.",
+])
+def test_step_python_paths_must_be_declared_editable_targets(evidence, citations, step):
+    evidence.python_files.append("src/app/helper.py")
+    invalid = valid_plan()
+    invalid.strategies[1].ordered_steps = [step]
+    with pytest.raises(ValueError, match="step references undeclared Python path"):
+        MigrationPlanner._validate(invalid.strategies, evidence, citations)
+
+
+@pytest.mark.parametrize("step", [
+    "Update `src/app/models.py`.",
+    "Update src/app/models.py:12.",
+    "Update (src/app/models.py), then review src/app/models.py.",
+    "Update src/app/models.py. Run the original tests unchanged.",
+    "Use model.parse_file/model.parse_raw and pydantic.types.__all__ in src/app/models.py.",
+    "Consult https://docs.pydantic.dev/examples/unknown.py; update src/app/models.py.",
+    "Follow `https://docs.pydantic.dev/examples/unknown.py` in src/app/models.py.",
+])
+def test_step_path_check_accepts_targets_and_ignores_urls_and_api_names(
+    evidence, citations, step,
+):
+    plan = valid_plan()
+    plan.strategies[0].ordered_steps = [step]
+    assert MigrationPlanner._validate(plan.strategies, evidence, citations)
+
+
+async def test_step_unknown_path_gets_bounded_repair_with_exact_diagnostic(evidence, citations):
+    invalid = valid_plan()
+    invalid.strategies[1].ordered_steps = ["Create src/app/pydantic_shim.py with unified imports"]
+    provider = FakeModelProvider([invalid, valid_plan()])
+    result = await MigrationPlanner(provider).plan(evidence, citations)
+    assert len(result) == 3
+    assert len(provider.calls) == 2
+    assert "step references undeclared Python path: src/app/pydantic_shim.py" in (
+        provider.calls[1]["user"]
+    )
+    assert "project-relative Python path in ordered_steps" in provider.calls[0]["system"]
+
+
+async def test_step_unknown_path_fails_after_existing_repair_bound(evidence, citations):
+    invalid = valid_plan()
+    invalid.strategies[1].ordered_steps = ["Create src/app/pydantic_shim.py with unified imports"]
+    provider = FakeModelProvider([invalid, invalid])
+    with pytest.raises(
+        ProviderUnavailable, match="undeclared Python path: src/app/pydantic_shim.py"
+    ):
+        await MigrationPlanner(provider).plan(evidence, citations)
+    assert len(provider.calls) == 2

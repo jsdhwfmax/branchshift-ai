@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import PurePosixPath
 from types import GenericAlias
 from typing import Annotated, Any
@@ -9,6 +10,12 @@ from pydantic import AfterValidator, BaseModel, Field, HttpUrl, create_model, mo
 
 from app.domain.models import Citation, MigrationStrategy
 from app.providers.base import ModelProvider, ProviderUnavailable
+
+_STEP_URL = re.compile(r"\b[A-Za-z][A-Za-z0-9+.-]*://[^\s`<>\"']+")
+_STEP_PYTHON_PATH = re.compile(
+    r"(?<![\w./\\-])(?:[A-Za-z0-9_.-]+/)+[A-Za-z0-9_.-]+\.py"
+    r"(?![\w/\\-]|\.[A-Za-z0-9_])"
+)
 
 
 class RepositoryEvidence(BaseModel):
@@ -118,6 +125,9 @@ class MigrationPlanner:
             "to Pydantic >=2,<3. Every strategy MUST include a nonempty target_files array with "
             "the exact source filenames it will modify and every dependency manifest containing "
             "the Pydantic pin (for example pyproject.toml). Source text is in file_contents. "
+            "Any explicit project-relative Python path in ordered_steps must be an editable "
+            "file declared in that strategy's target_files. Refer to read-only tests generally, "
+            "without naming test file paths in the steps. "
             "Every strategy must aim to pass the full unchanged baseline test suite and preserve "
             "the public behavior and exception contract. Never propose an intentionally failing "
             "probe or a partial migration that postpones required fixes. Minimal means the "
@@ -217,6 +227,16 @@ class MigrationPlanner:
                     raise ValueError(
                         f"{strategy.id} targets a file without retained source: {target}"
                     )
+            # This lexical contract covers explicit slash-qualified .py paths, not
+            # dotted API names or the meaning of arbitrary natural-language prose.
+            declared_files = set(strategy.target_files)
+            for step in strategy.ordered_steps:
+                for mentioned in _STEP_PYTHON_PATH.findall(_STEP_URL.sub("", step)):
+                    if mentioned not in declared_files:
+                        raise ValueError(
+                            f"{strategy.id} step references undeclared Python path: {mentioned}; "
+                            "use only retained editable target_files in ordered_steps"
+                        )
         return strategies
 
 
