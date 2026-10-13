@@ -1,8 +1,7 @@
 # Fixed external-case protocol — declared 2026-10-13
 
-Status: source and metadata inspected through anonymous GET requests only.
-No external project code, dependency installer, test suite, Sandbox operation or
-model request has been executed for this case. Baseline success is unknown.
+Initial declaration: source and metadata only; baseline success was unknown.
+Execution log is appended below. No Nebius Sandbox operation has been run.
 This is one fixed external case with a codemod comparator, not a 12-slot study.
 This document does not authorize spending, publication or submitting upstream changes.
 
@@ -182,3 +181,14 @@ input byte as one token gives a conservative planning estimate of US$1.99152
 for those limits, excluding unknown tax. This estimate is not an invoice or a
 provider-enforced cash cap. No key is added to GitHub. The existing total
 US$20 additional-cloud budget remains in force.
+
+## Execution log
+
+- Run 38330924173 on commit ed913cae13851a924ab26c2c3824408477cf7369:
+  baseline passed unchanged (14 passed, 1 original xfail). The evaluation harness
+  then failed because it requested the comparator license as LICENSE rather than
+  the actual LICENSE.txt. No codemod was run. Preserve this as a harness failure,
+  not a migration failure.
+- Before rerun: correct that filename and export/enforce the already declared
+  complete candidate dependency lock. Source, test contract, versions and
+  acceptance criteria remain unchanged.

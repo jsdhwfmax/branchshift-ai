@@ -147,6 +147,7 @@ class Runner:
                     "GIT_CONFIG_NOSYSTEM": "1", "GIT_CONFIG_GLOBAL": os.devnull,
                     "GIT_TERMINAL_PROMPT": "0"}
         self.commands = []
+        self.constraints_digest = None
         self.report = {"schema_version": 1, "execution_environment": "github-hosted-runner",
                        "not_a_nebius_sandbox_run": True, "upstream_commit": UPSTREAM_SHA,
                        "codemod_commit": TOOL_SHA, "status": "preparing", "stages": {}}
@@ -296,6 +297,9 @@ print(json.dumps(result))
                   "test_gate_passed": valid_tests, "native_v2": native.get("native_v2") is True,
                   "pydantic_version": environment["pydantic"], "lint_findings": lint_count,
                   "elapsed_seconds": tests["elapsed_seconds"], "checkpoint_id": None,
+                  "candidate_constraints_sha256": self.constraints_digest,
+                  "constraint_applied": expected is not None and self.constraints_digest is not None,
+                  "target_pydantic_version": "1.10.24" if expected is None else "2.12.5",
                   "diagnostics": metrics.get("issues", [])[:3]}
         result["qualified"] = (valid_tests and result["pip_check_passed"] and
                                (environment["pydantic"] == "1.10.24" if expected is None else
@@ -363,7 +367,7 @@ print(json.dumps(result))
         # The original source tree is immutable; candidate changes occur in a separate checkout.
         candidate = self.checkout("codemod-source", UPSTREAM_URL, UPSTREAM_SHA)
         tool = self.checkout("tool-source", TOOL_URL, TOOL_SHA)
-        shutil.copyfile(tool / "LICENSE", self.output / "codemod-LICENSE")
+        shutil.copyfile(tool / "LICENSE.txt", self.output / "codemod-LICENSE")
         tool_py = self.venv("tool")
         self.run("tool/install-pins", [str(tool_py), "-m", "pip", "install", "--no-cache-dir", "--report", str(self.output / "tool/pins-install.json"), *TOOL_PINS], self.work)
         self.run("tool/install", [str(tool_py), "-m", "pip", "install", "--no-cache-dir", "--no-build-isolation", "--no-deps", "--report", str(self.output / "tool/source-install.json"), str(tool)], self.work)
@@ -392,6 +396,15 @@ print(json.dumps(result))
         lock_path = self.output / "codemod/shared-baseline-constraints.txt"
         lock_path.write_text("".join(f"{name}=={version}\n" for name, version in sorted(locked.items())))
         self.run("codemod/install-runtime", [str(candidate_py), "-m", "pip", "install", "--no-cache-dir", "--report", str(self.output / "codemod/runtime-install.json"), "-r", str(lock_path), "pydantic==2.12.5"], self.work)
+        resolved_runtime = self.lock("candidate-environment", candidate_py)
+        full_constraints = self.output / "candidate-environment/constraints.txt"
+        full_constraints.write_text("".join(f"{name}=={version}\n" for name, version in sorted(resolved_runtime.items())))
+        self.constraints_digest = digest(full_constraints.read_bytes())
+        self.env["PIP_CONSTRAINT"] = str(full_constraints)
+        save(self.output / "candidate-environment/constraint-receipt.json", {
+            "candidate_constraints_sha256": self.constraints_digest,
+            "target_pydantic_version": "2.12.5", "constraint_applied": True,
+            "scope": "Every subsequent candidate and clean pip install uses this exact full environment constraint"})
         self.install_source("codemod", candidate_py, candidate)
         candidate_lock = self.lock("codemod", candidate_py)
         if any(candidate_lock.get(name) != version for name, version in locked.items()):
