@@ -22,6 +22,13 @@ from pydantic import (
 from app.domain.models import BranchResult, BranchStatus, Citation, MigrationStrategy
 from app.orchestrator.baseline import editable_requirement
 from app.orchestrator.dependencies import migrate_pyproject_pydantic
+from app.orchestrator.edit_limits import (
+    EDIT_BUDGET_DESCRIPTION,
+    MAX_EDIT_BYTES,
+    MAX_EDITS,
+    MAX_NEW_LINES,
+    MAX_NEW_LINES_PER_EDIT,
+)
 from app.orchestrator.patches import PatchStats, UnsafePatch, build_apply_command
 from app.orchestrator.patches import validate_unified_diff as validate_patch
 from app.orchestrator.planner import RepositoryEvidence, is_test_path
@@ -47,9 +54,6 @@ class PatchProposal(BaseModel):
     summary: str = Field(max_length=500)
 
 
-MAX_EDITS = 40
-MAX_NEW_LINES = 600
-MAX_EDIT_BYTES = 24_000
 MAX_PROMPT_BYTES = 100_000
 
 
@@ -59,7 +63,7 @@ class SourceEdit(BaseModel):
     path: str = Field(min_length=1, max_length=500)
     start_line: int = Field(strict=True, ge=1)
     end_line: int = Field(strict=True, ge=1)
-    lines: list[Annotated[str, Field(max_length=5_000)]] = Field(max_length=120)
+    lines: list[Annotated[str, Field(max_length=5_000)]] = Field(max_length=MAX_NEW_LINES_PER_EDIT)
 
 
 class EditProposal(BaseModel):
@@ -158,7 +162,7 @@ def _check_edit(
     if (type(edit.start_line) is not int or type(edit.end_line) is not int
             or not 1 <= edit.start_line <= edit.end_line <= boundary):
         raise UnsafePatch(f"{edit.path}: edit range must satisfy 1 <= start <= end <= {boundary}")
-    if len(edit.lines) > 120 or any(
+    if len(edit.lines) > MAX_NEW_LINES_PER_EDIT or any(
         len(line) > 5_000 or any(char in line for char in ("\n", "\r", "\x00"))
         for line in edit.lines
     ):
@@ -344,6 +348,7 @@ class BranchRunner:
                         f"{exc}. No complete candidate was available to validate. "
                         "Return the fewest necessary non-repeating small edits, excluding "
                         "unchanged context and docstrings. Do not fill the maximum edit count. "
+                        f"{EDIT_BUDGET_DESCRIPTION} "
                         "Include every still-needed change relative to the original baseline; "
                         "do not omit required migration work or return a partial candidate."
                     )
@@ -353,7 +358,7 @@ class BranchRunner:
                     "schema. Use only the declared editable source path enum; dependency "
                     "manifests are updated automatically. Return small baseline line-range edits. "
                     "Use integer 1 <= start_line <= end_line <= line_count+1, non-overlapping "
-                    "ranges with distinct starts, at most 40 edits and 120 new lines per edit. "
+                    f"ranges with distinct starts. {EDIT_BUDGET_DESCRIPTION} "
                     "Check literal quotes and return no extra fields or full-file replacements."
                 )
                 continue
@@ -476,7 +481,7 @@ class BranchRunner:
             "The final boundary is line_count+1. Use the numbered_source line labels only as "
             "coordinates; do not copy labels into code. Ranges cannot overlap or share a start. "
             "Return only changed blocks, never regenerate unrelated docstrings or whole files. "
-            "Maximum 40 edits, 120 new lines per edit, 600 new lines and 24000 UTF-8 bytes total. "
+            f"{EDIT_BUDGET_DESCRIPTION} "
             "Preserve indentation and literal quote characters. The system preserves all other "
             "original bytes and derives a unified diff; "
             "do not return diff syntax. Modify only editable_source_paths. Never create, delete, "

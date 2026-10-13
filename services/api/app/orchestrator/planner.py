@@ -9,6 +9,7 @@ from typing import Annotated, Any
 from pydantic import AfterValidator, BaseModel, Field, HttpUrl, create_model, model_validator
 
 from app.domain.models import Citation, MigrationStrategy
+from app.orchestrator.edit_limits import EDIT_BUDGET_DESCRIPTION
 from app.providers.base import ModelProvider, ProviderUnavailable
 
 _STEP_URL = re.compile(r"\b[A-Za-z][A-Za-z0-9+.-]*://[^\s`<>\"']+")
@@ -125,6 +126,12 @@ class MigrationPlanner:
             "to Pydantic >=2,<3. Every strategy MUST include a nonempty target_files array with "
             "the exact source filenames it will modify and every dependency manifest containing "
             "the Pydantic pin (for example pyproject.toml). Source text is in file_contents. "
+            "Plan for bounded local line-range edits against the original baseline. "
+            f"{EDIT_BUDGET_DESCRIPTION} "
+            "Preserve unaffected code; avoid whole-file rewrites. The application "
+            "deterministically updates the dependency manifest's Pydantic pin to >=2,<3; "
+            "plan only the necessary "
+            "source edits while still including that manifest in target_files. "
             "Any explicit project-relative Python path in ordered_steps must be an editable "
             "file declared in that strategy's target_files. Refer to read-only tests generally, "
             "without naming test file paths in the steps. "

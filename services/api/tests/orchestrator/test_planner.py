@@ -4,6 +4,7 @@ from typing import Any
 import pytest
 
 from app.domain.models import Citation, MigrationStrategy, http_url
+from app.orchestrator.edit_limits import EDIT_BUDGET_DESCRIPTION
 from app.orchestrator.planner import (
     MigrationPlanner,
     RepositoryEvidence,
@@ -68,6 +69,20 @@ async def test_planner_accepts_three_grounded_strategies(evidence, citations):
     assert [item.id for item in result] == ["minimal", "compatibility", "refactor"]
     assert issubclass(provider.calls[0]["schema"], StrategyPlan)
     assert "src/app/models.py" in provider.calls[0]["user"]
+
+
+async def test_planner_is_told_editor_budget_and_deterministic_manifest_capabilities(
+    evidence, citations,
+):
+    provider = FakeModelProvider([valid_plan()])
+    await MigrationPlanner(provider).plan(evidence, citations)
+    assert len(provider.calls) == 1
+    prompt = provider.calls[0]["system"]
+    assert EDIT_BUDGET_DESCRIPTION in prompt
+    assert "local line-range edits against the original baseline" in prompt
+    assert "Preserve unaffected code; avoid whole-file rewrites" in prompt
+    assert "deterministically updates the dependency manifest's Pydantic pin" in prompt
+    assert "still including that manifest in target_files" in prompt
 
 
 async def test_planner_retries_once_after_unknown_file(evidence, citations):

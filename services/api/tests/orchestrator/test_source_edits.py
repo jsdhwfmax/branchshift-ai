@@ -13,6 +13,13 @@ from app.orchestrator.branch_runner import (
     evidence_patch_schema,
     proposal_to_patch,
 )
+from app.orchestrator.edit_limits import (
+    EDIT_BUDGET_DESCRIPTION,
+    MAX_EDIT_BYTES,
+    MAX_EDITS,
+    MAX_NEW_LINES,
+    MAX_NEW_LINES_PER_EDIT,
+)
 from app.orchestrator.patches import UnsafePatch, build_apply_command
 from app.orchestrator.planner import RepositoryEvidence
 from app.providers.base import CommandResult, ProviderUnavailable, SandboxState
@@ -128,6 +135,26 @@ def test_active_schema_is_edits_only_and_rejects_extra_fields_and_non_integer_co
             schema.model_validate(payload)
     with pytest.raises(ValidationError):
         schema.model_validate({"edits": [], "summary": "x", "replacements": []})
+
+
+def test_shared_capabilities_keep_existing_schema_and_direct_validation_limits():
+    assert (MAX_EDITS, MAX_NEW_LINES_PER_EDIT, MAX_NEW_LINES, MAX_EDIT_BYTES) == (
+        40, 120, 600, 24_000
+    )
+    plan, evidence = inputs()
+    schema = evidence_patch_schema(plan, evidence).model_json_schema()
+    assert schema["properties"]["edits"]["maxItems"] == MAX_EDITS
+    assert schema["$defs"]["EvidenceSourceEdit"]["properties"]["lines"]["maxItems"] == (
+        MAX_NEW_LINES_PER_EDIT
+    )
+    assert EDIT_BUDGET_DESCRIPTION in BranchRunner._system_prompt()
+    at_limit = edit(lines=["# unchanged purpose"] * 119 + ["value = 2"])
+    assert "+value = 2" in proposal_to_patch(proposal(at_limit), plan, evidence)
+    outside_limit = SourceEdit.model_construct(
+        path=PATH, start_line=1, end_line=2, lines=at_limit.lines + ["# one too many"]
+    )
+    with pytest.raises(UnsafePatch, match="bounded individual textual lines"):
+        proposal_to_patch(proposal(outside_limit), plan, evidence)
 
 
 @pytest.mark.parametrize(
@@ -257,9 +284,26 @@ async def test_explicit_output_limit_repairs_with_active_edit_then_executes_once
     repair = json.loads(model.requests[1]["user"])
     assert OUTPUT_LIMIT in repair["previous_attempt"]
     assert "non-repeating small edits" in repair["previous_attempt"]
+    assert EDIT_BUDGET_DESCRIPTION in repair["previous_attempt"]
     assert repair["previous_candidate_diff"] is None
     assert repair["previous_candidate_sources"] == repair["previous_candidate_edits"] == []
     assert set(model.requests[1]["schema"]["properties"]) == {"edits", "summary"}
+
+
+async def test_schema_repair_reports_the_same_complete_editor_budget():
+    plan, evidence = inputs()
+    model = RecordedModel([
+        ProviderUnavailable("Model returned invalid structured content"), proposal(edit())
+    ])
+    sandbox = RecordedSandbox()
+    result = await BranchRunner(model, sandbox, max_attempts=2).run(
+        SandboxState("baseline"), plan, evidence
+    )
+    assert result.status is BranchStatus.PASSED
+    assert len(model.requests) == 2
+    assert len(sandbox.parents) == 1
+    repair = json.loads(model.requests[1]["user"])
+    assert EDIT_BUDGET_DESCRIPTION in repair["previous_attempt"]
 
 
 async def test_explicit_output_limits_exhaust_existing_attempt_bound_without_execution():
