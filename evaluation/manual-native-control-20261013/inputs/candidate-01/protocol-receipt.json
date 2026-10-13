@@ -1,0 +1,23 @@
+{
+  "authoring_method": "manual_codex_assisted",
+  "branch_runner_sha256": "603db950e41783df601925bf593dd2de4ad7fb839c2e89f0cb86c9899a6412ed",
+  "command_sha256": "05c24cf6ff0eda89737a7ae70ba531e0c38b821b0f77034c93d7821013271566",
+  "edit_proposal_sha256": "828f429ffb576e5567c1bb94025094dd49159f754994fed7c48acc170fb149e0",
+  "evaluated_model_calls": 0,
+  "exact_manual_source_replay": true,
+  "limits": {
+    "edits": 40,
+    "lines_per_edit": 120,
+    "total_bytes": 24000,
+    "total_lines": 600
+  },
+  "max_lines_per_edit": 35,
+  "patch_sha256": "c1d9c8d185177a3d78a55a2fd20c213bbf3c424471e2cdf90930d6900a8582be",
+  "production_patch_checks_passed": true,
+  "production_schema_passed": true,
+  "reverse_apply_check_passed": true,
+  "source_edits": 14,
+  "total_new_bytes": 7491,
+  "total_new_lines": 210,
+  "upstream_runtime_executed_on_host": false
+}

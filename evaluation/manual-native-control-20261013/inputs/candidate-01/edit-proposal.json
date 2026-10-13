@@ -1,0 +1,313 @@
+{
+  "edits": [
+    {
+      "end_line": 8,
+      "lines": [
+        "from functools import wraps",
+        "from typing import Any, Callable, Optional, Union, no_type_check",
+        "",
+        "from pydantic_core import core_schema",
+        "from pydantic_yaml.compat.types import YamlStr",
+        "from semver import VersionInfo",
+        ""
+      ],
+      "path": "src/pydantic_yaml/ext/semver.py",
+      "start_line": 1
+    },
+    {
+      "end_line": 74,
+      "lines": [
+        "        return str(VersionInfo(major, minor, patch, prerelease, build))",
+        "",
+        "    @classmethod",
+        "    def __get_pydantic_core_schema__(cls, source_type, handler):",
+        "        \"\"\"Validate semantic versions through the native Pydantic v2 schema.\"\"\"",
+        "        return core_schema.no_info_after_validator_function(cls.validate, handler(str))",
+        "",
+        "    @classmethod",
+        "    def validate(cls, value: Union[str, \"SemVer\"]) -> \"SemVer\":",
+        "        vi = VersionInfo.parse(value)",
+        "        if not cls.allow_build and (vi.build is None):",
+        "            raise ValueError(\"value is not None\")",
+        "        if not cls.allow_prerelease and (vi.prerelease is None):",
+        "            raise ValueError(\"value is not None\")",
+        "        return cls(value)",
+        "",
+        "    @property"
+      ],
+      "path": "src/pydantic_yaml/ext/semver.py",
+      "start_line": 58
+    },
+    {
+      "end_line": 8,
+      "lines": [
+        "from typing import Optional, Tuple, Type",
+        "import warnings",
+        "",
+        "from pydantic import field_validator",
+        "",
+        "from pydantic_yaml.model import YamlModel",
+        "from .semver import SemVer"
+      ],
+      "path": "src/pydantic_yaml/ext/versioned_model.py",
+      "start_line": 1
+    },
+    {
+      "end_line": 36,
+      "lines": [
+        "def _get_minmax_robust(",
+        "    cls: Type[\"VersionedYamlModel\"],",
+        ") -> Tuple[Optional[SemVer], Optional[SemVer]]:",
+        "    values = [cls.model_config.get(name) for name in (\"min_version\", \"max_version\")]",
+        "    return tuple(None if value is None else SemVer(value) for value in values)",
+        "",
+        "",
+        "class VersionedYamlModel(YamlModel):"
+      ],
+      "path": "src/pydantic_yaml/ext/versioned_model.py",
+      "start_line": 21
+    },
+    {
+      "end_line": 83,
+      "lines": [
+        "",
+        "    version: SemVer",
+        "",
+        "    @classmethod",
+        "    def __pydantic_init_subclass__(cls, **kwargs) -> None:",
+        "        super().__pydantic_init_subclass__(**kwargs)",
+        "",
+        "        # Check ranges",
+        "        min_, max_ = _get_minmax_robust(cls)"
+      ],
+      "path": "src/pydantic_yaml/ext/versioned_model.py",
+      "start_line": 63
+    },
+    {
+      "end_line": 110,
+      "lines": [
+        "            raise ValueError(f\"Minimum version higher than maximum: {min_!r} > {max_!r}\")",
+        "",
+        "        # Check the default value of the \"version\" field",
+        "        fld = cls.model_fields[\"version\"]",
+        "        d = fld.default",
+        "        if fld.is_required() or d is None:",
+        "            pass",
+        "        else:",
+        "            _chk_between(SemVer.validate(d), lo=min_, hi=max_)",
+        "            warnings.warn(",
+        "                f\"Recommended to have `version` be required, but set default {d!r}\",",
+        "                UserWarning,",
+        "            )",
+        "",
+        "        if not isinstance(fld.annotation, type) or not issubclass(fld.annotation, SemVer):",
+        "            raise TypeError(f\"Field type for `version` must be SemVer, got {fld.annotation!r}\")",
+        "",
+        "    @field_validator(\"version\")",
+        "    @classmethod",
+        "    def _check_semver(cls, v):",
+        "        min_, max_ = _get_minmax_robust(cls)",
+        "        _chk_between(v, lo=min_, hi=max_)",
+        "        return v",
+        "",
+        "    model_config = {\"min_version\": \"0.0.0\", \"max_version\": None, \"validate_default\": True}"
+      ],
+      "path": "src/pydantic_yaml/ext/versioned_model.py",
+      "start_line": 84
+    },
+    {
+      "end_line": 14,
+      "lines": [
+        "\"\"\"Module to define the YamlModelMixin.\"\"\"",
+        "",
+        "from typing_extensions import Literal",
+        "import json",
+        "import pickle",
+        "import warnings",
+        "from pathlib import Path",
+        "from typing import (",
+        "    TYPE_CHECKING,",
+        "    Any,",
+        "    AbstractSet,",
+        "    Callable,",
+        "    Dict,",
+        "    Mapping,",
+        "    Optional,",
+        "    Type,",
+        "    TypeVar,"
+      ],
+      "path": "src/pydantic_yaml/mixin.py",
+      "start_line": 1
+    },
+    {
+      "end_line": 39,
+      "lines": [
+        "    cast,",
+        "    no_type_check,",
+        ")",
+        "from pydantic import BaseModel, ValidationError",
+        "",
+        "if TYPE_CHECKING:",
+        "    DictStrAny = Dict[str, Any]",
+        "    AbstractSetIntStr = AbstractSet[Union[int, str]]",
+        "    MappingIntStrAny = Mapping[Union[int, str], Any]",
+        "",
+        "    Model = TypeVar(\"Model\", bound=\"BaseModel\")",
+        "",
+        "from .compat.yaml_lib import yaml_safe_dump, yaml_safe_load",
+        "",
+        "",
+        "StrBytes = Union[str, bytes]",
+        "ExtendedProto = Literal[\"json\", \"pickle\", \"yaml\"]",
+        "",
+        "YamlStyle = Union[",
+        "    None,"
+      ],
+      "path": "src/pydantic_yaml/mixin.py",
+      "start_line": 15
+    },
+    {
+      "end_line": 74,
+      "lines": [
+        "    yaml_dumps: Callable[..., str] = yaml_safe_dump  # type: ignore",
+        "",
+        "",
+        "class YamlModelMixin:",
+        "    \"\"\"Mixin to add YAML compatibility to your class.",
+        "",
+        "    Usage"
+      ],
+      "path": "src/pydantic_yaml/mixin.py",
+      "start_line": 67
+    },
+    {
+      "end_line": 115,
+      "lines": [
+        "    to a YAML string.",
+        "    \"\"\"",
+        "",
+        "    @no_type_check",
+        "    def __init_subclass__(cls, **kwargs) -> None:",
+        "        super().__init_subclass__(**kwargs)",
+        "        # This runs before the native model schema is built. Retain the public",
+        "        # legacy Config spelling used by existing callers, with a v2 setting.",
+        "        cfg = getattr(cls, \"model_config\", {})",
+        "        if \"allow_population_by_field_name\" in cfg:",
+        "            cfg.setdefault(\"populate_by_name\", cfg[\"allow_population_by_field_name\"])",
+        "",
+        "    def yaml(",
+        "        self,"
+      ],
+      "path": "src/pydantic_yaml/mixin.py",
+      "start_line": 89
+    },
+    {
+      "end_line": 174,
+      "lines": [
+        "        indent, encoding, kwargs",
+        "            Additional arguments for the dumper.",
+        "        \"\"\"",
+        "        if skip_defaults is not None:",
+        "            warnings.warn(\"skip_defaults is deprecated; use exclude_unset\", DeprecationWarning)",
+        "            exclude_unset = skip_defaults",
+        "        data: \"DictStrAny\" = self.model_dump(  # type: ignore",
+        "            mode=\"python\",",
+        "            include=include,",
+        "            exclude=exclude,",
+        "            by_alias=by_alias,",
+        "            exclude_unset=exclude_unset,",
+        "            exclude_defaults=exclude_defaults,",
+        "            exclude_none=exclude_none,",
+        "            serialize_as_any=True,",
+        "        )",
+        "",
+        "        # Python-mode dumping preserves the existing YAML representers, including",
+        "        # masked secrets. JSON encoders remain independent from YAML serialization.",
+        "        dumper = type(self).model_config.get(\"yaml_dumps\", YamlModelMixinConfig.yaml_dumps)",
+        "        return dumper(",
+        "            data,",
+        "            sort_keys=sort_keys,",
+        "            default_flow_style=default_flow_style,"
+      ],
+      "path": "src/pydantic_yaml/mixin.py",
+      "start_line": 149
+    },
+    {
+      "end_line": 222,
+      "lines": [
+        "        # even if JSON is passed. It will be slower, however.",
+        "        if is_yaml:",
+        "            try:",
+        "                loader = cls.model_config.get(\"yaml_loads\", YamlModelMixinConfig.yaml_loads)",
+        "                obj = loader(b)",
+        "            except RecursionError as e:",
+        "                raise ValueError(\"YAML files with recursive references are unsupported.\") from e",
+        "            except ValidationError:",
+        "                raise",
+        "            except Exception as e:",
+        "                raise ValidationError.from_exception_data(cls.__name__, [{",
+        "                    \"type\": \"value_error\", \"loc\": (\"__root__\",), \"input\": b,",
+        "                    \"ctx\": {\"error\": ValueError(str(e))},",
+        "                }]) from e",
+        "        else:",
+        "            if proto is None and content_type:",
+        "                if content_type.endswith((\"json\", \"javascript\")):",
+        "                    proto = \"json\"",
+        "                elif allow_pickle and content_type.endswith(\"pickle\"):",
+        "                    proto = \"pickle\"",
+        "                else:",
+        "                    raise TypeError(f\"Unknown content-type: {content_type}\")",
+        "            if proto in (None, \"json\"):",
+        "                loader = cls.model_config.get(\"json_loads\", json.loads)",
+        "                obj = loader(b.decode(encoding) if isinstance(b, bytes) else b)",
+        "            elif proto == \"pickle\":",
+        "                if not allow_pickle:",
+        "                    raise RuntimeError(\"Trying to decode with pickle with allow_pickle=False\")",
+        "                obj = pickle.loads(b if isinstance(b, bytes) else b.encode(encoding))",
+        "            else:",
+        "                raise TypeError(f\"Unknown protocol: {proto}\")",
+        "        res = cls.model_validate(obj)",
+        "        return cast(\"Model\", res)",
+        "",
+        "    @no_type_check"
+      ],
+      "path": "src/pydantic_yaml/mixin.py",
+      "start_line": 198
+    },
+    {
+      "end_line": 266,
+      "lines": [
+        "        if (content_type is None) and (path.suffix in [\".yml\", \".yaml\"]):",
+        "            content_type = \"application/yaml\"",
+        "",
+        "        if content_type is None:",
+        "            if path.suffix in (\".js\", \".json\"):",
+        "                proto = \"json\"",
+        "            elif path.suffix == \".pkl\":",
+        "                proto = \"pickle\"",
+        "        return cls.parse_raw(",
+        "            path.read_bytes(), content_type=content_type, encoding=encoding,",
+        "            proto=proto, allow_pickle=allow_pickle,",
+        "        )",
+        "",
+        "    @classmethod",
+        "    def __try_update_forward_refs__(cls, **localns: Any) -> None:"
+      ],
+      "path": "src/pydantic_yaml/mixin.py",
+      "start_line": 235
+    },
+    {
+      "end_line": 275,
+      "lines": [
+        "        Same as update_forward_refs but will not raise exception",
+        "        when forward references are not defined.",
+        "        \"\"\"",
+        "        if issubclass(cls, BaseModel):",
+        "            cls.model_rebuild(raise_errors=False, _types_namespace=localns or None)"
+      ],
+      "path": "src/pydantic_yaml/mixin.py",
+      "start_line": 267
+    }
+  ],
+  "summary": "Manual reference control, Codex-assisted; not autonomous migration evidence."
+}
