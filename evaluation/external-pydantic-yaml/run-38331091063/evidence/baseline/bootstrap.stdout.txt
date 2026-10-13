@@ -1,0 +1,29 @@
+Collecting pip==25.2
+  Downloading pip-25.2-py3-none-any.whl.metadata (4.7 kB)
+Collecting setuptools==80.9.0
+  Downloading setuptools-80.9.0-py3-none-any.whl.metadata (6.6 kB)
+Collecting wheel==0.45.1
+  Downloading wheel-0.45.1-py3-none-any.whl.metadata (2.3 kB)
+Collecting setuptools-scm==8.3.1
+  Downloading setuptools_scm-8.3.1-py3-none-any.whl.metadata (7.0 kB)
+Collecting importlib-metadata==8.7.0
+  Downloading importlib_metadata-8.7.0-py3-none-any.whl.metadata (4.8 kB)
+Collecting packaging>=20 (from setuptools-scm==8.3.1)
+  Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+Collecting zipp>=3.20 (from importlib-metadata==8.7.0)
+  Downloading zipp-4.1.1-py3-none-any.whl.metadata (3.6 kB)
+Downloading pip-25.2-py3-none-any.whl (1.8 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 13.0 MB/s eta 0:00:00
+Downloading setuptools-80.9.0-py3-none-any.whl (1.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 37.5 MB/s eta 0:00:00
+Downloading wheel-0.45.1-py3-none-any.whl (72 kB)
+Downloading setuptools_scm-8.3.1-py3-none-any.whl (43 kB)
+Downloading importlib_metadata-8.7.0-py3-none-any.whl (27 kB)
+Downloading packaging-26.3-py3-none-any.whl (129 kB)
+Downloading zipp-4.1.1-py3-none-any.whl (10 kB)
+Installing collected packages: zipp, wheel, setuptools, pip, packaging, setuptools-scm, importlib-metadata
+  Attempting uninstall: pip
+    Found existing installation: pip 25.0.1
+    Uninstalling pip-25.0.1:
+      Successfully uninstalled pip-25.0.1
+Successfully installed importlib-metadata-8.7.0 packaging-26.3 pip-25.2 setuptools-80.9.0 setuptools-scm-8.3.1 wheel-0.45.1 zipp-4.1.1

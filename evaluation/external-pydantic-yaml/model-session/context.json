@@ -1,0 +1,10 @@
+{
+  "baseline_qualified": true,
+  "checkpoint_id": null,
+  "commit_sha": "54ff4bad7bca758a9dd22a791b707a2b9c27159e",
+  "execution_environment": "github-hosted-runner",
+  "test_contract_digest": "b904563f71d38851af139911231703c997a1f56d6840690d9802c386c928a61c",
+  "tests_collected": 15,
+  "tests_passed": 14,
+  "tests_skipped": 1
+}

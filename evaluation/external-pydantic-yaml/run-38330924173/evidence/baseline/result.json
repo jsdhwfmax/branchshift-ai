@@ -1,0 +1,19 @@
+{
+  "checkpoint_id": null,
+  "diagnostics": [],
+  "elapsed_seconds": 0.6653258770000008,
+  "lint_findings": 51,
+  "native_v2": false,
+  "pip_check_passed": true,
+  "pip_exit_code": 0,
+  "pydantic_version": "1.10.24",
+  "qualified": true,
+  "test_contract_preserved": true,
+  "test_exit_code": 0,
+  "test_gate_passed": true,
+  "test_outcomes_preserved": null,
+  "tests_collected": 15,
+  "tests_failed": 0,
+  "tests_passed": 14,
+  "tests_skipped": 1
+}

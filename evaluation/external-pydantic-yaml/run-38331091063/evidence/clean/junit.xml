@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="8" failures="0" skipped="0" tests="8" time="0.470" timestamp="2026-10-13T01:14:36.926172+00:00" hostname="runnervmmprz5"><testcase classname="" name="src.pydantic_yaml.test.test_advanced_yaml" time="0.000"><error message="collection failure">ImportError while importing test module '/home/runner/work/_temp/external-pydantic-yaml/work/clean-source/src/pydantic_yaml/test/test_advanced_yaml.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+src/pydantic_yaml/__init__.py:18: in &lt;module&gt;
+    from .main import (
+src/pydantic_yaml/main.py:22: in &lt;module&gt;
+    from .mixin import YamlModelMixin, YamlModelMixinConfig
+src/pydantic_yaml/mixin.py:18: in &lt;module&gt;
+    from pydantic.parse import Protocol, load_file, load_str_bytes
+E   ImportError: cannot import name 'Protocol' from 'pydantic.parse' (/home/runner/work/_temp/external-pydantic-yaml/work/clean-env/lib/python3.12/site-packages/pydantic/parse.py)</error></testcase><testcase classname="" name="src.pydantic_yaml.test.test_basic" time="0.000"><error message="collection failure">ImportError while importing test module '/home/runner/work/_temp/external-pydantic-yaml/work/clean-source/src/pydantic_yaml/test/test_basic.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+src/pydantic_yaml/__init__.py:18: in &lt;module&gt;
+    from .main import (
+src/pydantic_yaml/main.py:22: in &lt;module&gt;
+    from .mixin import YamlModelMixin, YamlModelMixinConfig
+src/pydantic_yaml/mixin.py:18: in &lt;module&gt;
+    from pydantic.parse import Protocol, load_file, load_str_bytes
+E   ImportError: cannot import name 'Protocol' from 'pydantic.parse' (/home/runner/work/_temp/external-pydantic-yaml/work/clean-env/lib/python3.12/site-packages/pydantic/parse.py)</error></testcase><testcase classname="" name="src.pydantic_yaml.test.test_io" time="0.000"><error message="collection failure">ImportError while importing test module '/home/runner/work/_temp/external-pydantic-yaml/work/clean-source/src/pydantic_yaml/test/test_io.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+src/pydantic_yaml/__init__.py:18: in &lt;module&gt;
+    from .main import (
+src/pydantic_yaml/main.py:22: in &lt;module&gt;
+    from .mixin import YamlModelMixin, YamlModelMixinConfig
+src/pydantic_yaml/mixin.py:18: in &lt;module&gt;
+    from pydantic.parse import Protocol, load_file, load_str_bytes
+E   ImportError: cannot import name 'Protocol' from 'pydantic.parse' (/home/runner/work/_temp/external-pydantic-yaml/work/clean-env/lib/python3.12/site-packages/pydantic/parse.py)</error></testcase><testcase classname="" name="src.pydantic_yaml.test.test_resursive" time="0.000"><error message="collection failure">ImportError while importing test module '/home/runner/work/_temp/external-pydantic-yaml/work/clean-source/src/pydantic_yaml/test/test_resursive.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+src/pydantic_yaml/__init__.py:18: in &lt;module&gt;
+    from .main import (
+src/pydantic_yaml/main.py:22: in &lt;module&gt;
+    from .mixin import YamlModelMixin, YamlModelMixinConfig
+src/pydantic_yaml/mixin.py:18: in &lt;module&gt;
+    from pydantic.parse import Protocol, load_file, load_str_bytes
+E   ImportError: cannot import name 'Protocol' from 'pydantic.parse' (/home/runner/work/_temp/external-pydantic-yaml/work/clean-env/lib/python3.12/site-packages/pydantic/parse.py)</error></testcase><testcase classname="" name="src.pydantic_yaml.test.test_secret_types" time="0.000"><error message="collection failure">ImportError while importing test module '/home/runner/work/_temp/external-pydantic-yaml/work/clean-source/src/pydantic_yaml/test/test_secret_types.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+src/pydantic_yaml/__init__.py:18: in &lt;module&gt;
+    from .main import (
+src/pydantic_yaml/main.py:22: in &lt;module&gt;
+    from .mixin import YamlModelMixin, YamlModelMixinConfig
+src/pydantic_yaml/mixin.py:18: in &lt;module&gt;
+    from pydantic.parse import Protocol, load_file, load_str_bytes
+E   ImportError: cannot import name 'Protocol' from 'pydantic.parse' (/home/runner/work/_temp/external-pydantic-yaml/work/clean-env/lib/python3.12/site-packages/pydantic/parse.py)</error></testcase><testcase classname="" name="src.pydantic_yaml.test.test_sorting" time="0.000"><error message="collection failure">ImportError while importing test module '/home/runner/work/_temp/external-pydantic-yaml/work/clean-source/src/pydantic_yaml/test/test_sorting.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+src/pydantic_yaml/__init__.py:18: in &lt;module&gt;
+    from .main import (
+src/pydantic_yaml/main.py:22: in &lt;module&gt;
+    from .mixin import YamlModelMixin, YamlModelMixinConfig
+src/pydantic_yaml/mixin.py:18: in &lt;module&gt;
+    from pydantic.parse import Protocol, load_file, load_str_bytes
+E   ImportError: cannot import name 'Protocol' from 'pydantic.parse' (/home/runner/work/_temp/external-pydantic-yaml/work/clean-env/lib/python3.12/site-packages/pydantic/parse.py)</error></testcase><testcase classname="" name="src.pydantic_yaml.test.test_types" time="0.000"><error message="collection failure">ImportError while importing test module '/home/runner/work/_temp/external-pydantic-yaml/work/clean-source/src/pydantic_yaml/test/test_types.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+src/pydantic_yaml/__init__.py:18: in &lt;module&gt;
+    from .main import (
+src/pydantic_yaml/main.py:22: in &lt;module&gt;
+    from .mixin import YamlModelMixin, YamlModelMixinConfig
+src/pydantic_yaml/mixin.py:18: in &lt;module&gt;
+    from pydantic.parse import Protocol, load_file, load_str_bytes
+E   ImportError: cannot import name 'Protocol' from 'pydantic.parse' (/home/runner/work/_temp/external-pydantic-yaml/work/clean-env/lib/python3.12/site-packages/pydantic/parse.py)</error></testcase><testcase classname="" name="src.pydantic_yaml.test.test_versioned" time="0.000"><error message="collection failure">ImportError while importing test module '/home/runner/work/_temp/external-pydantic-yaml/work/clean-source/src/pydantic_yaml/test/test_versioned.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+src/pydantic_yaml/__init__.py:18: in &lt;module&gt;
+    from .main import (
+src/pydantic_yaml/main.py:22: in &lt;module&gt;
+    from .mixin import YamlModelMixin, YamlModelMixinConfig
+src/pydantic_yaml/mixin.py:18: in &lt;module&gt;
+    from pydantic.parse import Protocol, load_file, load_str_bytes
+E   ImportError: cannot import name 'Protocol' from 'pydantic.parse' (/home/runner/work/_temp/external-pydantic-yaml/work/clean-env/lib/python3.12/site-packages/pydantic/parse.py)</error></testcase></testsuite></testsuites>

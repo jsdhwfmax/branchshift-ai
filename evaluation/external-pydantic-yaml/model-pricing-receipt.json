@@ -1,0 +1,9 @@
+{
+  "observed_date": "2026-10-13",
+  "source": "https://tokenfactory.nebius.com/organization/prices",
+  "observed_rows": [
+    "Token Factory Nemotron-3-Ultra-550B-a55B Input eu-north1 $1.00 / 1M tokens, valid from 2026-06-01",
+    "Token Factory Nemotron-3-Ultra-550B-a55B Output eu-north1 $3.00 / 1M tokens, valid from 2026-06-01"
+  ],
+  "scope": "standard synchronous requests only; no claim about Sandbox pricing"
+}

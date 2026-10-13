@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Pydantic 2.12 migration guide",
+    "url": "https://docs.pydantic.dev/2.12/migration/",
+    "evidence": "The official migration guide describes BaseModel method renames such as dict() to model_dump() and parse_obj() to model_validate(). The pydantic.v1 namespace can preserve v1 interfaces while Pydantic v2 is installed; this is distinct from native-v2 models. Native custom types migrate validation and schema hooks. Validator decorators and configuration interfaces also change in v2. This is a short retained summary of the official guide, not a quotation."
+  }
+]

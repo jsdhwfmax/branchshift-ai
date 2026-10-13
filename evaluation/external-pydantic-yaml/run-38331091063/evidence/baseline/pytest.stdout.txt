@@ -1,0 +1,11 @@
+.......x.......                                                          [100%]
+=============================== warnings summary ===============================
+../baseline-env/lib/python3.12/site-packages/setuptools_scm/git.py:167
+  /home/runner/work/_temp/external-pydantic-yaml/work/baseline-env/lib/python3.12/site-packages/setuptools_scm/git.py:167: UserWarning: "/home/runner/work/_temp/external-pydantic-yaml/work/baseline-source" is shallow and may cause errors
+    warnings.warn(f'"{wd.path}" is shallow and may cause errors')
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /home/runner/work/_temp/external-pydantic-yaml/evidence/baseline/junit.xml -
+=========================== short test summary info ============================
+XFAIL src/pydantic_yaml/test/test_secret_types.py::test_secret_types_roundtrippable - YAML/JSON encoder support doesn't exist yet.
+14 passed, 1 xfailed, 1 warning in 0.30s

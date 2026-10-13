@@ -1,0 +1,88 @@
+{
+  "actual_calls_reserved": 10,
+  "responses_retained": 10,
+  "estimated_usd": 0.501527,
+  "pricing": "input $1/M; output $3/M; not an invoice; tax unknown",
+  "records": [
+    {
+      "path": "model-session/plan/model-01/response.json",
+      "request_id": "c47ab979d61a173d9d1849c10b9a8ed691b28275858301c7462a062d62245ae9",
+      "error": null,
+      "input_tokens": 17319,
+      "output_tokens": 1702,
+      "usage_coverage": "reported"
+    },
+    {
+      "path": "model-session/plan/model-02/response.json",
+      "request_id": "c5b7602ea99eff1294a9521d65102d1fe363a8b78d9d56193fdcaade849f2bb8",
+      "error": "Model returned invalid structured content",
+      "input_tokens": 17345,
+      "output_tokens": 16384,
+      "usage_coverage": "reported"
+    },
+    {
+      "path": "schema-fixed-session/compatibility/model-01/response.json",
+      "request_id": "a0cc2f29808e0224a75276e75e70cc05328c05663f15427928b9ba1d2b6ffcb5",
+      "error": null,
+      "input_tokens": 13141,
+      "output_tokens": 10106,
+      "usage_coverage": "reported"
+    },
+    {
+      "path": "schema-fixed-session/compatibility/model-02/response.json",
+      "request_id": "77fe16e8c2495b56e01e4c2142d0acb625e01cddd2caad68a563579396d66de5",
+      "error": "Model returned invalid structured content",
+      "input_tokens": 18667,
+      "output_tokens": 16384,
+      "usage_coverage": "reported"
+    },
+    {
+      "path": "schema-fixed-session/minimal/model-01/response.json",
+      "request_id": "0142938147ee6624683cd513dc0432578495847e7b321335ab4916d0cc693284",
+      "error": null,
+      "input_tokens": 11049,
+      "output_tokens": 8643,
+      "usage_coverage": "reported"
+    },
+    {
+      "path": "schema-fixed-session/minimal/model-02/response.json",
+      "request_id": "73da54add7e5a3a9d32a73e21bc2584ecce48d0d5b4c18368c4a3f1b4d0cc9e8",
+      "error": "Model returned invalid structured content",
+      "input_tokens": 15592,
+      "output_tokens": 16384,
+      "usage_coverage": "reported"
+    },
+    {
+      "path": "schema-fixed-session/minimal/model-03/response.json",
+      "request_id": "596794b27523314369cd274643f5721c984fac6addee0103c370964a7b9d89d2",
+      "error": "Model returned invalid structured content",
+      "input_tokens": 11078,
+      "output_tokens": 16384,
+      "usage_coverage": "reported"
+    },
+    {
+      "path": "schema-fixed-session/plan/model-01/response.json",
+      "request_id": "05299611d7c80183d7dcab3b4774c50783ac5faecdcb019f2f2622fcd2a0bc5c",
+      "error": null,
+      "input_tokens": 17319,
+      "output_tokens": 7268,
+      "usage_coverage": "reported"
+    },
+    {
+      "path": "schema-fixed-session/refactor/model-01/response.json",
+      "request_id": "755bed77f012a65be46fc46fbd842b13ff7dc201e89246de1c4ddcb464050d71",
+      "error": null,
+      "input_tokens": 13203,
+      "output_tokens": 13122,
+      "usage_coverage": "reported"
+    },
+    {
+      "path": "schema-fixed-session/refactor/model-02/response.json",
+      "request_id": "24877e9e7ee03356a7844977bc1728f30195da4410f625c11ae70f0900663fc3",
+      "error": null,
+      "input_tokens": 17773,
+      "output_tokens": 9970,
+      "usage_coverage": "reported"
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+/home/runner/work/_temp/external-pydantic-yaml/work/clean-env/lib/python3.12/site-packages/setuptools_scm/git.py:167: UserWarning: "/home/runner/work/_temp/external-pydantic-yaml/work/clean-source" is shallow and may cause errors
+  warnings.warn(f'"{wd.path}" is shallow and may cause errors')

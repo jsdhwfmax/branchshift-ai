@@ -1,0 +1,54 @@
+[
+  {
+    "path": "reproduction/runtime-0cbd95cb",
+    "commit": "0cbd95cb629d7f2b8d6a0a665900ad5562115fc8",
+    "source_url": "https://github.com/jsdhwfmax/branchshift-ai/tree/0cbd95cb629d7f2b8d6a0a665900ad5562115fc8",
+    "session": "model-session",
+    "app_python_files": 42,
+    "app_digest": "1bdce6a20b14cc041f5bc06661d88840440b37c87e2753e759fc44fb466e0af8",
+    "matches_session_manifest": true
+  },
+  {
+    "path": "reproduction/runtime-4591b7a",
+    "commit": "4591b7aace1741483baf9a005c3d4797f24a93a3",
+    "source_url": "https://github.com/jsdhwfmax/branchshift-ai/tree/4591b7aace1741483baf9a005c3d4797f24a93a3",
+    "session": "schema-fixed-session",
+    "app_python_files": 42,
+    "app_digest": "ecc9cedf2cf75bd755fb5a5e9957b1aa93837711205bddd44cb1bf5f96e4ab14",
+    "matches_session_manifest": true
+  },
+  {
+    "path": "reproduction/runtime-b78e394",
+    "commit": "b78e394ba2be765cf5002ea7d995b6d78fe8c1ce",
+    "source_url": "https://github.com/jsdhwfmax/branchshift-ai/tree/b78e394ba2be765cf5002ea7d995b6d78fe8c1ce",
+    "session": "line-edit-session",
+    "app_python_files": 42,
+    "app_digest": "1872a466be38554defb6fbe98d44fdc6bbd0e2f0b67a3ccad8239cc7d9260b02",
+    "matches_session_manifest": true
+  },
+  {
+    "path": "reproduction/helpers/first-iteration.py",
+    "sha256": "50f35953c1570a26580e50812829f105f0258cc6b63fcefa6ca2f5e37498f229",
+    "purpose": "Retained study helper or comparator source"
+  },
+  {
+    "path": "reproduction/helpers/schema-fixed.py",
+    "sha256": "93f25403ce006f8f78a2001feb3bafbc061162de4e76063a658e36c5f1500e80",
+    "purpose": "Retained study helper or comparator source"
+  },
+  {
+    "path": "reproduction/helpers/line-edit.py",
+    "sha256": "4d94ec23a4fa14b9dfb0339385901ee14a57b542bb7469a249ca8f3bf6de1b2e",
+    "purpose": "Retained study helper or comparator source"
+  },
+  {
+    "path": "reproduction/external-runner/run_comparator.py",
+    "sha256": "607953f48e8beb23e0795ecf252e1a2d4fd39fe8b775431a630f06a04c50eb54",
+    "purpose": "Retained study helper or comparator source"
+  },
+  {
+    "path": "reproduction/external-runner/run_candidate.py",
+    "sha256": "e4759438d5b2b962abbb2999b032388b28b4a47e0f38ebf76395bbdfe5aad456",
+    "purpose": "Prepared candidate runner; not executed"
+  }
+]

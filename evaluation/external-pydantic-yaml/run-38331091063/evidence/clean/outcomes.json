@@ -1,0 +1,52 @@
+{
+  "issues": [
+    {
+      "message": "collection failure",
+      "test": "::src.pydantic_yaml.test.test_advanced_yaml"
+    },
+    {
+      "message": "collection failure",
+      "test": "::src.pydantic_yaml.test.test_basic"
+    },
+    {
+      "message": "collection failure",
+      "test": "::src.pydantic_yaml.test.test_io"
+    },
+    {
+      "message": "collection failure",
+      "test": "::src.pydantic_yaml.test.test_resursive"
+    },
+    {
+      "message": "collection failure",
+      "test": "::src.pydantic_yaml.test.test_secret_types"
+    },
+    {
+      "message": "collection failure",
+      "test": "::src.pydantic_yaml.test.test_sorting"
+    },
+    {
+      "message": "collection failure",
+      "test": "::src.pydantic_yaml.test.test_types"
+    },
+    {
+      "message": "collection failure",
+      "test": "::src.pydantic_yaml.test.test_versioned"
+    }
+  ],
+  "junit_sha256": "6ac0d5ae6d221fa8e49b0b4765090de8ebff1940a8385d7ae5c1a502e2aa1482",
+  "skips_and_xfails": [],
+  "test_outcomes": {
+    "::src.pydantic_yaml.test.test_advanced_yaml": "failed",
+    "::src.pydantic_yaml.test.test_basic": "failed",
+    "::src.pydantic_yaml.test.test_io": "failed",
+    "::src.pydantic_yaml.test.test_resursive": "failed",
+    "::src.pydantic_yaml.test.test_secret_types": "failed",
+    "::src.pydantic_yaml.test.test_sorting": "failed",
+    "::src.pydantic_yaml.test.test_types": "failed",
+    "::src.pydantic_yaml.test.test_versioned": "failed"
+  },
+  "tests_collected": 8,
+  "tests_failed": 8,
+  "tests_passed": 0,
+  "tests_skipped": 0
+}

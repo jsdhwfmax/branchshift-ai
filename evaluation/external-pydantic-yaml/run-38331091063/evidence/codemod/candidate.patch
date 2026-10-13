@@ -1,0 +1,65 @@
+diff --git a/pyproject.toml b/pyproject.toml
+index 4b6714c..e9b97a4 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -26,7 +26,7 @@ classifiers = [
+ ]
+ dependencies = [
+     "importlib_metadata",
+-    "pydantic>=1.8,<2",
++    "pydantic>=2,<3",
+     # "ruamel.yaml~=0.17.21",
+     "deprecated~=1.2.5",
+     "types-Deprecated",
+diff --git a/src/pydantic_yaml/ext/semver.py b/src/pydantic_yaml/ext/semver.py
+index 3296243..4317603 100644
+--- a/src/pydantic_yaml/ext/semver.py
++++ b/src/pydantic_yaml/ext/semver.py
+@@ -58,6 +58,8 @@ class SemVer(YamlStr):  # want to inherit from VersionInfo, but metaclass confli
+         return str(VersionInfo(major, minor, patch, prerelease, build))
+ 
+     @classmethod
++    # TODO[pydantic]: We couldn't refactor `__get_validators__`, please create the `__get_pydantic_core_schema__` manually.
++    # Check https://docs.pydantic.dev/latest/migration/#defining-custom-types for more information.
+     def __get_validators__(cls):
+         yield cls.validate
+ 
+diff --git a/src/pydantic_yaml/ext/versioned_model.py b/src/pydantic_yaml/ext/versioned_model.py
+index f4bea6e..86e33ee 100644
+--- a/src/pydantic_yaml/ext/versioned_model.py
++++ b/src/pydantic_yaml/ext/versioned_model.py
+@@ -1,7 +1,7 @@
+ from typing import Optional, Tuple, Type
+ import warnings
+ 
+-from pydantic import validator
++from pydantic import ConfigDict, validator
+ 
+ from pydantic_yaml.model import YamlModel
+ from .semver import SemVer
+@@ -98,12 +98,11 @@ class VersionedYamlModel(YamlModel):
+         if not issubclass(fld.type_, SemVer):
+             raise TypeError(f"Field type for `version` must be SemVer, got {fld.type_!r}")
+ 
++    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
++    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
+     @validator("version", always=True)
+     def _check_semver(cls, v):
+         min_, max_ = _get_minmax_robust(cls)
+         _chk_between(v, lo=min_, hi=max_)
+         return v
+-
+-    class Config:
+-        min_version = SemVer("0.0.0")
+-        max_version = None
++    model_config = ConfigDict(min_version=SemVer("0.0.0"), max_version=None)
+diff --git a/src/pydantic_yaml/model.py b/src/pydantic_yaml/model.py
+index 25ad085..b3762e9 100644
+--- a/src/pydantic_yaml/model.py
++++ b/src/pydantic_yaml/model.py
+@@ -17,4 +17,5 @@ ruamel.yaml: https://yaml.readthedocs.io/en/latest/index.html
+ 
+ 
+ class YamlModel(YamlModelMixin, BaseModel):
++    # TODO[pydantic]: add type annotation
+     __doc__ = _pre_doc + BaseModel.__doc__

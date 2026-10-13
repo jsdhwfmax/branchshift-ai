@@ -1,0 +1,105 @@
+{
+  "codemod_commit": "a111d4177405dbf61ef59035adaa0639b17b8718",
+  "codemod_completed_without_errors": true,
+  "codemod_native_migration_qualified": false,
+  "execution_environment": "github-hosted-runner",
+  "not_a_nebius_sandbox_run": true,
+  "patch_sha256": "782dddfc417c48ed998e759092546f2862c6c150eae2100cb7e9569e95f5edaa",
+  "schema_version": 1,
+  "stages": {
+    "baseline": {
+      "candidate_constraints_sha256": null,
+      "checkpoint_id": null,
+      "constraint_applied": false,
+      "diagnostics": [],
+      "elapsed_seconds": 0.5708867429999884,
+      "lint_findings": 51,
+      "native_v2": false,
+      "pip_check_passed": true,
+      "pip_exit_code": 0,
+      "pydantic_version": "1.10.24",
+      "qualified": true,
+      "target_pydantic_version": "1.10.24",
+      "test_contract_preserved": true,
+      "test_exit_code": 0,
+      "test_gate_passed": true,
+      "test_outcomes_preserved": null,
+      "tests_collected": 15,
+      "tests_failed": 0,
+      "tests_passed": 14,
+      "tests_skipped": 1
+    },
+    "clean": {
+      "candidate_constraints_sha256": "09cb776346095a5716b5ef8fb1b655bd9f7dafa615adaf7a6f0bdb2028abb007",
+      "checkpoint_id": null,
+      "constraint_applied": true,
+      "diagnostics": [
+        {
+          "message": "collection failure",
+          "test": "::src.pydantic_yaml.test.test_advanced_yaml"
+        },
+        {
+          "message": "collection failure",
+          "test": "::src.pydantic_yaml.test.test_basic"
+        },
+        {
+          "message": "collection failure",
+          "test": "::src.pydantic_yaml.test.test_io"
+        }
+      ],
+      "elapsed_seconds": 0.7166597570000022,
+      "lint_findings": 52,
+      "native_v2": false,
+      "pip_check_passed": true,
+      "pip_exit_code": 0,
+      "pydantic_version": "2.12.5",
+      "qualified": false,
+      "target_pydantic_version": "2.12.5",
+      "test_contract_preserved": true,
+      "test_exit_code": 2,
+      "test_gate_passed": false,
+      "test_outcomes_preserved": false,
+      "tests_collected": 8,
+      "tests_failed": 8,
+      "tests_passed": 0,
+      "tests_skipped": 0
+    },
+    "codemod": {
+      "candidate_constraints_sha256": "09cb776346095a5716b5ef8fb1b655bd9f7dafa615adaf7a6f0bdb2028abb007",
+      "checkpoint_id": null,
+      "constraint_applied": true,
+      "diagnostics": [
+        {
+          "message": "collection failure",
+          "test": "::src.pydantic_yaml.test.test_advanced_yaml"
+        },
+        {
+          "message": "collection failure",
+          "test": "::src.pydantic_yaml.test.test_basic"
+        },
+        {
+          "message": "collection failure",
+          "test": "::src.pydantic_yaml.test.test_io"
+        }
+      ],
+      "elapsed_seconds": 0.7298211609999896,
+      "lint_findings": 52,
+      "native_v2": false,
+      "pip_check_passed": true,
+      "pip_exit_code": 0,
+      "pydantic_version": "2.12.5",
+      "qualified": false,
+      "target_pydantic_version": "2.12.5",
+      "test_contract_preserved": true,
+      "test_exit_code": 2,
+      "test_gate_passed": false,
+      "test_outcomes_preserved": false,
+      "tests_collected": 8,
+      "tests_failed": 8,
+      "tests_passed": 0,
+      "tests_skipped": 0
+    }
+  },
+  "status": "comparison_complete",
+  "upstream_commit": "54ff4bad7bca758a9dd22a791b707a2b9c27159e"
+}

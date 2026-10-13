@@ -1,6 +1,7 @@
 # Implementation choices and remaining delivery work
 
-Updated 10 September 2026. This reconciles the original
+Release history recorded 10 September 2026; the editor-method row was amended
+13 October 2026. The delivery status below remains a historical snapshot. This reconciles the original
 [implementation plan](../superpowers/plans/2026-08-31-branchshift-implementation.md)
 with the working product. A changed library or file layout is distinguished
 from an unverified product outcome. The original plan remains available.
@@ -43,8 +44,9 @@ states the limits for other untrusted repositories.
 
 ## Completed release checks and remaining delivery
 
-- Three complete rounds of the five live cases finished with 15/15 qualified
-  migrations at frozen commit `92c733a1338cc7abdbcf04ca00be363158fd126c`;
+- Three complete rounds of the five live cases finished with 15/15 passing
+  recorded patch checks at frozen commit `92c733a1338cc7abdbcf04ca00be363158fd126c`;
+  native-v2 API adoption was not independently established by that cohort.
   [the complete cohort](../../evaluation/series-20260910/README.md) preserves
   all slots, candidate failures, usage, estimates and original exports.
 - The UI now uses event-driven updates, persistent service explanation and

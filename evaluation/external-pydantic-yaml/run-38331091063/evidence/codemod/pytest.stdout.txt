@@ -1,0 +1,124 @@
+
+==================================== ERRORS ====================================
+________ ERROR collecting src/pydantic_yaml/test/test_advanced_yaml.py _________
+ImportError while importing test module '/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/test/test_advanced_yaml.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+src/pydantic_yaml/__init__.py:18: in <module>
+    from .main import (
+src/pydantic_yaml/main.py:22: in <module>
+    from .mixin import YamlModelMixin, YamlModelMixinConfig
+src/pydantic_yaml/mixin.py:18: in <module>
+    from pydantic.parse import Protocol, load_file, load_str_bytes
+E   ImportError: cannot import name 'Protocol' from 'pydantic.parse' (/home/runner/work/_temp/external-pydantic-yaml/work/codemod-env/lib/python3.12/site-packages/pydantic/parse.py)
+____________ ERROR collecting src/pydantic_yaml/test/test_basic.py _____________
+ImportError while importing test module '/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/test/test_basic.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+src/pydantic_yaml/__init__.py:18: in <module>
+    from .main import (
+src/pydantic_yaml/main.py:22: in <module>
+    from .mixin import YamlModelMixin, YamlModelMixinConfig
+src/pydantic_yaml/mixin.py:18: in <module>
+    from pydantic.parse import Protocol, load_file, load_str_bytes
+E   ImportError: cannot import name 'Protocol' from 'pydantic.parse' (/home/runner/work/_temp/external-pydantic-yaml/work/codemod-env/lib/python3.12/site-packages/pydantic/parse.py)
+______________ ERROR collecting src/pydantic_yaml/test/test_io.py ______________
+ImportError while importing test module '/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/test/test_io.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+src/pydantic_yaml/__init__.py:18: in <module>
+    from .main import (
+src/pydantic_yaml/main.py:22: in <module>
+    from .mixin import YamlModelMixin, YamlModelMixinConfig
+src/pydantic_yaml/mixin.py:18: in <module>
+    from pydantic.parse import Protocol, load_file, load_str_bytes
+E   ImportError: cannot import name 'Protocol' from 'pydantic.parse' (/home/runner/work/_temp/external-pydantic-yaml/work/codemod-env/lib/python3.12/site-packages/pydantic/parse.py)
+__________ ERROR collecting src/pydantic_yaml/test/test_resursive.py ___________
+ImportError while importing test module '/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/test/test_resursive.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+src/pydantic_yaml/__init__.py:18: in <module>
+    from .main import (
+src/pydantic_yaml/main.py:22: in <module>
+    from .mixin import YamlModelMixin, YamlModelMixinConfig
+src/pydantic_yaml/mixin.py:18: in <module>
+    from pydantic.parse import Protocol, load_file, load_str_bytes
+E   ImportError: cannot import name 'Protocol' from 'pydantic.parse' (/home/runner/work/_temp/external-pydantic-yaml/work/codemod-env/lib/python3.12/site-packages/pydantic/parse.py)
+_________ ERROR collecting src/pydantic_yaml/test/test_secret_types.py _________
+ImportError while importing test module '/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/test/test_secret_types.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+src/pydantic_yaml/__init__.py:18: in <module>
+    from .main import (
+src/pydantic_yaml/main.py:22: in <module>
+    from .mixin import YamlModelMixin, YamlModelMixinConfig
+src/pydantic_yaml/mixin.py:18: in <module>
+    from pydantic.parse import Protocol, load_file, load_str_bytes
+E   ImportError: cannot import name 'Protocol' from 'pydantic.parse' (/home/runner/work/_temp/external-pydantic-yaml/work/codemod-env/lib/python3.12/site-packages/pydantic/parse.py)
+___________ ERROR collecting src/pydantic_yaml/test/test_sorting.py ____________
+ImportError while importing test module '/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/test/test_sorting.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+src/pydantic_yaml/__init__.py:18: in <module>
+    from .main import (
+src/pydantic_yaml/main.py:22: in <module>
+    from .mixin import YamlModelMixin, YamlModelMixinConfig
+src/pydantic_yaml/mixin.py:18: in <module>
+    from pydantic.parse import Protocol, load_file, load_str_bytes
+E   ImportError: cannot import name 'Protocol' from 'pydantic.parse' (/home/runner/work/_temp/external-pydantic-yaml/work/codemod-env/lib/python3.12/site-packages/pydantic/parse.py)
+____________ ERROR collecting src/pydantic_yaml/test/test_types.py _____________
+ImportError while importing test module '/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/test/test_types.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+src/pydantic_yaml/__init__.py:18: in <module>
+    from .main import (
+src/pydantic_yaml/main.py:22: in <module>
+    from .mixin import YamlModelMixin, YamlModelMixinConfig
+src/pydantic_yaml/mixin.py:18: in <module>
+    from pydantic.parse import Protocol, load_file, load_str_bytes
+E   ImportError: cannot import name 'Protocol' from 'pydantic.parse' (/home/runner/work/_temp/external-pydantic-yaml/work/codemod-env/lib/python3.12/site-packages/pydantic/parse.py)
+__________ ERROR collecting src/pydantic_yaml/test/test_versioned.py ___________
+ImportError while importing test module '/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/test/test_versioned.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+src/pydantic_yaml/__init__.py:18: in <module>
+    from .main import (
+src/pydantic_yaml/main.py:22: in <module>
+    from .mixin import YamlModelMixin, YamlModelMixinConfig
+src/pydantic_yaml/mixin.py:18: in <module>
+    from pydantic.parse import Protocol, load_file, load_str_bytes
+E   ImportError: cannot import name 'Protocol' from 'pydantic.parse' (/home/runner/work/_temp/external-pydantic-yaml/work/codemod-env/lib/python3.12/site-packages/pydantic/parse.py)
+=============================== warnings summary ===============================
+../codemod-env/lib/python3.12/site-packages/setuptools_scm/git.py:167
+  /home/runner/work/_temp/external-pydantic-yaml/work/codemod-env/lib/python3.12/site-packages/setuptools_scm/git.py:167: UserWarning: "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source" is shallow and may cause errors
+    warnings.warn(f'"{wd.path}" is shallow and may cause errors')
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /home/runner/work/_temp/external-pydantic-yaml/evidence/codemod/junit.xml -
+=========================== short test summary info ============================
+ERROR src/pydantic_yaml/test/test_advanced_yaml.py
+ERROR src/pydantic_yaml/test/test_basic.py
+ERROR src/pydantic_yaml/test/test_io.py
+ERROR src/pydantic_yaml/test/test_resursive.py
+ERROR src/pydantic_yaml/test/test_secret_types.py
+ERROR src/pydantic_yaml/test/test_sorting.py
+ERROR src/pydantic_yaml/test/test_types.py
+ERROR src/pydantic_yaml/test/test_versioned.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 8 errors during collection !!!!!!!!!!!!!!!!!!!!
+1 warning, 8 errors in 0.48s

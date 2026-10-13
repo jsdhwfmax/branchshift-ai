@@ -1,0 +1,12 @@
+{
+  "reserved_calls": 5,
+  "responses_retained": 5,
+  "reported_input_tokens": 103727,
+  "reported_output_tokens": 50282,
+  "usage_complete": true,
+  "reported_token_estimate_usd": 0.254573,
+  "rate_basis": "parent-verified standard synchronous input $1/M, output $3/M",
+  "maximum_derived_estimate_usd": 1.194912,
+  "derivation": "6 * 150000 assumed maximum input tokens + 6 * 16384 output tokens",
+  "limitations": "Byte-to-token bound assumption; tax unknown; not a billed-dollar hard limit. Unknown usage is not zero cost. Excludes runner, Sandbox, Tavily and other services."
+}

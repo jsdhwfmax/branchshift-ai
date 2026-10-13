@@ -1,0 +1,2 @@
+From https://github.com/pydantic/bump-pydantic
+ * branch            a111d4177405dbf61ef59035adaa0639b17b8718 -> FETCH_HEAD

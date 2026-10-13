@@ -1,0 +1,161 @@
+diff --git a/src/pydantic_yaml/ext/semver.py b/src/pydantic_yaml/ext/semver.py
+index 3296243..4317603 100644
+--- a/src/pydantic_yaml/ext/semver.py
++++ b/src/pydantic_yaml/ext/semver.py
+@@ -58,6 +58,8 @@ class SemVer(YamlStr):  # want to inherit from VersionInfo, but metaclass confli
+         return str(VersionInfo(major, minor, patch, prerelease, build))
+ 
+     @classmethod
++    # TODO[pydantic]: We couldn't refactor `__get_validators__`, please create the `__get_pydantic_core_schema__` manually.
++    # Check https://docs.pydantic.dev/latest/migration/#defining-custom-types for more information.
+     def __get_validators__(cls):
+         yield cls.validate
+ 
+diff --git a/src/pydantic_yaml/ext/versioned_model.py b/src/pydantic_yaml/ext/versioned_model.py
+index f4bea6e..86e33ee 100644
+--- a/src/pydantic_yaml/ext/versioned_model.py
++++ b/src/pydantic_yaml/ext/versioned_model.py
+@@ -1,7 +1,7 @@
+ from typing import Optional, Tuple, Type
+ import warnings
+ 
+-from pydantic import validator
++from pydantic import ConfigDict, validator
+ 
+ from pydantic_yaml.model import YamlModel
+ from .semver import SemVer
+@@ -98,12 +98,11 @@ class VersionedYamlModel(YamlModel):
+         if not issubclass(fld.type_, SemVer):
+             raise TypeError(f"Field type for `version` must be SemVer, got {fld.type_!r}")
+ 
++    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
++    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
+     @validator("version", always=True)
+     def _check_semver(cls, v):
+         min_, max_ = _get_minmax_robust(cls)
+         _chk_between(v, lo=min_, hi=max_)
+         return v
+-
+-    class Config:
+-        min_version = SemVer("0.0.0")
+-        max_version = None
++    model_config = ConfigDict(min_version=SemVer("0.0.0"), max_version=None)
+diff --git a/src/pydantic_yaml/model.py b/src/pydantic_yaml/model.py
+index 25ad085..b3762e9 100644
+--- a/src/pydantic_yaml/model.py
++++ b/src/pydantic_yaml/model.py
+@@ -17,4 +17,5 @@ ruamel.yaml: https://yaml.readthedocs.io/en/latest/index.html
+ 
+ 
+ class YamlModel(YamlModelMixin, BaseModel):
++    # TODO[pydantic]: add type annotation
+     __doc__ = _pre_doc + BaseModel.__doc__
+diff --git a/src/pydantic_yaml/test/test_advanced_yaml.py b/src/pydantic_yaml/test/test_advanced_yaml.py
+index e36d818..9064451 100644
+--- a/src/pydantic_yaml/test/test_advanced_yaml.py
++++ b/src/pydantic_yaml/test/test_advanced_yaml.py
+@@ -3,7 +3,7 @@
+ from typing import Type
+ 
+ import pytest
+-from pydantic import BaseModel, Field
++from pydantic import ConfigDict, BaseModel, Field
+ 
+ from pydantic_yaml import YamlModel
+ 
+@@ -28,9 +28,7 @@ class UsesRefs(YamlModel):
+ 
+     bill_to: _Name = Field(alias="bill-to")
+     ship_to: _Name = Field(alias="ship-to")
+-
+-    class Config:
+-        allow_population_by_field_name = True
++    model_config = ConfigDict(populate_by_name=True)
+ 
+ 
+ @pytest.mark.parametrize(
+diff --git a/src/pydantic_yaml/test/test_secret_types.py b/src/pydantic_yaml/test/test_secret_types.py
+index cdf13f0..2a9ff12 100644
+--- a/src/pydantic_yaml/test/test_secret_types.py
++++ b/src/pydantic_yaml/test/test_secret_types.py
+@@ -1,7 +1,7 @@
+ """Tests for SecretStr, SecretBytes."""
+ 
+ import pytest
+-from pydantic import SecretBytes, SecretStr
++from pydantic import ConfigDict, SecretBytes, SecretStr
+ 
+ from pydantic_yaml import YamlModel
+ 
+@@ -38,12 +38,12 @@ class SecretTstModelDumpable(SecretTstModel):
+ 
+     TODO: Support YAML encoders? Or just use the JSON encoders instead?
+     """
+-
+-    class Config:
+-        json_encoders = {
+-            SecretStr: lambda v: v.get_secret_value() if v else None,
+-            SecretBytes: lambda v: v.get_secret_value() if v else None,
+-        }
++    # TODO[pydantic]: The following keys were removed: `json_encoders`.
++    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-config for more information.
++    model_config = ConfigDict(json_encoders={
++        SecretStr: lambda v: v.get_secret_value() if v else None,
++        SecretBytes: lambda v: v.get_secret_value() if v else None,
++    })
+ 
+ 
+ @pytest.mark.xfail(reason="YAML/JSON encoder support doesn't exist yet.")
+diff --git a/src/pydantic_yaml/test/test_versioned.py b/src/pydantic_yaml/test/test_versioned.py
+index 2a617f5..2d45180 100644
+--- a/src/pydantic_yaml/test/test_versioned.py
++++ b/src/pydantic_yaml/test/test_versioned.py
+@@ -1,7 +1,7 @@
+ from pathlib import Path
+ 
+ import pytest
+-from pydantic import ValidationError
++from pydantic import ConfigDict, ValidationError
+ 
+ try:
+     import semver  # noqa
+@@ -23,15 +23,11 @@ def test_versioned_yaml():
+ 
+     class B(VersionedYamlModel):
+         foo: str = "bar"
+-
+-        class Config:
+-            min_version = "2.0.0"
++        model_config = ConfigDict(min_version="2.0.0")
+ 
+     class C(VersionedYamlModel):
+         foo: str = "baz"
+-
+-        class Config:
+-            max_version = "0.5.0"
++        model_config = ConfigDict(max_version="0.5.0")
+ 
+     A.parse_file(file)
+ 
+@@ -44,9 +40,7 @@ def test_versioned_yaml():
+     with pytest.raises(ValueError):
+ 
+         class BadVersionConstraint(VersionedYamlModel):
+-            class Config:
+-                min_version = "3.0.0"
+-                max_version = "2.1.0"
++            model_config = ConfigDict(min_version="3.0.0", max_version="2.1.0")
+ 
+ 
+ @pytest.mark.skipif(not INSTALLED_SEMVER, reason="semver not installed.")
+@@ -64,9 +58,7 @@ def test_versioned_docs():
+         """Model with a maximum version set."""
+ 
+         foo: str = "bar"
+-
+-        class Config:
+-            min_version = "2.0.0"
++        model_config = ConfigDict(min_version="2.0.0")
+ 
+     ex_yml = """
+     version: 1.0.0

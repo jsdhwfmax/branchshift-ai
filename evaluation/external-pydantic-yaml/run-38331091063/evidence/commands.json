@@ -1,0 +1,1561 @@
+[
+  {
+    "argv": [
+      "git",
+      "init",
+      "-q"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/baseline-source",
+    "elapsed_seconds": 0.0031605419999891637,
+    "exit_code": 0,
+    "name": "baseline-source/git-init",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "remote",
+      "add",
+      "origin",
+      "https://github.com/NowanIlfideme/pydantic-yaml"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/baseline-source",
+    "elapsed_seconds": 0.0020158050000134153,
+    "exit_code": 0,
+    "name": "baseline-source/git-remote",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "fetch",
+      "--depth",
+      "1",
+      "origin",
+      "54ff4bad7bca758a9dd22a791b707a2b9c27159e"
+    ],
+    "bytes_observed": {
+      "stderr": 128,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/baseline-source",
+    "elapsed_seconds": 0.16978745500000514,
+    "exit_code": 0,
+    "name": "baseline-source/git-fetch",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "checkout",
+      "--detach",
+      "54ff4bad7bca758a9dd22a791b707a2b9c27159e"
+    ],
+    "bytes_observed": {
+      "stderr": 53,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/baseline-source",
+    "elapsed_seconds": 0.005662709999995741,
+    "exit_code": 0,
+    "name": "baseline-source/git-checkout",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 41
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/baseline-source",
+    "elapsed_seconds": 0.0013690540000084184,
+    "exit_code": 0,
+    "name": "baseline-source/git-head",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "ls-files",
+      "-z"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 1183
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/baseline-source",
+    "elapsed_seconds": 0.001423675000012281,
+    "exit_code": 0,
+    "name": "baseline/tracked-files",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/opt/hostedtoolcache/Python/3.12.15/x64/bin/python",
+      "-m",
+      "venv",
+      "/home/runner/work/_temp/external-pydantic-yaml/work/baseline-env"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work",
+    "elapsed_seconds": 2.6976753659999986,
+    "exit_code": 0,
+    "name": "baseline/venv",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/baseline-env/bin/python",
+      "-m",
+      "pip",
+      "install",
+      "--no-cache-dir",
+      "--report",
+      "/home/runner/work/_temp/external-pydantic-yaml/evidence/baseline/bootstrap-install.json",
+      "pip==25.2",
+      "setuptools==80.9.0",
+      "wheel==0.45.1",
+      "setuptools-scm==8.3.1",
+      "importlib-metadata==8.7.0"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 1783
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work",
+    "elapsed_seconds": 3.7725171250000074,
+    "exit_code": 0,
+    "name": "baseline/bootstrap",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/baseline-env/bin/python",
+      "-m",
+      "pip",
+      "install",
+      "--no-cache-dir",
+      "--no-build-isolation",
+      "--report",
+      "/home/runner/work/_temp/external-pydantic-yaml/evidence/baseline/install.json",
+      "-e",
+      ".[pyyaml,semver]",
+      "pydantic==1.10.24",
+      "pytest==8.3.5",
+      "PyYAML==6.0.2",
+      "semver==3.0.4",
+      "ruff==0.13.0",
+      "typing-extensions==4.15.0"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 4820
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/baseline-source",
+    "elapsed_seconds": 5.986988848999999,
+    "exit_code": 0,
+    "name": "baseline/install",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/baseline-env/bin/python",
+      "-m",
+      "pip",
+      "freeze",
+      "--all"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 458
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work",
+    "elapsed_seconds": 1.558029504999979,
+    "exit_code": 0,
+    "name": "baseline/freeze",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/baseline-env/bin/python",
+      "-m",
+      "pip",
+      "list",
+      "--format=json"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 999
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work",
+    "elapsed_seconds": 0.21459102500000427,
+    "exit_code": 0,
+    "name": "baseline/packages",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/baseline-env/bin/python",
+      "-m",
+      "pip",
+      "check"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 30
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/baseline-source",
+    "elapsed_seconds": 0.27440978800001403,
+    "exit_code": 0,
+    "name": "baseline/pip-check",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/baseline-env/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "src/pydantic_yaml/test",
+      "-ra",
+      "--tb=short",
+      "--junitxml=/home/runner/work/_temp/external-pydantic-yaml/evidence/baseline/junit.xml"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 961
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/baseline-source",
+    "elapsed_seconds": 0.5708867429999884,
+    "exit_code": 0,
+    "name": "baseline/pytest",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/baseline-env/bin/python",
+      "-c",
+      "import json,platform,importlib.metadata as m;print(json.dumps({'python':platform.python_version(),'pydantic':m.version('pydantic'),'pytest':m.version('pytest'),'PyYAML':m.version('PyYAML'),'semver':m.version('semver')}))"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 102
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work",
+    "elapsed_seconds": 0.07721706399999562,
+    "exit_code": 0,
+    "name": "baseline/runtime",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/baseline-env/bin/python",
+      "-c",
+      "import json, pydantic\nresult = {'installed_pydantic': pydantic.__version__, 'native_v2': False}\ntry:\n    from pydantic_yaml import YamlModel\n    result.update(subclass_of_native_BaseModel=issubclass(YamlModel, pydantic.BaseModel), model_fields=hasattr(YamlModel, 'model_fields'))\n    result['native_v2'] = pydantic.__version__.split('.')[0] == '2' and result['subclass_of_native_BaseModel'] and result['model_fields']\nexcept Exception as error:\n    result.update(error_type=type(error).__name__, error=str(error)[:1000])\nprint(json.dumps(result))\n"
+    ],
+    "bytes_observed": {
+      "stderr": 300,
+      "stdout": 115
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/baseline-source",
+    "elapsed_seconds": 0.2611867179999763,
+    "exit_code": 0,
+    "name": "baseline/native-v2",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/baseline-env/bin/python",
+      "-m",
+      "ruff",
+      "check",
+      "--output-format=json",
+      "src/pydantic_yaml",
+      "--exclude",
+      "src/pydantic_yaml/test"
+    ],
+    "bytes_observed": {
+      "stderr": 234,
+      "stdout": 24790
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/baseline-source",
+    "elapsed_seconds": 0.029939837999990004,
+    "exit_code": 1,
+    "name": "baseline/ruff",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "ls-files",
+      "-z"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 1183
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/baseline-source",
+    "elapsed_seconds": 0.0016216129999975237,
+    "exit_code": 0,
+    "name": "baseline-after/tracked-files",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "init",
+      "-q"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source",
+    "elapsed_seconds": 0.003167103999999199,
+    "exit_code": 0,
+    "name": "codemod-source/git-init",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "remote",
+      "add",
+      "origin",
+      "https://github.com/NowanIlfideme/pydantic-yaml"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source",
+    "elapsed_seconds": 0.001871516999983669,
+    "exit_code": 0,
+    "name": "codemod-source/git-remote",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "fetch",
+      "--depth",
+      "1",
+      "origin",
+      "54ff4bad7bca758a9dd22a791b707a2b9c27159e"
+    ],
+    "bytes_observed": {
+      "stderr": 128,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source",
+    "elapsed_seconds": 0.1594293630000152,
+    "exit_code": 0,
+    "name": "codemod-source/git-fetch",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "checkout",
+      "--detach",
+      "54ff4bad7bca758a9dd22a791b707a2b9c27159e"
+    ],
+    "bytes_observed": {
+      "stderr": 53,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source",
+    "elapsed_seconds": 0.005542856999994683,
+    "exit_code": 0,
+    "name": "codemod-source/git-checkout",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 41
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source",
+    "elapsed_seconds": 0.001311997000016163,
+    "exit_code": 0,
+    "name": "codemod-source/git-head",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "init",
+      "-q"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/tool-source",
+    "elapsed_seconds": 0.00305680100001382,
+    "exit_code": 0,
+    "name": "tool-source/git-init",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "remote",
+      "add",
+      "origin",
+      "https://github.com/pydantic/bump-pydantic"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/tool-source",
+    "elapsed_seconds": 0.0018748729999913394,
+    "exit_code": 0,
+    "name": "tool-source/git-remote",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "fetch",
+      "--depth",
+      "1",
+      "origin",
+      "a111d4177405dbf61ef59035adaa0639b17b8718"
+    ],
+    "bytes_observed": {
+      "stderr": 123,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/tool-source",
+    "elapsed_seconds": 0.16601539699999535,
+    "exit_code": 0,
+    "name": "tool-source/git-fetch",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "checkout",
+      "--detach",
+      "a111d4177405dbf61ef59035adaa0639b17b8718"
+    ],
+    "bytes_observed": {
+      "stderr": 38,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/tool-source",
+    "elapsed_seconds": 0.006550959000009016,
+    "exit_code": 0,
+    "name": "tool-source/git-checkout",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 41
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/tool-source",
+    "elapsed_seconds": 0.0013521430000196233,
+    "exit_code": 0,
+    "name": "tool-source/git-head",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/opt/hostedtoolcache/Python/3.12.15/x64/bin/python",
+      "-m",
+      "venv",
+      "/home/runner/work/_temp/external-pydantic-yaml/work/tool-env"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work",
+    "elapsed_seconds": 2.488531332000008,
+    "exit_code": 0,
+    "name": "tool/venv",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/tool-env/bin/python",
+      "-m",
+      "pip",
+      "install",
+      "--no-cache-dir",
+      "--report",
+      "/home/runner/work/_temp/external-pydantic-yaml/evidence/tool/bootstrap-install.json",
+      "pip==25.2",
+      "setuptools==80.9.0",
+      "wheel==0.45.1",
+      "setuptools-scm==8.3.1",
+      "importlib-metadata==8.7.0"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 1783
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work",
+    "elapsed_seconds": 3.6794130840000037,
+    "exit_code": 0,
+    "name": "tool/bootstrap",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/tool-env/bin/python",
+      "-m",
+      "pip",
+      "install",
+      "--no-cache-dir",
+      "--report",
+      "/home/runner/work/_temp/external-pydantic-yaml/evidence/tool/pins-install.json",
+      "hatchling==1.27.0",
+      "typer==0.12.5",
+      "click==8.1.8",
+      "libcst==1.8.6",
+      "rich==13.9.4",
+      "typing-extensions==4.15.0"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 3459
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work",
+    "elapsed_seconds": 4.192664309999998,
+    "exit_code": 0,
+    "name": "tool/install-pins",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/tool-env/bin/python",
+      "-m",
+      "pip",
+      "install",
+      "--no-cache-dir",
+      "--no-build-isolation",
+      "--no-deps",
+      "--report",
+      "/home/runner/work/_temp/external-pydantic-yaml/evidence/tool/source-install.json",
+      "/home/runner/work/_temp/external-pydantic-yaml/work/tool-source"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 797
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work",
+    "elapsed_seconds": 0.7305167659999938,
+    "exit_code": 0,
+    "name": "tool/install",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/tool-env/bin/python",
+      "-m",
+      "pip",
+      "freeze",
+      "--all"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 451
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work",
+    "elapsed_seconds": 0.24711514499998088,
+    "exit_code": 0,
+    "name": "tool/freeze",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/tool-env/bin/python",
+      "-m",
+      "pip",
+      "list",
+      "--format=json"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 958
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work",
+    "elapsed_seconds": 0.2113544799999829,
+    "exit_code": 0,
+    "name": "tool/packages",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/tool-env/bin/bump-pydantic",
+      "src/pydantic_yaml"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 326
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source",
+    "elapsed_seconds": 10.702864490999985,
+    "exit_code": 0,
+    "name": "codemod/command",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 5726
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source",
+    "elapsed_seconds": 0.0034143420000134483,
+    "exit_code": 0,
+    "name": "codemod/pre-restore-diff",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 2578
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source",
+    "elapsed_seconds": 0.003791672999994944,
+    "exit_code": 0,
+    "name": "codemod/diff",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "diff",
+      "--numstat"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 131
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source",
+    "elapsed_seconds": 0.002406110000009676,
+    "exit_code": 0,
+    "name": "codemod/numstat",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/opt/hostedtoolcache/Python/3.12.15/x64/bin/python",
+      "-m",
+      "venv",
+      "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-env"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work",
+    "elapsed_seconds": 2.4915279129999988,
+    "exit_code": 0,
+    "name": "codemod/venv",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-env/bin/python",
+      "-m",
+      "pip",
+      "install",
+      "--no-cache-dir",
+      "--report",
+      "/home/runner/work/_temp/external-pydantic-yaml/evidence/codemod/bootstrap-install.json",
+      "pip==25.2",
+      "setuptools==80.9.0",
+      "wheel==0.45.1",
+      "setuptools-scm==8.3.1",
+      "importlib-metadata==8.7.0"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 1783
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work",
+    "elapsed_seconds": 3.781183808999998,
+    "exit_code": 0,
+    "name": "codemod/bootstrap",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-env/bin/python",
+      "-m",
+      "pip",
+      "install",
+      "--no-cache-dir",
+      "--report",
+      "/home/runner/work/_temp/external-pydantic-yaml/evidence/codemod/runtime-install.json",
+      "-r",
+      "/home/runner/work/_temp/external-pydantic-yaml/evidence/codemod/shared-baseline-constraints.txt",
+      "pydantic==2.12.5"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 6538
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work",
+    "elapsed_seconds": 5.309509746000003,
+    "exit_code": 0,
+    "name": "codemod/install-runtime",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-env/bin/python",
+      "-m",
+      "pip",
+      "freeze",
+      "--all"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 414
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work",
+    "elapsed_seconds": 0.2476426630000219,
+    "exit_code": 0,
+    "name": "candidate-environment/freeze",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-env/bin/python",
+      "-m",
+      "pip",
+      "list",
+      "--format=json"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 987
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work",
+    "elapsed_seconds": 0.2096399550000001,
+    "exit_code": 0,
+    "name": "candidate-environment/packages",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-env/bin/python",
+      "-m",
+      "pip",
+      "install",
+      "--no-cache-dir",
+      "--no-build-isolation",
+      "--no-deps",
+      "--report",
+      "/home/runner/work/_temp/external-pydantic-yaml/evidence/codemod/project-install.json",
+      "-e",
+      ".[pyyaml,semver]"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 1076
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source",
+    "elapsed_seconds": 1.214155199000004,
+    "exit_code": 0,
+    "name": "codemod/install-project",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-env/bin/python",
+      "-m",
+      "pip",
+      "freeze",
+      "--all"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 527
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work",
+    "elapsed_seconds": 0.3869717089999938,
+    "exit_code": 0,
+    "name": "codemod/freeze",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-env/bin/python",
+      "-m",
+      "pip",
+      "list",
+      "--format=json"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 1155
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work",
+    "elapsed_seconds": 0.2140964729999837,
+    "exit_code": 0,
+    "name": "codemod/packages",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-env/bin/python",
+      "-m",
+      "pip",
+      "check"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 30
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source",
+    "elapsed_seconds": 0.27487072599998896,
+    "exit_code": 0,
+    "name": "codemod/pip-check",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-env/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "src/pydantic_yaml/test",
+      "-ra",
+      "--tb=short",
+      "--junitxml=/home/runner/work/_temp/external-pydantic-yaml/evidence/codemod/junit.xml"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 8749
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source",
+    "elapsed_seconds": 0.7298211609999896,
+    "exit_code": 2,
+    "name": "codemod/pytest",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-env/bin/python",
+      "-c",
+      "import json,platform,importlib.metadata as m;print(json.dumps({'python':platform.python_version(),'pydantic':m.version('pydantic'),'pytest':m.version('pytest'),'PyYAML':m.version('PyYAML'),'semver':m.version('semver')}))"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 101
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work",
+    "elapsed_seconds": 0.07522024899998314,
+    "exit_code": 0,
+    "name": "codemod/runtime",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-env/bin/python",
+      "-c",
+      "import json, pydantic\nresult = {'installed_pydantic': pydantic.__version__, 'native_v2': False}\ntry:\n    from pydantic_yaml import YamlModel\n    result.update(subclass_of_native_BaseModel=issubclass(YamlModel, pydantic.BaseModel), model_fields=hasattr(YamlModel, 'model_fields'))\n    result['native_v2'] = pydantic.__version__.split('.')[0] == '2' and result['subclass_of_native_BaseModel'] and result['model_fields']\nexcept Exception as error:\n    result.update(error_type=type(error).__name__, error=str(error)[:1000])\nprint(json.dumps(result))\n"
+    ],
+    "bytes_observed": {
+      "stderr": 298,
+      "stdout": 259
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source",
+    "elapsed_seconds": 0.3385122939999974,
+    "exit_code": 0,
+    "name": "codemod/native-v2",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-env/bin/python",
+      "-m",
+      "ruff",
+      "check",
+      "--output-format=json",
+      "src/pydantic_yaml",
+      "--exclude",
+      "src/pydantic_yaml/test"
+    ],
+    "bytes_observed": {
+      "stderr": 234,
+      "stdout": 25142
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source",
+    "elapsed_seconds": 0.028357180000000426,
+    "exit_code": 1,
+    "name": "codemod/ruff",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "init",
+      "-q"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/clean-source",
+    "elapsed_seconds": 0.003246540999981562,
+    "exit_code": 0,
+    "name": "clean-source/git-init",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "remote",
+      "add",
+      "origin",
+      "https://github.com/NowanIlfideme/pydantic-yaml"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/clean-source",
+    "elapsed_seconds": 0.0018093710000073315,
+    "exit_code": 0,
+    "name": "clean-source/git-remote",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "fetch",
+      "--depth",
+      "1",
+      "origin",
+      "54ff4bad7bca758a9dd22a791b707a2b9c27159e"
+    ],
+    "bytes_observed": {
+      "stderr": 128,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/clean-source",
+    "elapsed_seconds": 0.1636059760000137,
+    "exit_code": 0,
+    "name": "clean-source/git-fetch",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "checkout",
+      "--detach",
+      "54ff4bad7bca758a9dd22a791b707a2b9c27159e"
+    ],
+    "bytes_observed": {
+      "stderr": 53,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/clean-source",
+    "elapsed_seconds": 0.005444343999982948,
+    "exit_code": 0,
+    "name": "clean-source/git-checkout",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 41
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/clean-source",
+    "elapsed_seconds": 0.0013310730000171134,
+    "exit_code": 0,
+    "name": "clean-source/git-head",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "apply",
+      "--check",
+      "/home/runner/work/_temp/external-pydantic-yaml/evidence/codemod/candidate.patch"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/clean-source",
+    "elapsed_seconds": 0.001425578000009864,
+    "exit_code": 0,
+    "name": "clean/apply-check",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "apply",
+      "/home/runner/work/_temp/external-pydantic-yaml/evidence/codemod/candidate.patch"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/clean-source",
+    "elapsed_seconds": 0.0016203710000013416,
+    "exit_code": 0,
+    "name": "clean/apply",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 2578
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/clean-source",
+    "elapsed_seconds": 0.0025308609999967757,
+    "exit_code": 0,
+    "name": "clean/exact-diff",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/opt/hostedtoolcache/Python/3.12.15/x64/bin/python",
+      "-m",
+      "venv",
+      "/home/runner/work/_temp/external-pydantic-yaml/work/clean-env"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work",
+    "elapsed_seconds": 2.470841828999994,
+    "exit_code": 0,
+    "name": "clean/venv",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/clean-env/bin/python",
+      "-m",
+      "pip",
+      "install",
+      "--no-cache-dir",
+      "--report",
+      "/home/runner/work/_temp/external-pydantic-yaml/evidence/clean/bootstrap-install.json",
+      "pip==25.2",
+      "setuptools==80.9.0",
+      "wheel==0.45.1",
+      "setuptools-scm==8.3.1",
+      "importlib-metadata==8.7.0"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 1783
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work",
+    "elapsed_seconds": 3.944300291000019,
+    "exit_code": 0,
+    "name": "clean/bootstrap",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/clean-env/bin/python",
+      "-m",
+      "pip",
+      "install",
+      "--no-cache-dir",
+      "--report",
+      "/home/runner/work/_temp/external-pydantic-yaml/evidence/clean/runtime-install.json",
+      "-r",
+      "/home/runner/work/_temp/external-pydantic-yaml/evidence/clean/resolved-requirements.txt"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 6741
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work",
+    "elapsed_seconds": 4.895006547000008,
+    "exit_code": 0,
+    "name": "clean/install-runtime",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/clean-env/bin/python",
+      "-m",
+      "pip",
+      "install",
+      "--no-cache-dir",
+      "--no-build-isolation",
+      "--no-deps",
+      "--report",
+      "/home/runner/work/_temp/external-pydantic-yaml/evidence/clean/project-install.json",
+      "-e",
+      ".[pyyaml,semver]"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 1074
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/clean-source",
+    "elapsed_seconds": 1.2120936540000002,
+    "exit_code": 0,
+    "name": "clean/install-project",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/clean-env/bin/python",
+      "-m",
+      "pip",
+      "freeze",
+      "--all"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 527
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work",
+    "elapsed_seconds": 0.3825665359999846,
+    "exit_code": 0,
+    "name": "clean/freeze",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/clean-env/bin/python",
+      "-m",
+      "pip",
+      "list",
+      "--format=json"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 1153
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work",
+    "elapsed_seconds": 0.2110747240000137,
+    "exit_code": 0,
+    "name": "clean/packages",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/clean-env/bin/python",
+      "-m",
+      "pip",
+      "check"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 30
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/clean-source",
+    "elapsed_seconds": 0.27378741800001194,
+    "exit_code": 0,
+    "name": "clean/pip-check",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/clean-env/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "src/pydantic_yaml/test",
+      "-ra",
+      "--tb=short",
+      "--junitxml=/home/runner/work/_temp/external-pydantic-yaml/evidence/clean/junit.xml"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 8709
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/clean-source",
+    "elapsed_seconds": 0.7166597570000022,
+    "exit_code": 2,
+    "name": "clean/pytest",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/clean-env/bin/python",
+      "-c",
+      "import json,platform,importlib.metadata as m;print(json.dumps({'python':platform.python_version(),'pydantic':m.version('pydantic'),'pytest':m.version('pytest'),'PyYAML':m.version('PyYAML'),'semver':m.version('semver')}))"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 101
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work",
+    "elapsed_seconds": 0.07451549699999305,
+    "exit_code": 0,
+    "name": "clean/runtime",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/clean-env/bin/python",
+      "-c",
+      "import json, pydantic\nresult = {'installed_pydantic': pydantic.__version__, 'native_v2': False}\ntry:\n    from pydantic_yaml import YamlModel\n    result.update(subclass_of_native_BaseModel=issubclass(YamlModel, pydantic.BaseModel), model_fields=hasattr(YamlModel, 'model_fields'))\n    result['native_v2'] = pydantic.__version__.split('.')[0] == '2' and result['subclass_of_native_BaseModel'] and result['model_fields']\nexcept Exception as error:\n    result.update(error_type=type(error).__name__, error=str(error)[:1000])\nprint(json.dumps(result))\n"
+    ],
+    "bytes_observed": {
+      "stderr": 294,
+      "stdout": 257
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/clean-source",
+    "elapsed_seconds": 0.33913966399998685,
+    "exit_code": 0,
+    "name": "clean/native-v2",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/external-pydantic-yaml/work/clean-env/bin/python",
+      "-m",
+      "ruff",
+      "check",
+      "--output-format=json",
+      "src/pydantic_yaml",
+      "--exclude",
+      "src/pydantic_yaml/test"
+    ],
+    "bytes_observed": {
+      "stderr": 234,
+      "stdout": 25038
+    },
+    "cwd": "/home/runner/work/_temp/external-pydantic-yaml/work/clean-source",
+    "elapsed_seconds": 0.028375876000012568,
+    "exit_code": 1,
+    "name": "clean/ruff",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  }
+]

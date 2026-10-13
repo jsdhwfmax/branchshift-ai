@@ -1,0 +1,11 @@
+Processing ./tool-source
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: bump-pydantic
+  Building wheel for bump-pydantic (pyproject.toml): started
+  Building wheel for bump-pydantic (pyproject.toml): finished with status 'done'
+  Created wheel for bump-pydantic: filename=bump_pydantic-0.8.0-py3-none-any.whl size=29856 sha256=edd86cb93fc6703b514d2dbe77e3451c1c504cf4a3e78a8c02177f01e12cee34
+  Stored in directory: /home/runner/work/_temp/external-pydantic-yaml/work/tmp/pip-ephem-wheel-cache-p5jov8m7/wheels/b8/a6/b9/33edf030383636147520aeda726c247de18cc73550a6e9b29a
+Successfully built bump-pydantic
+Installing collected packages: bump-pydantic
+Successfully installed bump-pydantic-0.8.0

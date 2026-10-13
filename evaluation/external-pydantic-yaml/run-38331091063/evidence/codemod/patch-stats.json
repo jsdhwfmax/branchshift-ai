@@ -1,0 +1,6 @@
+{
+  "changed_files": 4,
+  "changed_lines": 14,
+  "numstat": "1\t1\tpyproject.toml\n2\t0\tsrc/pydantic_yaml/ext/semver.py\n4\t5\tsrc/pydantic_yaml/ext/versioned_model.py\n1\t0\tsrc/pydantic_yaml/model.py\n",
+  "sha256": "782dddfc417c48ed998e759092546f2862c6c150eae2100cb7e9569e95f5edaa"
+}

@@ -40,6 +40,17 @@ commissioning run; final judge capacity remains to be set.
 
 ## Current evaluation evidence
 
+The [external `pydantic-yaml` comparison](evaluation/external-pydantic-yaml/README.md)
+exposes a current limitation. Its original suite passed with 14 passes and one
+existing xfail; the official `bump-pydantic` candidate produced eight import-time
+collection errors. Across two declared development iterations, 15 real Nemotron
+calls produced no patch that passed the generation prechecks, so AI candidate
+tests did not run. Neither method demonstrated a working native-v2 migration
+on this case. Raw failures, fixed source/environment fingerprints and the
+US$0.756100 model-usage estimate are retained. The comparator used an independent
+GitHub runner; this is not another Nebius Sandbox acceptance run or evidence
+of an AI success-rate advantage.
+
 The [hosted acceptance record](docs/evidence/render-hosted-20261013/README.md)
 documents a real Safari-started migration on Render at deployment commit
 `2480ed9`: two passing candidates, a verified winner and clean-baseline retest,

@@ -1,0 +1,902 @@
+[
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 15,
+      "row": 32
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/__init__.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 32
+    },
+    "message": "`.main.SemVer` imported but unused; consider using `importlib.util.find_spec` to test for availability",
+    "noqa_row": 32,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 27,
+      "row": 33
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/__init__.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 33
+    },
+    "message": "`.main.VersionedYamlModel` imported but unused; consider using `importlib.util.find_spec` to test for availability",
+    "noqa_row": 33,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "D104",
+    "end_location": {
+      "column": 1,
+      "row": 1
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/compat/__init__.py",
+    "fix": null,
+    "location": {
+      "column": 1,
+      "row": 1
+    },
+    "message": "Missing docstring in public package",
+    "noqa_row": 1,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-public-package"
+  },
+  {
+    "cell": null,
+    "code": "D404",
+    "end_location": {
+      "column": 8,
+      "row": 27
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/compat/old_enums.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 15
+    },
+    "message": "First word of the docstring should not be \"This\"",
+    "noqa_row": 27,
+    "url": "https://docs.astral.sh/ruff/rules/docstring-starts-with-this"
+  },
+  {
+    "cell": null,
+    "code": "D105",
+    "end_location": {
+      "column": 26,
+      "row": 29
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/compat/old_enums.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 29
+    },
+    "message": "Missing docstring in magic method",
+    "noqa_row": 29,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-magic-method"
+  },
+  {
+    "cell": null,
+    "code": "D105",
+    "end_location": {
+      "column": 17,
+      "row": 33
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/compat/old_enums.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 33
+    },
+    "message": "Missing docstring in magic method",
+    "noqa_row": 33,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-magic-method"
+  },
+  {
+    "cell": null,
+    "code": "D105",
+    "end_location": {
+      "column": 16,
+      "row": 36
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/compat/old_enums.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 36
+    },
+    "message": "Missing docstring in magic method",
+    "noqa_row": 36,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-magic-method"
+  },
+  {
+    "cell": null,
+    "code": "D401",
+    "end_location": {
+      "column": 8,
+      "row": 29
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/compat/representers.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 14
+    },
+    "message": "First line of docstring should be in imperative mood: \"Represents an object as a string in YAML.\"",
+    "noqa_row": 29,
+    "url": "https://docs.astral.sh/ruff/rules/non-imperative-mood"
+  },
+  {
+    "cell": null,
+    "code": "D401",
+    "end_location": {
+      "column": 8,
+      "row": 49
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/compat/representers.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 34
+    },
+    "message": "First line of docstring should be in imperative mood: \"Represents an object as an integer in YAML.\"",
+    "noqa_row": 49,
+    "url": "https://docs.astral.sh/ruff/rules/non-imperative-mood"
+  },
+  {
+    "cell": null,
+    "code": "D401",
+    "end_location": {
+      "column": 8,
+      "row": 68
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/compat/representers.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 54
+    },
+    "message": "First line of docstring should be in imperative mood: \"Registers `cls` to be dumped to YAML as a string.\"",
+    "noqa_row": 68,
+    "url": "https://docs.astral.sh/ruff/rules/non-imperative-mood"
+  },
+  {
+    "cell": null,
+    "code": "D401",
+    "end_location": {
+      "column": 8,
+      "row": 89
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/compat/representers.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 75
+    },
+    "message": "First line of docstring should be in imperative mood: \"Registers `cls` to be dumped to YAML as an integer.\"",
+    "noqa_row": 89,
+    "url": "https://docs.astral.sh/ruff/rules/non-imperative-mood"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 38,
+      "row": 5
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/compat/types.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from typing import Dict, Tuple",
+          "end_location": {
+            "column": 38,
+            "row": 5
+          },
+          "location": {
+            "column": 1,
+            "row": 5
+          }
+        }
+      ],
+      "message": "Remove unused import: `typing.Union`"
+    },
+    "location": {
+      "column": 33,
+      "row": 5
+    },
+    "message": "`typing.Union` imported but unused",
+    "noqa_row": 5,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "D401",
+    "end_location": {
+      "column": 59,
+      "row": 17
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/compat/types.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 17
+    },
+    "message": "First line of docstring should be in imperative mood: \"Adds a representer when defining a subclass.\"",
+    "noqa_row": 17,
+    "url": "https://docs.astral.sh/ruff/rules/non-imperative-mood"
+  },
+  {
+    "cell": null,
+    "code": "D401",
+    "end_location": {
+      "column": 52,
+      "row": 29
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/compat/types.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 29
+    },
+    "message": "First line of docstring should be in imperative mood: \"This just returns the wrapped string.\"",
+    "noqa_row": 29,
+    "url": "https://docs.astral.sh/ruff/rules/non-imperative-mood"
+  },
+  {
+    "cell": null,
+    "code": "D404",
+    "end_location": {
+      "column": 52,
+      "row": 29
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/compat/types.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 29
+    },
+    "message": "First word of the docstring should not be \"This\"",
+    "noqa_row": 29,
+    "url": "https://docs.astral.sh/ruff/rules/docstring-starts-with-this"
+  },
+  {
+    "cell": null,
+    "code": "D401",
+    "end_location": {
+      "column": 12,
+      "row": 40
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/compat/types.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 37
+    },
+    "message": "First line of docstring should be in imperative mood: \"Implementation to prevent Enum from sabotaging us.\"",
+    "noqa_row": 40,
+    "url": "https://docs.astral.sh/ruff/rules/non-imperative-mood"
+  },
+  {
+    "cell": null,
+    "code": "D401",
+    "end_location": {
+      "column": 59,
+      "row": 48
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/compat/types.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 48
+    },
+    "message": "First line of docstring should be in imperative mood: \"Adds a representer when defining a subclass.\"",
+    "noqa_row": 48,
+    "url": "https://docs.astral.sh/ruff/rules/non-imperative-mood"
+  },
+  {
+    "cell": null,
+    "code": "D105",
+    "end_location": {
+      "column": 16,
+      "row": 59
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/compat/types.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 59
+    },
+    "message": "Missing docstring in magic method",
+    "noqa_row": 59,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-magic-method"
+  },
+  {
+    "cell": null,
+    "code": "D401",
+    "end_location": {
+      "column": 44,
+      "row": 63
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/compat/types.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 63
+    },
+    "message": "First line of docstring should be in imperative mood: \"This returns the wrapped int.\"",
+    "noqa_row": 63,
+    "url": "https://docs.astral.sh/ruff/rules/non-imperative-mood"
+  },
+  {
+    "cell": null,
+    "code": "D404",
+    "end_location": {
+      "column": 44,
+      "row": 63
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/compat/types.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 63
+    },
+    "message": "First word of the docstring should not be \"This\"",
+    "noqa_row": 63,
+    "url": "https://docs.astral.sh/ruff/rules/docstring-starts-with-this"
+  },
+  {
+    "cell": null,
+    "code": "D401",
+    "end_location": {
+      "column": 12,
+      "row": 74
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/compat/types.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 71
+    },
+    "message": "First line of docstring should be in imperative mood: \"Implementation to prevent Enum from sabotaging us.\"",
+    "noqa_row": 74,
+    "url": "https://docs.astral.sh/ruff/rules/non-imperative-mood"
+  },
+  {
+    "cell": null,
+    "code": "D105",
+    "end_location": {
+      "column": 26,
+      "row": 84
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/compat/types.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 84
+    },
+    "message": "Missing docstring in magic method",
+    "noqa_row": 84,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-magic-method"
+  },
+  {
+    "cell": null,
+    "code": "D401",
+    "end_location": {
+      "column": 47,
+      "row": 92
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/compat/types.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 92
+    },
+    "message": "First line of docstring should be in imperative mood: \"This returns the wrapped string.\"",
+    "noqa_row": 92,
+    "url": "https://docs.astral.sh/ruff/rules/non-imperative-mood"
+  },
+  {
+    "cell": null,
+    "code": "D404",
+    "end_location": {
+      "column": 47,
+      "row": 92
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/compat/types.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 92
+    },
+    "message": "First word of the docstring should not be \"This\"",
+    "noqa_row": 92,
+    "url": "https://docs.astral.sh/ruff/rules/docstring-starts-with-this"
+  },
+  {
+    "cell": null,
+    "code": "D105",
+    "end_location": {
+      "column": 26,
+      "row": 106
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/compat/types.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 106
+    },
+    "message": "Missing docstring in magic method",
+    "noqa_row": 106,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-magic-method"
+  },
+  {
+    "cell": null,
+    "code": "D100",
+    "end_location": {
+      "column": 1,
+      "row": 1
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/ext/semver.py",
+    "fix": null,
+    "location": {
+      "column": 1,
+      "row": 1
+    },
+    "message": "Missing docstring in public module",
+    "noqa_row": 1,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-public-module"
+  },
+  {
+    "cell": null,
+    "code": "D102",
+    "end_location": {
+      "column": 16,
+      "row": 42
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/ext/semver.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 42
+    },
+    "message": "Missing docstring in public method",
+    "noqa_row": 42,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-public-method"
+  },
+  {
+    "cell": null,
+    "code": "D102",
+    "end_location": {
+      "column": 14,
+      "row": 50
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/ext/semver.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 50
+    },
+    "message": "Missing docstring in public method",
+    "noqa_row": 50,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-public-method"
+  },
+  {
+    "cell": null,
+    "code": "E501",
+    "end_location": {
+      "column": 124,
+      "row": 61
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/ext/semver.py",
+    "fix": null,
+    "location": {
+      "column": 106,
+      "row": 61
+    },
+    "message": "Line too long (123 > 105)",
+    "noqa_row": 61,
+    "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+  },
+  {
+    "cell": null,
+    "code": "D105",
+    "end_location": {
+      "column": 27,
+      "row": 63
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/ext/semver.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 63
+    },
+    "message": "Missing docstring in magic method",
+    "noqa_row": 63,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-magic-method"
+  },
+  {
+    "cell": null,
+    "code": "D102",
+    "end_location": {
+      "column": 17,
+      "row": 67
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/ext/semver.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 67
+    },
+    "message": "Missing docstring in public method",
+    "noqa_row": 67,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-public-method"
+  },
+  {
+    "cell": null,
+    "code": "D102",
+    "end_location": {
+      "column": 13,
+      "row": 76
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/ext/semver.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 76
+    },
+    "message": "Missing docstring in public method",
+    "noqa_row": 76,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-public-method"
+  },
+  {
+    "cell": null,
+    "code": "D105",
+    "end_location": {
+      "column": 17,
+      "row": 128
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/ext/semver.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 128
+    },
+    "message": "Missing docstring in magic method",
+    "noqa_row": 128,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-magic-method"
+  },
+  {
+    "cell": null,
+    "code": "D105",
+    "end_location": {
+      "column": 15,
+      "row": 132
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/ext/semver.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 132
+    },
+    "message": "Missing docstring in magic method",
+    "noqa_row": 132,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-magic-method"
+  },
+  {
+    "cell": null,
+    "code": "D105",
+    "end_location": {
+      "column": 15,
+      "row": 136
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/ext/semver.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 136
+    },
+    "message": "Missing docstring in magic method",
+    "noqa_row": 136,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-magic-method"
+  },
+  {
+    "cell": null,
+    "code": "D105",
+    "end_location": {
+      "column": 15,
+      "row": 140
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/ext/semver.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 140
+    },
+    "message": "Missing docstring in magic method",
+    "noqa_row": 140,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-magic-method"
+  },
+  {
+    "cell": null,
+    "code": "D105",
+    "end_location": {
+      "column": 15,
+      "row": 144
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/ext/semver.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 144
+    },
+    "message": "Missing docstring in magic method",
+    "noqa_row": 144,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-magic-method"
+  },
+  {
+    "cell": null,
+    "code": "D105",
+    "end_location": {
+      "column": 15,
+      "row": 148
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/ext/semver.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 148
+    },
+    "message": "Missing docstring in magic method",
+    "noqa_row": 148,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-magic-method"
+  },
+  {
+    "cell": null,
+    "code": "D105",
+    "end_location": {
+      "column": 15,
+      "row": 152
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/ext/semver.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 152
+    },
+    "message": "Missing docstring in magic method",
+    "noqa_row": 152,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-magic-method"
+  },
+  {
+    "cell": null,
+    "code": "D100",
+    "end_location": {
+      "column": 1,
+      "row": 1
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/ext/versioned_model.py",
+    "fix": null,
+    "location": {
+      "column": 1,
+      "row": 1
+    },
+    "message": "Missing docstring in public module",
+    "noqa_row": 1,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-public-module"
+  },
+  {
+    "cell": null,
+    "code": "D105",
+    "end_location": {
+      "column": 26,
+      "row": 66
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/ext/versioned_model.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 66
+    },
+    "message": "Missing docstring in magic method",
+    "noqa_row": 66,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-magic-method"
+  },
+  {
+    "cell": null,
+    "code": "E501",
+    "end_location": {
+      "column": 109,
+      "row": 101
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/ext/versioned_model.py",
+    "fix": null,
+    "location": {
+      "column": 106,
+      "row": 101
+    },
+    "message": "Line too long (108 > 105)",
+    "noqa_row": 101,
+    "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 35,
+      "row": 27
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/main.py",
+    "fix": null,
+    "location": {
+      "column": 29,
+      "row": 27
+    },
+    "message": "`.ext.semver.SemVer` imported but unused; consider using `importlib.util.find_spec` to test for availability",
+    "noqa_row": 27,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 56,
+      "row": 28
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/main.py",
+    "fix": null,
+    "location": {
+      "column": 38,
+      "row": 28
+    },
+    "message": "`.ext.versioned_model.VersionedYamlModel` imported but unused; consider using `importlib.util.find_spec` to test for availability",
+    "noqa_row": 28,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "D401",
+    "end_location": {
+      "column": 77,
+      "row": 52
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/mixin.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 52
+    },
+    "message": "First line of docstring should be in imperative mood: \"Checks whether YAML is requested by the user, depending on params.\"",
+    "noqa_row": 52,
+    "url": "https://docs.astral.sh/ruff/rules/non-imperative-mood"
+  },
+  {
+    "cell": null,
+    "code": "D105",
+    "end_location": {
+      "column": 26,
+      "row": 97
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/mixin.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 97
+    },
+    "message": "Missing docstring in magic method",
+    "noqa_row": 97,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-magic-method"
+  },
+  {
+    "cell": null,
+    "code": "D102",
+    "end_location": {
+      "column": 18,
+      "row": 182
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/mixin.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 182
+    },
+    "message": "Missing docstring in public method",
+    "noqa_row": 182,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-public-method"
+  },
+  {
+    "cell": null,
+    "code": "D102",
+    "end_location": {
+      "column": 19,
+      "row": 223
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/mixin.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 223
+    },
+    "message": "Missing docstring in public method",
+    "noqa_row": 223,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-public-method"
+  },
+  {
+    "cell": null,
+    "code": "D205",
+    "end_location": {
+      "column": 12,
+      "row": 269
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/mixin.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 266
+    },
+    "message": "1 blank line required between summary line and description",
+    "noqa_row": 269,
+    "url": "https://docs.astral.sh/ruff/rules/missing-blank-line-after-summary"
+  },
+  {
+    "cell": null,
+    "code": "D401",
+    "end_location": {
+      "column": 12,
+      "row": 269
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/mixin.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 266
+    },
+    "message": "First line of docstring should be in imperative mood: \"Same as update_forward_refs but will not raise exception\"",
+    "noqa_row": 269,
+    "url": "https://docs.astral.sh/ruff/rules/non-imperative-mood"
+  },
+  {
+    "cell": null,
+    "code": "D100",
+    "end_location": {
+      "column": 1,
+      "row": 1
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/model.py",
+    "fix": null,
+    "location": {
+      "column": 1,
+      "row": 1
+    },
+    "message": "Missing docstring in public module",
+    "noqa_row": 1,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-public-module"
+  },
+  {
+    "cell": null,
+    "code": "D101",
+    "end_location": {
+      "column": 16,
+      "row": 19
+    },
+    "filename": "/home/runner/work/_temp/external-pydantic-yaml/work/codemod-source/src/pydantic_yaml/model.py",
+    "fix": null,
+    "location": {
+      "column": 7,
+      "row": 19
+    },
+    "message": "Missing docstring in public class",
+    "noqa_row": 19,
+    "url": "https://docs.astral.sh/ruff/rules/undocumented-public-class"
+  }
+]

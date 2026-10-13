@@ -1,0 +1,11 @@
+{
+  "saved_plan_sha256": "5b2f7116f410b7add9ae38ebdc70d1840f79a774904091cb920159fdae4fdbf0",
+  "old_actual_calls": 10,
+  "old_estimated_model_usd": 0.501527,
+  "new_model_call_cap": 6,
+  "new_max_derived_estimate_usd": 1.194912,
+  "combined_max_derived_estimate_usd": 1.696439,
+  "planned_at": "2026-10-13",
+  "status": "declared_before_followup_execution",
+  "same_original_case": true
+}

@@ -1,0 +1,1 @@
+{"installed_pydantic": "2.12.5", "native_v2": false, "error_type": "ImportError", "error": "cannot import name 'Protocol' from 'pydantic.parse' (/home/runner/work/_temp/external-pydantic-yaml/work/clean-env/lib/python3.12/site-packages/pydantic/parse.py)"}

@@ -1,0 +1,68 @@
+{
+  "version": "1",
+  "pip_version": "25.2",
+  "install": [
+    {
+      "download_info": {
+        "url": "file:///home/runner/work/_temp/external-pydantic-yaml/work/tool-source",
+        "dir_info": {}
+      },
+      "is_direct": true,
+      "is_yanked": false,
+      "requested": true,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "bump-pydantic",
+        "version": "0.8.0",
+        "summary": "Convert Pydantic from V1 to V2 ♻",
+        "description": "# Bump Pydantic ♻️\n\n[![PyPI - Version](https://img.shields.io/pypi/v/bump-pydantic.svg)](https://pypi.org/project/bump-pydantic)\n[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/bump-pydantic.svg)](https://pypi.org/project/bump-pydantic)\n\n---\n\n## Archived\n\nPydantic V1 has long been EOL, and most users have migrated to Pydatnic V2.\n\nWe're therefore archiving this repo. Please [get in touch](https://pydantic.dev/docs/validation/latest/get-started/help_with_pydantic/) if you haven any questions.\n\n---\n\nBump Pydantic is a tool to help you migrate your code from Pydantic V1 to V2.\n\n\n> [!NOTE]\\\n> If you find bugs, please report them on the [issue tracker](https://github.com/pydantic/bump-pydantic/issues/new).\n\n## Table of contents\n\n- [Bump Pydantic ♻️](#bump-pydantic-️)\n  - [Table of contents](#table-of-contents)\n  - [Installation](#installation)\n  - [Usage](#usage)\n    - [Check diff before applying changes](#check-diff-before-applying-changes)\n    - [Apply changes](#apply-changes)\n  - [Rules](#rules)\n    - [BP001: Add default `None` to `Optional[T]`, `Union[T, None]` and `Any` fields](#bp001-add-default-none-to-optionalt-uniont-none-and-any-fields)\n    - [BP002: Replace `Config` class by `model_config` attribute](#bp002-replace-config-class-by-model_config-attribute)\n    - [BP003: Replace `Field` old parameters to new ones](#bp003-replace-field-old-parameters-to-new-ones)\n    - [BP004: Replace imports](#bp004-replace-imports)\n    - [BP005: Replace `GenericModel` by `BaseModel`](#bp005-replace-genericmodel-by-basemodel)\n    - [BP006: Replace `__root__` by `RootModel`](#bp006-replace-__root__-by-rootmodel)\n    - [BP007: Replace decorators](#bp007-replace-decorators)\n    - [BP008: Replace `con*` functions by `Annotated` versions](#bp008-replace-con-functions-by-annotated-versions)\n    - [BP009: Mark pydantic \"protocol\" functions in custom types with proper TODOs](bp009-mark-pydantic-protocol-functions-in-custom-types-with-proper-todos)\n\n  - [License](#license)\n\n---\n\n## Installation\n\nThe installation is as simple as:\n\n```bash\npip install bump-pydantic\n```\n\n---\n\n## Usage\n\n`bump-pydantic` is a CLI tool, hence you can use it from your terminal.\n\nIt's easy to use. If your project structure is:\n\n```bash\nrepository/\n└── my_package/\n    └── <python source files>\n```\n\nThen you'll want to do:\n\n```bash\ncd /path/to/repository\nbump-pydantic my_package\n```\n\n### Check diff before applying changes\n\nTo check the diff before applying the changes, you can run:\n\n```bash\nbump-pydantic --diff <path>\n```\n\n### Apply changes\n\nTo apply the changes, you can run:\n\n```bash\nbump-pydantic <path>\n```\n\n## Rules\n\nYou can find below the list of rules that are applied by `bump-pydantic`.\n\nIt's also possible to disable rules by using the `--disable` option.\n\n### BP001: Add default `None` to `Optional[T]`, `Union[T, None]` and `Any` fields\n\n- ✅ Add default `None` to `Optional[T]` fields.\n\nThe following code will be transformed:\n\n```py\nclass User(BaseModel):\n    name: Optional[str]\n```\n\nInto:\n\n```py\nclass User(BaseModel):\n    name: Optional[str] = None\n```\n\n### BP002: Replace `Config` class by `model_config` attribute\n\n- ✅ Replace `Config` class by `model_config = ConfigDict()`.\n- ✅ Rename old `Config` attributes to new `model_config` attributes.\n- ✅ Add a TODO comment in case the transformation can't be done automatically.\n- ✅ Replace `Extra` enum by string values.\n\nThe following code will be transformed:\n\n```py\nfrom pydantic import BaseModel, Extra\n\n\nclass User(BaseModel):\n    name: str\n\n    class Config:\n        extra = Extra.forbid\n```\n\nInto:\n\n```py\nfrom pydantic import ConfigDict, BaseModel\n\n\nclass User(BaseModel):\n    name: str\n\n    model_config = ConfigDict(extra=\"forbid\")\n```\n\n### BP003: Replace `Field` old parameters to new ones\n\n- ✅ Replace `Field` old parameters to new ones.\n- ✅ Replace `field: Enum = Field(Enum.VALUE, const=True)` by `field: Literal[Enum.VALUE] = Enum.VALUE`.\n\nThe following code will be transformed:\n\n```py\nfrom typing import List\n\nfrom pydantic import BaseModel, Field\n\n\nclass User(BaseModel):\n    name: List[str] = Field(..., min_items=1)\n```\n\nInto:\n\n```py\nfrom typing import List\n\nfrom pydantic import BaseModel, Field\n\n\nclass User(BaseModel):\n    name: List[str] = Field(..., min_length=1)\n```\n\n### BP004: Replace imports\n\n- ✅ Replace `BaseSettings` from `pydantic` to `pydantic_settings`.\n- ✅ Replace `Color` and `PaymentCardNumber` from `pydantic` to `pydantic_extra_types`.\n\n### BP005: Replace `GenericModel` by `BaseModel`\n\n- ✅ Replace `GenericModel` by `BaseModel`.\n\nThe following code will be transformed:\n\n```py\nfrom typing import Generic, TypeVar\nfrom pydantic.generics import GenericModel\n\nT = TypeVar('T')\n\nclass User(GenericModel, Generic[T]):\n    name: str\n```\n\nInto:\n\n```py\nfrom typing import Generic, TypeVar\nfrom pydantic import BaseModel\n\nT = TypeVar('T')\n\nclass User(BaseModel, Generic[T]):\n    name: str\n```\n\n### BP006: Replace `__root__` by `RootModel`\n\n- ✅ Replace `__root__` by `RootModel`.\n\nThe following code will be transformed:\n\n```py\nfrom typing import List\n\nfrom pydantic import BaseModel\n\nclass User(BaseModel):\n    age: int\n    name: str\n\nclass Users(BaseModel):\n    __root__ = List[User]\n```\n\nInto:\n\n```py\nfrom typing import List\n\nfrom pydantic import RootModel, BaseModel\n\nclass User(BaseModel):\n    age: int\n    name: str\n\nclass Users(RootModel[List[User]]):\n    pass\n```\n\n### BP007: Replace decorators\n\n- ✅ Replace `@validator` by `@field_validator`.\n- ✅ Replace `@root_validator` by `@model_validator`.\n\nThe following code will be transformed:\n\n```py\nfrom pydantic import BaseModel, validator, root_validator\n\n\nclass User(BaseModel):\n    name: str\n\n    @validator('name', pre=True)\n    def validate_name(cls, v):\n        return v\n\n    @root_validator(pre=True)\n    def validate_root(cls, values):\n        return values\n```\n\nInto:\n\n```py\nfrom pydantic import BaseModel, field_validator, model_validator\n\n\nclass User(BaseModel):\n    name: str\n\n    @field_validator('name', mode='before')\n    def validate_name(cls, v):\n        return v\n\n    @model_validator(mode='before')\n    def validate_root(cls, values):\n        return values\n```\n\n### BP008: Replace `con*` functions by `Annotated` versions\n\n- ✅ Replace `constr(*args)` by `Annotated[str, StringConstraints(*args)]`.\n- ✅ Replace `conint(*args)` by `Annotated[int, Field(*args)]`.\n- ✅ Replace `confloat(*args)` by `Annotated[float, Field(*args)]`.\n- ✅ Replace `conbytes(*args)` by `Annotated[bytes, Field(*args)]`.\n- ✅ Replace `condecimal(*args)` by `Annotated[Decimal, Field(*args)]`.\n- ✅ Replace `conset(T, *args)` by `Annotated[Set[T], Field(*args)]`.\n- ✅ Replace `confrozenset(T, *args)` by `Annotated[Set[T], Field(*args)]`.\n- ✅ Replace `conlist(T, *args)` by `Annotated[List[T], Field(*args)]`.\n\nThe following code will be transformed:\n\n```py\nfrom pydantic import BaseModel, constr\n\n\nclass User(BaseModel):\n    name: constr(min_length=1)\n```\n\nInto:\n\n```py\nfrom pydantic import BaseModel, StringConstraints\nfrom typing_extensions import Annotated\n\n\nclass User(BaseModel):\n    name: Annotated[str, StringConstraints(min_length=1)]\n```\n\n### BP009: Mark Pydantic \"protocol\" functions in custom types with proper TODOs\n\n- ✅ Mark `__get_validators__` as to be replaced by `__get_pydantic_core_schema__`.\n- ✅ Mark `__modify_schema__` as to be replaced by `__get_pydantic_json_schema__`.\n\nThe following code will be transformed:\n\n```py\nclass SomeThing:\n    @classmethod\n    def __get_validators__(cls):\n        yield from []\n\n    @classmethod\n    def __modify_schema__(cls, field_schema, field):\n        if field:\n            field_schema['example'] = \"Weird example\"\n```\n\nInto:\n\n```py\nclass SomeThing:\n    @classmethod\n    # TODO[pydantic]: We couldn't refactor `__get_validators__`, please create the `__get_pydantic_core_schema__` manually.\n    # Check https://docs.pydantic.dev/latest/migration/#defining-custom-types for more information.\n    def __get_validators__(cls):\n        yield from []\n\n    @classmethod\n    # TODO[pydantic]: We couldn't refactor `__modify_schema__`, please create the `__get_pydantic_json_schema__` manually.\n    # Check https://docs.pydantic.dev/latest/migration/#defining-custom-types for more information.\n    def __modify_schema__(cls, field_schema, field):\n        if field:\n            field_schema['example'] = \"Weird example\"\n```\n\n### BP010: Add type annotations or TODO comments to fields without them\n\n- ✅ Add type annotations based on the default value for a few types that can be inferred, like `bool`, `str`, `int`, `float`.\n- ✅ Add `# TODO[pydantic]: add type annotation` comments to fields that can't be inferred.\n\nThe following code will be transformed:\n\n```py\nfrom pydantic import BaseModel, Field\n\nclass Potato(BaseModel):\n    name: str\n    is_sale = True\n    tags = [\"tag1\", \"tag2\"]\n    price = 10.5\n    description = \"Some item\"\n    active = Field(default=True)\n    ready = Field(True)\n    age = Field(10, title=\"Age\")\n```\n\nInto:\n\n```py\nfrom pydantic import BaseModel, Field\n\nclass Potato(BaseModel):\n    name: str\n    is_sale: bool = True\n    # TODO[pydantic]: add type annotation\n    tags = [\"tag1\", \"tag2\"]\n    price: float = 10.5\n    description: str = \"Some item\"\n    active: bool = Field(default=True)\n    ready: bool = Field(True)\n    age: int = Field(10, title=\"Age\")\n```\n\n<!-- ### BP010: Replace `pydantic.parse_obj_as` by `pydantic.TypeAdapter`\n\n- ✅ Replace `pydantic.parse_obj_as(T, obj)` to `pydantic.TypeAdapter(T).validate_python(obj)`.\n\n\nThe following code will be transformed:\n\n```py\nfrom typing import List\n\nfrom pydantic import BaseModel, parse_obj_as\n\n\nclass User(BaseModel):\n    name: str\n\n\nclass Users(BaseModel):\n    users: List[User]\n\n\nusers = parse_obj_as(Users, {'users': [{'name': 'John'}]})\n```\n\nInto:\n\n```py\nfrom typing import List\n\nfrom pydantic import BaseModel, TypeAdapter\n\n\nclass User(BaseModel):\n    name: str\n\n\nclass Users(BaseModel):\n    users: List[User]\n\n\nusers = TypeAdapter(Users).validate_python({'users': [{'name': 'John'}]})\n``` -->\n\n<!-- ### BP011: Replace `PyObject` by `ImportString`\n\n- ✅ Replace `PyObject` by `ImportString`.\n\nThe following code will be transformed:\n\n```py\nfrom pydantic import BaseModel, PyObject\n\n\nclass User(BaseModel):\n    name: PyObject\n```\n\nInto:\n\n```py\nfrom pydantic import BaseModel, ImportString\n\n\nclass User(BaseModel):\n    name: ImportString\n``` -->\n\n---\n\n## License\n\nThis project is licensed under the terms of the MIT license.\n",
+        "description_content_type": "text/markdown",
+        "author_email": "Marcelo Trylesinski <marcelotryle@gmail.com>",
+        "license_expression": "MIT",
+        "license_file": [
+          "LICENSE.txt"
+        ],
+        "classifier": [
+          "Development Status :: 4 - Beta",
+          "Environment :: Console",
+          "Framework :: Pydantic",
+          "License :: OSI Approved :: MIT License",
+          "Programming Language :: Python",
+          "Programming Language :: Python :: 3.8",
+          "Programming Language :: Python :: 3.9",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: Implementation :: CPython",
+          "Programming Language :: Python :: Implementation :: PyPy",
+          "Topic :: Software Development :: Code Generators"
+        ],
+        "requires_dist": [
+          "libcst>=0.4.2",
+          "rich",
+          "typer>=0.7.0",
+          "typing-extensions"
+        ],
+        "requires_python": ">=3.8",
+        "project_url": [
+          "Documentation, https://github.com/pydantic/bump-pydantic#readme",
+          "Issues, https://github.com/pydantic/bump-pydantic/issues",
+          "Source, https://github.com/pydantic/bump-pydantic"
+        ]
+      }
+    }
+  ],
+  "environment": {
+    "implementation_name": "cpython",
+    "implementation_version": "3.12.15",
+    "os_name": "posix",
+    "platform_machine": "x86_64",
+    "platform_release": "6.17.0-1022-azure",
+    "platform_system": "Linux",
+    "platform_version": "#22-Ubuntu SMP Mon Jul 27 17:24:03 UTC 2026",
+    "python_full_version": "3.12.15",
+    "platform_python_implementation": "CPython",
+    "python_version": "3.12",
+    "sys_platform": "linux"
+  }
+}

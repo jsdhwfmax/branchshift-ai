@@ -1,0 +1,6 @@
+[01:13:57] Start bump-pydantic.                                       main.py:67
+           Found 23 files to process.                                 main.py:84
+
+
+[01:14:07] Refactored 6 files.                                       main.py:150
+           Run successfully!                                         main.py:160

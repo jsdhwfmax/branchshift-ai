@@ -1,0 +1,17 @@
+{
+  "image_uuid": null,
+  "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+  "python": "3.12.15",
+  "script_sha256": "607953f48e8beb23e0795ecf252e1a2d4fd39fe8b775431a630f06a04c50eb54",
+  "source_runner_keys": {
+    "GITHUB_REPOSITORY": "jsdhwfmax/branchshift-ai",
+    "GITHUB_RUN_ATTEMPT": "1",
+    "GITHUB_RUN_ID": "38331091063",
+    "GITHUB_SHA": "451a5f60f017e70132b95f6a7d7cc8396e3f009e",
+    "ImageOS": "ubuntu24",
+    "ImageVersion": "20261004.327.1",
+    "RUNNER_ARCH": "X64",
+    "RUNNER_ENVIRONMENT": "github-hosted",
+    "RUNNER_OS": "Linux"
+  }
+}

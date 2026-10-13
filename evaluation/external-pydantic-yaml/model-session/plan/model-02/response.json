@@ -1,0 +1,1 @@
+{"error":"Model returned invalid structured content","error_type":"ProviderUnavailable","finished_at":"2026-10-13T01:19:40.799691+00:00","request_id":"c5b7602ea99eff1294a9521d65102d1fe363a8b78d9d56193fdcaade849f2bb8","usage":{"coverage":"reported","input_tokens":17345,"output_tokens":16384,"requests":1,"responses_with_usage":1}}

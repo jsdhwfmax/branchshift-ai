@@ -1,0 +1,36 @@
+{
+  "adaptation": "GitHub-hosted filesystem copies and independently rebuilt locked venvs; not Nebius checkpoints",
+  "baseline_pins": [
+    "pydantic==1.10.24",
+    "pytest==8.3.5",
+    "PyYAML==6.0.2",
+    "semver==3.0.4",
+    "ruff==0.13.0",
+    "typing-extensions==4.15.0"
+  ],
+  "bootstrap_pins": [
+    "pip==25.2",
+    "setuptools==80.9.0",
+    "wheel==0.45.1",
+    "setuptools-scm==8.3.1",
+    "importlib-metadata==8.7.0"
+  ],
+  "candidate_pydantic_pin": "2.12.5",
+  "codemod_pins": [
+    "hatchling==1.27.0",
+    "typer==0.12.5",
+    "click==8.1.8",
+    "libcst==1.8.6",
+    "rich==13.9.4",
+    "typing-extensions==4.15.0"
+  ],
+  "manifest_requirement": ">=2,<3",
+  "no_assertion_test_retained": "test_basic.py::test_readme",
+  "python": "3.12.15",
+  "test_tree": "src/pydantic_yaml/test",
+  "tool": "https://github.com/pydantic/bump-pydantic",
+  "tool_sha": "a111d4177405dbf61ef59035adaa0639b17b8718",
+  "upstream": "https://github.com/NowanIlfideme/pydantic-yaml",
+  "upstream_sha": "54ff4bad7bca758a9dd22a791b707a2b9c27159e",
+  "xfail_retained": "test_secret_types.py::test_secret_types_roundtrippable"
+}

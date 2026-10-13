@@ -1,0 +1,56 @@
+Obtaining file:///home/runner/work/_temp/external-pydantic-yaml/work/baseline-source
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Collecting pydantic==1.10.24
+  Downloading pydantic-1.10.24-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (154 kB)
+Collecting pytest==8.3.5
+  Downloading pytest-8.3.5-py3-none-any.whl.metadata (7.6 kB)
+Collecting PyYAML==6.0.2
+  Downloading PyYAML-6.0.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (2.1 kB)
+Collecting semver==3.0.4
+  Downloading semver-3.0.4-py3-none-any.whl.metadata (6.8 kB)
+Collecting ruff==0.13.0
+  Downloading ruff-0.13.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (25 kB)
+Collecting typing-extensions==4.15.0
+  Downloading typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+Requirement already satisfied: importlib_metadata in /home/runner/work/_temp/external-pydantic-yaml/work/baseline-env/lib/python3.12/site-packages (from pydantic_yaml==0.1.dev1+g54ff4ba) (8.7.0)
+Collecting deprecated~=1.2.5 (from pydantic_yaml==0.1.dev1+g54ff4ba)
+  Downloading Deprecated-1.2.18-py2.py3-none-any.whl.metadata (5.7 kB)
+Collecting types-Deprecated (from pydantic_yaml==0.1.dev1+g54ff4ba)
+  Downloading types_deprecated-1.3.1.20260928-py3-none-any.whl.metadata (2.0 kB)
+Collecting types-PyYAML (from pydantic_yaml==0.1.dev1+g54ff4ba)
+  Downloading types_pyyaml-6.0.12.20260906-py3-none-any.whl.metadata (1.8 kB)
+Collecting iniconfig (from pytest==8.3.5)
+  Downloading iniconfig-2.3.1-py3-none-any.whl.metadata (2.8 kB)
+Requirement already satisfied: packaging in /home/runner/work/_temp/external-pydantic-yaml/work/baseline-env/lib/python3.12/site-packages (from pytest==8.3.5) (26.3)
+Collecting pluggy<2,>=1.5 (from pytest==8.3.5)
+  Downloading pluggy-1.6.0-py3-none-any.whl.metadata (4.8 kB)
+Collecting wrapt<2,>=1.10 (from deprecated~=1.2.5->pydantic_yaml==0.1.dev1+g54ff4ba)
+  Downloading wrapt-1.17.3-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.4 kB)
+Requirement already satisfied: zipp>=3.20 in /home/runner/work/_temp/external-pydantic-yaml/work/baseline-env/lib/python3.12/site-packages (from importlib_metadata->pydantic_yaml==0.1.dev1+g54ff4ba) (4.1.1)
+Downloading pydantic-1.10.24-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.8 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.8/2.8 MB 15.9 MB/s  0:00:00
+Downloading semver-3.0.4-py3-none-any.whl (17 kB)
+Downloading pytest-8.3.5-py3-none-any.whl (343 kB)
+Downloading PyYAML-6.0.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (767 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 767.5/767.5 kB 124.3 MB/s  0:00:00
+Downloading ruff-0.13.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (13.4 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.4/13.4 MB 29.6 MB/s  0:00:00
+Downloading typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+Downloading Deprecated-1.2.18-py2.py3-none-any.whl (10.0 kB)
+Downloading pluggy-1.6.0-py3-none-any.whl (20 kB)
+Downloading wrapt-1.17.3-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (88 kB)
+Downloading iniconfig-2.3.1-py3-none-any.whl (7.6 kB)
+Downloading types_deprecated-1.3.1.20260928-py3-none-any.whl (9.3 kB)
+Downloading types_pyyaml-6.0.12.20260906-py3-none-any.whl (21 kB)
+Building wheels for collected packages: pydantic_yaml
+  Building editable for pydantic_yaml (pyproject.toml): started
+  Building editable for pydantic_yaml (pyproject.toml): finished with status 'done'
+  Created wheel for pydantic_yaml: filename=pydantic_yaml-0.1.dev1+g54ff4ba-0.editable-py3-none-any.whl size=5500 sha256=a8f818233d8325dc820b55bf16b1ac670a6f8339c102d48600e4b6dcdb39b44e
+  Stored in directory: /home/runner/work/_temp/external-pydantic-yaml/work/tmp/pip-ephem-wheel-cache-e7szn4la/wheels/b0/97/b3/00b912ab27cbcc88a690200628e48b16f496032ff48d5a741e
+Successfully built pydantic_yaml
+Installing collected packages: wrapt, typing-extensions, types-PyYAML, types-Deprecated, semver, ruff, PyYAML, pluggy, iniconfig, pytest, pydantic, deprecated, pydantic_yaml
+
+Successfully installed PyYAML-6.0.2 deprecated-1.2.18 iniconfig-2.3.1 pluggy-1.6.0 pydantic-1.10.24 pydantic_yaml-0.1.dev1+g54ff4ba pytest-8.3.5 ruff-0.13.0 semver-3.0.4 types-Deprecated-1.3.1.20260928 types-PyYAML-6.0.12.20260906 typing-extensions-4.15.0 wrapt-1.17.3

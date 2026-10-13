@@ -1,0 +1,13 @@
+Obtaining file:///home/runner/work/_temp/external-pydantic-yaml/work/codemod-source
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: pydantic_yaml
+  Building editable for pydantic_yaml (pyproject.toml): started
+  Building editable for pydantic_yaml (pyproject.toml): finished with status 'done'
+  Created wheel for pydantic_yaml: filename=pydantic_yaml-0.1.dev1+g54ff4ba.d20261013-0.editable-py3-none-any.whl size=5635 sha256=5083531beb84fc0738f1fb6d7cd6f4bcede6bdbeace10b179aaa1762140c5691
+  Stored in directory: /home/runner/work/_temp/external-pydantic-yaml/work/tmp/pip-ephem-wheel-cache-3mpusjad/wheels/53/ce/60/56c8a1427bb96ed490ffe2d5019d01042cdda780b67b59e90f
+Successfully built pydantic_yaml
+Installing collected packages: pydantic_yaml
+Successfully installed pydantic_yaml-0.1.dev1+g54ff4ba.d20261013

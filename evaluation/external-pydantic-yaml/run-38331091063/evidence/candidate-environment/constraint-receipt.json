@@ -1,0 +1,6 @@
+{
+  "candidate_constraints_sha256": "09cb776346095a5716b5ef8fb1b655bd9f7dafa615adaf7a6f0bdb2028abb007",
+  "constraint_applied": true,
+  "scope": "Every subsequent candidate and clean pip install uses this exact full environment constraint",
+  "target_pydantic_version": "2.12.5"
+}

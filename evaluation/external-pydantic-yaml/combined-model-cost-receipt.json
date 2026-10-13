@@ -1,0 +1,18 @@
+{
+  "actual_model_calls": 15,
+  "first_iteration_estimate_usd": 0.501527,
+  "line_edit_iteration_estimate_usd": 0.254573,
+  "combined_model_estimate_usd": 0.7561,
+  "usage_complete": true,
+  "runtime_candidate_count": 0,
+  "independent_case_count": 1,
+  "unspent_call_allowance": 1,
+  "reason_stopped": "Both repairable strategies exhausted two attempts; the frozen compatibility strategy aborted on an explicit output limit. No extra call is permitted under its unchanged replay path.",
+  "not_invoice": true,
+  "excludes": [
+    "tax",
+    "Render",
+    "Sandbox",
+    "other_services"
+  ]
+}

@@ -1,0 +1,659 @@
+from __future__ import annotations
+
+import asyncio
+import shlex
+from collections.abc import Coroutine
+from typing import Any
+from uuid import uuid4
+
+from app.config import Settings
+from app.domain.events import EVENTS
+from app.domain.models import (
+    TERMINAL_RUN_STATUSES,
+    BranchResult,
+    BranchStatus,
+    Citation,
+    CreateRunRequest,
+    MigrationStrategy,
+    RunStatus,
+    RunSummary,
+    http_url,
+)
+from app.orchestrator.baseline import (
+    BaselineRunner,
+    effective_project_path,
+    repository_workdir,
+)
+from app.orchestrator.behavior_probes import (
+    BehaviorProbeResults,
+    BehaviorProbeSuite,
+    build_probe_command,
+    compare_behavior_probes,
+    parse_probe_output,
+)
+from app.orchestrator.branch_runner import BranchRunner
+from app.orchestrator.evaluator import rank_results
+from app.orchestrator.planner import MigrationPlanner
+from app.orchestrator.research import MigrationResearch
+from app.provenance import runtime_config_digest, source_provenance
+from app.providers.base import SandboxProvider, SandboxState
+from app.providers.contree import ContreeSandboxProvider
+from app.providers.nebius import NebiusModelProvider
+from app.providers.redaction import redact
+from app.providers.tavily import TavilyResearchProvider
+from app.storage.repositories import RunRepository
+
+PYDANTIC_MIGRATION_URL = "https://docs.pydantic.dev/latest/migration/"
+CONTREE_BRANCHING_URL = (
+    "https://docs.tokenfactory.nebius.com/sandboxes/sdk/python_sdk/branching"
+)
+PROBE_TIMEOUT_SECONDS = 30
+
+
+async def _observe_behavior_probes(
+    sandbox: SandboxProvider, parent: SandboxState, suite: BehaviorProbeSuite, workdir: str,
+) -> tuple[BehaviorProbeResults | None, str | None]:
+    """A disposable child observation must never replace its parent's verification evidence."""
+    try:
+        command = f"cd {shlex.quote(workdir)} && {build_probe_command(suite)}"
+        checked = await asyncio.wait_for(
+            sandbox.run(parent, command, timeout_seconds=PROBE_TIMEOUT_SECONDS),
+            timeout=PROBE_TIMEOUT_SECONDS,
+        )
+        if checked.exit_code != 0:
+            return None, "Behavior probe evidence unavailable: the observation did not finish."
+        return parse_probe_output(checked.stdout, suite), None
+    except TimeoutError:
+        return None, "Behavior probe evidence unavailable: observation timed out."
+    except Exception:  # noqa: BLE001 - optional review must not erase a completed test result
+        # No provider exception, repository message or payload is copied into this field.
+        return None, "Behavior probe evidence unavailable: outputs could not be verified."
+
+
+async def _add_behavior_probe_review(
+    result: BranchResult, sandbox: SandboxProvider, suite: BehaviorProbeSuite,
+    baseline: BehaviorProbeResults | None, workdir: str,
+) -> None:
+    if not result.checkpoint_id or not result.patch:
+        result.behavior_probe_error = (
+            "Behavior review unavailable: no recorded candidate checkpoint and patch."
+        )
+        return
+    observed, error = await _observe_behavior_probes(
+        sandbox, SandboxState(result.checkpoint_id), suite, workdir,
+    )
+    result.behavior_probe_results = observed
+    result.behavior_probe_error = error
+    if observed is not None:
+        if baseline is None:
+            result.behavior_probe_error = (
+                "Baseline behavior probe evidence is unavailable; comparison is unknown."
+            )
+        else:
+            try:
+                result.behavior_probe_comparison = compare_behavior_probes(baseline, observed)
+            except ValueError:
+                result.behavior_probe_error = (
+                    "Behavior comparison unavailable: frozen inputs did not match."
+                )
+
+WINNING_PATCH = """diff --git a/src/sample_app/models.py b/src/sample_app/models.py
+index 1ae36c2..6e23591 100644
+--- a/src/sample_app/models.py
++++ b/src/sample_app/models.py
+@@ -1,7 +1,7 @@
+-from pydantic import BaseModel, validator
++from pydantic import BaseModel, field_validator
+ 
+ class User(BaseModel):
+-    @validator("name")
++    @field_validator("name")
+     def name_must_not_be_blank(cls, value: str) -> str:
+         if not value.strip():
+             raise ValueError("name must not be blank")
+@@ -12,4 +12,4 @@ class User(BaseModel):
+-        return self.dict()
++        return self.model_dump()
+"""
+
+
+def mock_strategies() -> list[MigrationStrategy]:
+    source = PYDANTIC_MIGRATION_URL
+    return [
+        MigrationStrategy(
+            id="minimal",
+            title="Surgical API swap",
+            rationale="Replace only removed v1 APIs while preserving the public model surface.",
+            ordered_steps=[
+                "Replace validator with field_validator",
+                "Replace dict() and parse_obj() at call sites",
+                "Run the existing test contract unchanged",
+            ],
+            source_urls=[http_url(source)],
+            target_files=["src/sample_app/models.py", "src/sample_app/api.py"],
+        ),
+        MigrationStrategy(
+            id="compatibility",
+            title="Compatibility bridge",
+            rationale="Move imports through pydantic.v1 before upgrading call sites in stages.",
+            ordered_steps=[
+                "Introduce compatibility imports",
+                "Upgrade serialization call sites",
+                "Remove the bridge after the test gate passes",
+            ],
+            source_urls=[http_url(source)],
+            target_files=["src/sample_app/models.py", "src/sample_app/api.py"],
+        ),
+        MigrationStrategy(
+            id="refactor",
+            title="Model-layer refactor",
+            rationale="Adopt v2 configuration and validation patterns across the model layer.",
+            ordered_steps=[
+                "Convert class Config to ConfigDict",
+                "Rewrite validators with explicit modes",
+                "Normalize model validation and serialization",
+            ],
+            source_urls=[http_url(source)],
+            target_files=["src/sample_app/models.py", "src/sample_app/api.py"],
+        ),
+    ]
+
+
+MOCK_RESULTS = {
+    "minimal": BranchResult(
+        strategy_id="minimal",
+        status=BranchStatus.PASSED,
+        tests_collected=18,
+        tests_passed=18,
+        tests_failed=0,
+        pip_check_passed=True,
+        lint_findings=0,
+        changed_files=3,
+        changed_lines=34,
+        elapsed_seconds=13.8,
+        patch=WINNING_PATCH,
+    ),
+    "compatibility": BranchResult(
+        strategy_id="compatibility",
+        status=BranchStatus.PASSED,
+        tests_collected=18,
+        tests_passed=18,
+        tests_failed=0,
+        pip_check_passed=True,
+        lint_findings=1,
+        changed_files=5,
+        changed_lines=61,
+        elapsed_seconds=11.9,
+        patch=WINNING_PATCH.replace("field_validator", "validator"),
+    ),
+    "refactor": BranchResult(
+        strategy_id="refactor",
+        status=BranchStatus.FAILED,
+        tests_collected=18,
+        tests_passed=16,
+        tests_failed=2,
+        pip_check_passed=True,
+        lint_findings=0,
+        changed_files=8,
+        changed_lines=103,
+        elapsed_seconds=17.2,
+        patch=WINNING_PATCH,
+    ),
+}
+
+
+class RunManager:
+    def __init__(self, repository: RunRepository, settings: Settings) -> None:
+        self._repository = repository
+        self._settings = settings
+        self._source_provenance = source_provenance()
+        self._tasks: dict[str, asyncio.Task[None]] = {}
+        self._usage: dict[str, dict[str, int]] = {}
+        self._semaphore = asyncio.Semaphore(settings.max_concurrent_runs)
+
+    async def create(self, request: CreateRunRequest) -> RunSummary:
+        summary = RunSummary(
+            id=uuid4().hex[:12],
+            repo_url=request.repo_url,
+            target=request.target,
+            baseline_ref=request.baseline_ref,
+            test_extras=request.test_extras,
+            behavior_probes=(
+                BehaviorProbeSuite.model_validate(request.behavior_probes.model_dump(mode="json"))
+                if request.behavior_probes is not None else None
+            ),
+            project_path=(
+                request.project_path if self._settings.is_mock
+                else effective_project_path(request.repo_url, request.project_path)
+            ),
+            mode="mock" if self._settings.is_mock else "live",
+            **self._source_provenance,
+            runtime_config_digest=runtime_config_digest(self._settings),
+        )
+        await self._repository.create_run(summary)
+        task = asyncio.create_task(self._execute_guarded(summary.id))
+        self._tasks[summary.id] = task
+        task.add_done_callback(lambda _: self._tasks.pop(summary.id, None))
+        return summary
+
+    async def shutdown(self) -> None:
+        tasks = dict(self._tasks)
+        for task in tasks.values():
+            task.cancel()
+        await asyncio.gather(*tasks.values(), return_exceptions=True)
+        # A task cancelled before its coroutine starts cannot execute its own handler.
+        for run_id in tasks:
+            await self._cancel_interrupted(run_id)
+
+    async def wait(self, run_id: str) -> None:
+        task = self._tasks.get(run_id)
+        if task is not None:
+            await asyncio.shield(task)
+
+    async def recover_interrupted(self) -> None:
+        """Called once at startup; deployments use one worker per evidence database."""
+        for run_id in await self._repository.unfinished_run_ids():
+            await self._cancel_interrupted(run_id)
+
+    async def _cancel_interrupted(self, run_id: str) -> None:
+        summary = await self._repository.require_run(run_id)
+        if summary.status not in TERMINAL_RUN_STATUSES:
+            summary.failure_reason = "Server stopped before this run finished"
+            await self._repository.save_run(summary)
+            await self._repository.set_status(
+                run_id, RunStatus.CANCELLED, "Server stopped; partial evidence retained"
+            )
+
+    async def _execute_guarded(self, run_id: str) -> None:
+        try:
+            async with self._semaphore:
+                await asyncio.wait_for(
+                    self._execute(run_id), timeout=self._settings.run_timeout_seconds
+                )
+        except asyncio.CancelledError:
+            await self._cancel_interrupted(run_id)
+            raise
+        except Exception as exc:  # noqa: BLE001 - background task must persist failure
+            summary = await self._repository.require_run(run_id)
+            if summary.status not in TERMINAL_RUN_STATUSES:
+                summary.failure_reason = redact(
+                    str(exc) or (
+                        "Run exceeded its configured time limit"
+                        if isinstance(exc, TimeoutError) else type(exc).__name__
+                    ),
+                    [self._settings.nebius_api_key, self._settings.tavily_api_key],
+                )[:500]
+                await self._repository.save_run(summary)
+                await self._repository.set_status(run_id, RunStatus.FAILED, "Run failed safely")
+                await self._repository.append_event(
+                    run_id,
+                    EVENTS.RUN_FAILED,
+                    "The run stopped; partial evidence is preserved.",
+                )
+        finally:
+            usage = self._usage.pop(run_id, None)
+            if usage is not None:
+                summary = await self._repository.require_run(run_id)
+                summary.provider_usage = dict(usage)
+                await self._repository.save_run(summary)
+
+    async def _step(self) -> None:
+        if self._settings.mock_step_delay_seconds > 0:
+            await asyncio.sleep(self._settings.mock_step_delay_seconds)
+
+    async def _execute(self, run_id: str) -> None:
+        if self._settings.is_mock:
+            await self._execute_mock(run_id)
+        else:
+            await self._execute_live(run_id)
+
+    async def _execute_mock(self, run_id: str) -> None:
+
+        await self._repository.set_status(
+            run_id, RunStatus.PREPARING, "Repository validated; baseline snapshot ready"
+        )
+        await self._step()
+        await self._repository.set_status(
+            run_id, RunStatus.PLANNING, "Retrieving official migration evidence"
+        )
+        citations = [
+            Citation(
+                title="Pydantic V2 migration guide",
+                url=http_url(PYDANTIC_MIGRATION_URL),
+                evidence=(
+                    "Official mappings for validators, parsing, configuration, "
+                    "and serialization."
+                ),
+            ),
+            Citation(
+                title="Contree branching workflows",
+                url=http_url(CONTREE_BRANCHING_URL),
+                evidence="Independent child states execute from one reproducible filesystem state.",
+            ),
+        ]
+        await self._repository.append_event(
+            run_id,
+            EVENTS.RESEARCH_READY,
+            "2 allowlisted official sources retained",
+            payload={"citations": [item.model_dump(mode="json") for item in citations]},
+        )
+        await self._step()
+
+        summary = await self._repository.require_run(run_id)
+        summary.citations = citations
+        summary.strategies = mock_strategies()
+        await self._repository.save_run(summary)
+        await self._repository.append_event(
+            run_id,
+            EVENTS.STRATEGIES_READY,
+            "Nemotron produced 3 schema-valid strategies",
+            payload={
+                "strategies": [item.model_dump(mode="json") for item in summary.strategies]
+            },
+        )
+        await self._repository.set_status(
+            run_id, RunStatus.BRANCHING, "Three branches started from the same checkpoint"
+        )
+
+        async def run_branch(strategy: MigrationStrategy, offset: float) -> BranchResult:
+            await asyncio.sleep(offset)
+            await self._repository.append_event(
+                run_id,
+                EVENTS.BRANCH_STARTED,
+                f"{strategy.title}: patch attempt 1",
+                branch_id=strategy.id,
+            )
+            await self._step()
+            await self._repository.append_event(
+                run_id,
+                EVENTS.BRANCH_PROGRESS,
+                "Patch applies; running pytest, pip check, and Ruff",
+                branch_id=strategy.id,
+            )
+            await self._step()
+            result = MOCK_RESULTS[strategy.id].model_copy(deep=True)
+            await self._repository.append_event(
+                run_id,
+                EVENTS.BRANCH_COMPLETED,
+                f"{result.tests_passed}/{result.tests_collected} tests passed",
+                branch_id=strategy.id,
+                payload={"result": result.model_dump(mode="json")},
+            )
+            return result
+
+        coroutines: list[Coroutine[Any, Any, BranchResult]] = [
+            run_branch(strategy, index * self._settings.mock_step_delay_seconds / 2)
+            for index, strategy in enumerate(summary.strategies)
+        ]
+        results = list(await asyncio.gather(*coroutines))
+        summary = await self._repository.require_run(run_id)
+        summary.branches = results
+        await self._repository.save_run(summary)
+        await self._repository.set_status(
+            run_id, RunStatus.EVALUATING, "Reapplying candidate patches to the baseline"
+        )
+        await self._step()
+
+        winner, fully_verified = rank_results(results)
+        if winner is None or not fully_verified:
+            raise RuntimeError("No branch passed the deterministic verification gate")
+        summary = await self._repository.require_run(run_id)
+        summary.winner_id = winner.strategy_id
+        summary.patch = winner.patch
+        summary.report = (
+            f"{winner.strategy_id.title()} won: {winner.tests_passed}/{winner.tests_collected} "
+            f"tests, {winner.lint_findings} lint findings, {winner.changed_lines} changed lines. "
+            "The patch was reapplied to the baseline before selection."
+        )
+        await self._repository.save_run(summary)
+        await self._repository.append_event(
+            run_id,
+            EVENTS.WINNER_SELECTED,
+            "Minimal won the deterministic evidence gate",
+            branch_id=winner.strategy_id,
+            payload={"winner_id": winner.strategy_id},
+        )
+        await self._repository.set_status(
+            run_id, RunStatus.COMPLETED, "Verified migration package ready"
+        )
+        await self._repository.append_event(
+            run_id,
+            EVENTS.RUN_COMPLETED,
+            "Winner patch and evidence report are ready",
+            branch_id=winner.strategy_id,
+        )
+
+    async def _execute_live(self, run_id: str) -> None:
+        if (
+            not self._settings.nebius_api_key
+            or not self._settings.nebius_project_id
+            or not self._settings.tavily_api_key
+        ):
+            raise RuntimeError(
+                "Live mode requires configured Nebius key, project, and Tavily credentials"
+            )
+        summary = await self._repository.require_run(run_id)
+        summary.model_id = self._settings.nemotron_model
+        await self._repository.save_run(summary)
+        model = NebiusModelProvider(
+            self._settings.nebius_api_key,
+            self._settings.nebius_base_url,
+            self._settings.nemotron_model,
+            enable_thinking=self._settings.nemotron_enable_thinking,
+        )
+        self._usage[run_id] = model.usage
+        research = MigrationResearch(TavilyResearchProvider(self._settings.tavily_api_key))
+        async with ContreeSandboxProvider(
+            token=self._settings.nebius_api_key,
+            project_id=self._settings.nebius_project_id,
+            base_url=self._settings.contree_api_url,
+            usage=self._usage[run_id],
+        ) as sandbox:
+            await self._repository.set_status(
+                run_id,
+                RunStatus.PREPARING,
+                "Cloning and testing the repository inside Token Factory Sandbox",
+            )
+            baseline = await BaselineRunner(
+                sandbox, max_repository_bytes=self._settings.max_repository_bytes,
+            ).prepare(
+                self._settings.contree_image,
+                summary.repo_url,
+                project_path=summary.project_path,
+                baseline_ref=summary.baseline_ref,
+                test_extras=summary.test_extras,
+            )
+            summary = await self._repository.require_run(run_id)
+            summary.baseline_commit_sha = baseline.commit_sha
+            summary.baseline_checkpoint_id = baseline.state.checkpoint_id
+            summary.baseline_tests_collected = baseline.tests_collected
+            summary.baseline_tests_passed = baseline.tests_passed
+            summary.baseline_tests_skipped = baseline.tests_collected - baseline.tests_passed
+            summary.baseline_test_contract_digest = baseline.evidence.test_contract_digest
+            await self._repository.save_run(summary)
+            await self._repository.append_event(
+                run_id,
+                EVENTS.BRANCH_PROGRESS,
+                f"Baseline pinned at {baseline.commit_sha[:12]}; "
+                f"{baseline.tests_passed}/{baseline.tests_collected} tests passed",
+                payload={"commit_sha": baseline.commit_sha},
+            )
+            if summary.behavior_probes is not None:
+                probe_results, probe_error = await _observe_behavior_probes(
+                    sandbox, baseline.state, summary.behavior_probes,
+                    repository_workdir(summary.repo_url, summary.project_path),
+                )
+                summary = await self._repository.require_run(run_id)
+                summary.baseline_probe_results = probe_results
+                summary.baseline_probe_error = probe_error
+                await self._repository.save_run(summary)
+            await self._repository.set_status(
+                run_id,
+                RunStatus.PLANNING,
+                "Retrieving official guidance and requesting grounded Nemotron strategies",
+            )
+            citations = await research.collect()
+            summary = await self._repository.require_run(run_id)
+            summary.citations = citations
+            await self._repository.save_run(summary)
+            await self._repository.append_event(
+                run_id,
+                EVENTS.RESEARCH_READY,
+                f"{len(citations)} allowlisted official sources retained",
+                payload={"citations": [item.model_dump(mode="json") for item in citations]},
+            )
+            strategies = await MigrationPlanner(model).plan(baseline.evidence, citations)
+            summary = await self._repository.require_run(run_id)
+            summary.citations = citations
+            summary.strategies = strategies
+            await self._repository.save_run(summary)
+            await self._repository.append_event(
+                run_id,
+                EVENTS.STRATEGIES_READY,
+                "Nemotron produced 3 grounded, schema-valid strategies",
+                payload={
+                    "strategies": [item.model_dump(mode="json") for item in strategies]
+                },
+            )
+            await self._repository.set_status(
+                run_id,
+                RunStatus.BRANCHING,
+                "Three migration branches started from the pinned baseline",
+            )
+            runner = BranchRunner(model, sandbox)
+
+            async def execute_branch(strategy: MigrationStrategy) -> BranchResult:
+                async def report_attempt(attempt: int, max_attempts: int) -> None:
+                    await self._repository.append_event(
+                        run_id,
+                        EVENTS.BRANCH_PROGRESS,
+                        f"{strategy.title}: proposal attempt {attempt}/{max_attempts} started",
+                        branch_id=strategy.id,
+                        payload={"attempt": attempt, "max_attempts": max_attempts},
+                    )
+
+                await self._repository.append_event(
+                    run_id,
+                    EVENTS.BRANCH_STARTED,
+                    f"{strategy.title}: bounded patch loop started",
+                    branch_id=strategy.id,
+                )
+                try:
+                    result = await runner.run(
+                        baseline.state,
+                        strategy,
+                        baseline.evidence,
+                        workdir=repository_workdir(summary.repo_url, summary.project_path),
+                        citations=citations,
+                        on_attempt=report_attempt,
+                    )
+                except Exception as exc:  # noqa: BLE001 - preserve sibling branch evidence
+                    message = redact(
+                        str(exc),
+                        [self._settings.nebius_api_key, self._settings.tavily_api_key],
+                    )[:500]
+                    result = BranchResult(
+                        strategy_id=strategy.id,
+                        status=BranchStatus.FAILED,
+                        tests_collected=0,
+                        tests_passed=0,
+                        tests_failed=0,
+                        pip_check_passed=False,
+                        lint_findings=0,
+                        changed_files=0,
+                        changed_lines=0,
+                        elapsed_seconds=0,
+                        patch_applicable=False,
+                        failure_reason=message or type(exc).__name__,
+                    )
+                await self._repository.save_branch_result(run_id, result)
+                if summary.behavior_probes is not None:
+                    await _add_behavior_probe_review(
+                        result, sandbox, summary.behavior_probes, summary.baseline_probe_results,
+                        repository_workdir(summary.repo_url, summary.project_path),
+                    )
+                    await self._repository.save_branch_result(run_id, result)
+                await self._repository.append_event(
+                    run_id,
+                    EVENTS.BRANCH_COMPLETED,
+                    (f"Branch failed safely: {result.failure_reason}" if result.failure_reason
+                     else f"{result.tests_passed}/{result.tests_collected} tests passed"),
+                    branch_id=strategy.id,
+                    payload={"result": result.model_dump(mode="json")},
+                )
+                return result
+
+            results = list(
+                await asyncio.gather(*(execute_branch(strategy) for strategy in strategies))
+            )
+
+            await self._repository.set_status(
+                run_id,
+                RunStatus.EVALUATING,
+                "Ranking branch evidence and revalidating the candidate on a clean baseline",
+            )
+
+            winner, fully_verified = rank_results(results)
+            if winner is None or not fully_verified or not winner.patch:
+                raise RuntimeError("No live branch passed the deterministic verification gate")
+            winner_strategy = next(
+                strategy for strategy in strategies if strategy.id == winner.strategy_id
+            )
+            final_verification = await runner.validate_existing_patch(
+                baseline.state,
+                winner_strategy,
+                winner.patch,
+                workdir=repository_workdir(summary.repo_url, summary.project_path),
+                minimum_tests=baseline.tests_collected,
+                test_contract_digest=baseline.evidence.test_contract_digest,
+                expected_outcomes=baseline.evidence.test_outcomes,
+                test_extras=baseline.evidence.test_extras,
+            )
+            # Keep the fresh check even when it disqualifies the otherwise passing candidate.
+            # A failed gate must not discard the evidence a maintainer needs to investigate it.
+            summary = await self._repository.require_run(run_id)
+            summary.revalidated_checkpoint_id = final_verification.checkpoint_id
+            summary.revalidation = final_verification
+            await self._repository.save_run(summary)
+            if summary.behavior_probes is not None:
+                await _add_behavior_probe_review(
+                    final_verification, sandbox, summary.behavior_probes,
+                    summary.baseline_probe_results,
+                    repository_workdir(summary.repo_url, summary.project_path),
+                )
+                summary = await self._repository.require_run(run_id)
+                summary.revalidation = final_verification
+                await self._repository.save_run(summary)
+            if final_verification.status is not BranchStatus.PASSED:
+                raise RuntimeError("Winner patch failed clean baseline revalidation")
+
+        summary = await self._repository.require_run(run_id)
+        summary.branches = results
+        await self._repository.save_run(summary)
+        summary = await self._repository.require_run(run_id)
+        summary.winner_id = winner.strategy_id
+        summary.patch = winner.patch
+        summary.report = (
+            f"{winner.strategy_id.title()} won at commit {baseline.commit_sha[:12]}: "
+            f"{winner.tests_passed}/{winner.tests_collected} tests, "
+            f"{winner.lint_findings} lint findings, {winner.changed_lines} changed lines."
+        )
+        await self._repository.save_run(summary)
+        await self._repository.append_event(
+            run_id,
+            EVENTS.WINNER_SELECTED,
+            f"{winner.strategy_id.title()} won the deterministic evidence gate",
+            branch_id=winner.strategy_id,
+            payload={"winner_id": winner.strategy_id},
+        )
+        await self._repository.set_status(
+            run_id,
+            RunStatus.COMPLETED,
+            "Verified live migration package ready",
+        )
+        await self._repository.append_event(
+            run_id,
+            EVENTS.RUN_COMPLETED,
+            "Winner patch and live evidence report are ready",
+            branch_id=winner.strategy_id,
+        )

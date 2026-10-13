@@ -1,0 +1,97 @@
+{
+  "version": "1",
+  "pip_version": "25.2",
+  "install": [
+    {
+      "download_info": {
+        "url": "file:///home/runner/work/_temp/external-pydantic-yaml/work/codemod-source",
+        "dir_info": {
+          "editable": true
+        }
+      },
+      "is_direct": true,
+      "is_yanked": false,
+      "requested": true,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "pydantic_yaml",
+        "version": "0.1.dev1+g54ff4ba.d20261013",
+        "dynamic": [
+          "license-file"
+        ],
+        "summary": "Adds some YAML functionality to the excellent `pydantic` library.",
+        "description": "# pydantic-yaml\n\n[![PyPI version](https://badge.fury.io/py/pydantic-yaml.svg)](https://badge.fury.io/py/pydantic-yaml) [![Documentation Status](https://readthedocs.org/projects/pydantic-yaml/badge/?version=latest)](https://pydantic-yaml.readthedocs.io/en/latest/?badge=latest)\n [![Unit Tests](https://github.com/NowanIlfideme/pydantic-yaml/actions/workflows/python-testing.yml/badge.svg)](https://github.com/NowanIlfideme/pydantic-yaml/actions/workflows/python-testing.yml)\n\nThis is a small helper library that adds some YAML capabilities to [pydantic](https://github.com/samuelcolvin/pydantic), namely dumping to yaml via the `yaml_model.yaml()` function, and parsing from strings/files using `YamlModel.parse_raw()` and `YamlModel.parse_file()`. It also adds `Enum` subclasses that get dumped to YAML as strings or integers, and fixes dumping of some typical types.\n\n[Documentation on ReadTheDocs.org](https://pydantic-yaml.readthedocs.io/en/latest/)\n\n## Basic Usage\n\nTypical usage is seen below. See the [pydantic docs](https://pydantic-docs.helpmanual.io/)\nfor more usage examples.\n\n```python\nfrom pydantic import BaseModel, validator\nfrom pydantic_yaml import YamlStrEnum, YamlModel\n\n\nclass MyEnum(YamlStrEnum):\n    \"\"\"This is a custom enumeration that is YAML-safe.\"\"\"\n\n    a = \"a\"\n    b = \"b\"\n\nclass InnerModel(BaseModel):\n    \"\"\"This is a normal pydantic model that can be used as an inner class.\"\"\"\n\n    fld: float = 1.0\n\nclass MyModel(YamlModel):\n    \"\"\"This is our custom class, with a `.yaml()` method.\n\n    The `parse_raw()` and `parse_file()` methods are also updated to be able to\n    handle `content_type='application/yaml'`, `protocol=\"yaml\"` and file names\n    ending with `.yml`/`.yaml`\n    \"\"\"\n\n    x: int = 1\n    e: MyEnum = MyEnum.a\n    m: InnerModel = InnerModel()\n\n    @validator('x')\n    def _chk_x(cls, v: int) -> int:  # noqa\n        \"\"\"You can add your normal pydantic validators, like this one.\"\"\"\n        assert v > 0\n        return v\n\nm1 = MyModel(x=2, e=\"b\", m=InnerModel(fld=1.5))\n\n# This dumps to YAML and JSON respectively\nyml = m1.yaml()\njsn = m1.json()\n\nm2 = MyModel.parse_raw(yml)  # This automatically assumes YAML\nassert m1 == m2\n\nm3 = MyModel.parse_raw(jsn)  # This will fallback to JSON\nassert m1 == m3\n\nm4 = MyModel.parse_raw(yml, proto=\"yaml\")\nassert m1 == m4\n\nm5 = MyModel.parse_raw(yml, content_type=\"application/yaml\")\nassert m1 == m5\n```\n\n## Installation\n\n`pip install pydantic_yaml`\n\nMake sure to install `ruamel.yaml` or `pyyaml` as well. These are optional dependencies:\n\n`pip install pydantic_yaml[ruamel]`\n\n`pip install pydantic_yaml[pyyaml]`\n\n## Mixin Class\n\nVersion 0.5.0 adds a `YamlModelMixin` which can be used to add YAML functionality on\ntop of, or alongside, other base classes:\n\n```python\nfrom typing import List\n\nfrom pydantic import BaseModel\nfrom pydantic_yaml import YamlModelMixin\n\n\nclass MyBase(BaseModel):\n    \"\"\"This is a normal.\"\"\"\n    x: str = \"x\"\n\nclass ExtModel(YamlModelMixin, MyBase):\n    \"\"\"This model can be sent to/read from YAML.\"\"\"\n    y: List[int] = [1, 2, 3]  # and you can define additional fields, if you want\n```\n\nNote that this `YamlModelMixin` must be **before** any `BaseModel`-derived classes.\nThis will hopefully be resolved in Pydantic 2.0\n(see [this discussion](https://github.com/samuelcolvin/pydantic/discussions/3025)\nfor more details). If you know a better way of implementing this, please make raise\nan issue or create a PR!\n\n## Configuration\n\nYou can configure the function used to dump and load the YAML by using the `Config`\ninner class, [as in Pydantic](https://pydantic-docs.helpmanual.io/usage/model_config/):\n\n```python\nclass MyModel(YamlModel):\n    # ...\n    class Config:\n        # You can override these fields:\n        yaml_dumps = my_custom_dumper\n        yaml_loads = lambda x: MyModel()\n        # As well as other Pydantic configuration:\n        allow_mutation = False\n```\n\n## Versioned Models\n\nSince YAML is often used for config files, there is also a `SemVer` str-like class and `VersionedYamlModel` base class.\n\nThe `version` attribute is parsed according to the SemVer\n([Semantic Versioning](https://semver.org/)) specification.\nIt's constrained between the `min_version` and `max_version` specified by your models'\n`Config` inner class (similar to regular `pydantic` models).\n\n### Usage example\n\n```python\nfrom pydantic import ValidationError\nfrom pydantic_yaml import SemVer, VersionedYamlModel\n\nclass A(VersionedYamlModel):\n    \"\"\"Model with min, max constraints as None.\"\"\"\n\n    foo: str = \"bar\"\n\n\nclass B(VersionedYamlModel):\n    \"\"\"Model with a maximum version set.\"\"\"\n\n    foo: str = \"bar\"\n\n    class Config:\n        min_version = \"2.0.0\"\n\nex_yml = \"\"\"\nversion: 1.0.0\nfoo: baz\n\"\"\"\n\na = A.parse_raw(ex_yml)\nassert a.version == SemVer(\"1.0.0\")\nassert a.foo == \"baz\"\n\ntry:\n    B.parse_raw(ex_yml)\nexcept ValidationError as e:\n    print(\"Correctly got ValidationError:\", e, sep=\"\\n\")\n```\n",
+        "description_content_type": "text/markdown",
+        "keywords": [
+          "pydantic",
+          "yaml"
+        ],
+        "author_email": "NowanIlfideme <git@nowan.dev>",
+        "license": "MIT License\n\nCopyright (c) 2020 Anatoly Makarevich\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n",
+        "license_file": [
+          "LICENSE"
+        ],
+        "classifier": [
+          "Programming Language :: Python :: 3 :: Only",
+          "Development Status :: 5 - Production/Stable",
+          "Intended Audience :: Developers",
+          "License :: OSI Approved :: MIT License",
+          "Topic :: Software Development",
+          "Typing :: Typed",
+          "Operating System :: OS Independent"
+        ],
+        "requires_dist": [
+          "importlib_metadata",
+          "pydantic<3,>=2",
+          "deprecated~=1.2.5",
+          "types-Deprecated",
+          "setuptools>=61.0.0; extra == \"dev\"",
+          "setuptools-scm[toml]>=6.2; extra == \"dev\"",
+          "pre-commit==2.21.0; extra == \"dev\"",
+          "flake8; extra == \"dev\"",
+          "black==23.3.0; extra == \"dev\"",
+          "mypy==1.0.0; extra == \"dev\"",
+          "pytest==7.2.2; extra == \"dev\"",
+          "mkdocs; extra == \"docs\"",
+          "mkdocs-material; extra == \"docs\"",
+          "mkdocstrings[python]; extra == \"docs\"",
+          "pymdown-extensions; extra == \"docs\"",
+          "pygments; extra == \"docs\"",
+          "pyyaml; extra == \"pyyaml\"",
+          "types-PyYAML; extra == \"pyyaml\"",
+          "ruamel.yaml<0.18,>=0.15; extra == \"ruamel\"",
+          "semver<4,>=2.13.0; extra == \"semver\""
+        ],
+        "requires_python": ">=3.7",
+        "project_url": [
+          "github, https://github.com/NowanIlfideme/pydantic-yaml",
+          "docs, https://pydantic-yaml.readthedocs.io/en/latest/"
+        ],
+        "provides_extra": [
+          "dev",
+          "docs",
+          "pyyaml",
+          "ruamel",
+          "semver"
+        ]
+      },
+      "requested_extras": [
+        "pyyaml",
+        "semver"
+      ]
+    }
+  ],
+  "environment": {
+    "implementation_name": "cpython",
+    "implementation_version": "3.12.15",
+    "os_name": "posix",
+    "platform_machine": "x86_64",
+    "platform_release": "6.17.0-1022-azure",
+    "platform_system": "Linux",
+    "platform_version": "#22-Ubuntu SMP Mon Jul 27 17:24:03 UTC 2026",
+    "python_full_version": "3.12.15",
+    "platform_python_implementation": "CPython",
+    "python_version": "3.12",
+    "sys_platform": "linux"
+  }
+}

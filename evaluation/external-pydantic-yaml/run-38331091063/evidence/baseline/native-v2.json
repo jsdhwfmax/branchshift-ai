@@ -1,0 +1,6 @@
+{
+  "installed_pydantic": "1.10.24",
+  "model_fields": false,
+  "native_v2": false,
+  "subclass_of_native_BaseModel": true
+}

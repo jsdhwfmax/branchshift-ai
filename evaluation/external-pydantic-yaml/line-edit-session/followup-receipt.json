@@ -1,0 +1,15 @@
+{
+  "implementation_commit": "b78e394",
+  "helper_sha256": "4d94ec23a4fa14b9dfb0339385901ee14a57b542bb7469a249ca8f3bf6de1b2e",
+  "plan_reused_unchanged_sha256": "5b2f7116f410b7add9ae38ebdc70d1840f79a774904091cb920159fdae4fdbf0",
+  "planner_calls": 0,
+  "maximum_calls": 6,
+  "maximum_attempts_per_strategy": 2,
+  "executor": "independent-github-hosted-runner-not-Nebius-Sandbox",
+  "adaptations": [
+    "fixed prior AI plan reused",
+    "bounded line edits and read-only test context",
+    "explicit provider length diagnostic",
+    "BranchRunner max_attempts=2 instead of production 3"
+  ]
+}
