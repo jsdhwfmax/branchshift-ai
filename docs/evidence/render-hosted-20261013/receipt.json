@@ -1,0 +1,201 @@
+{
+  "schema_version": 1,
+  "scope": "One controlled-fixture hosted commissioning run; summarized retained evidence, not a general reliability claim. Full reports remain private.",
+  "observation_date_sydney": "2026-10-13",
+  "preview_url": "https://branchshift.onrender.com",
+  "run_url": "https://branchshift.onrender.com/runs/e9290cae7c9c",
+  "access": "Dedicated private credentials required; no credentials included.",
+  "deployment": {
+    "source": "Render control-plane observation",
+    "commit": "2480ed91dac5cc70e3a9486acaa2ea41c04ab8f2",
+    "status": "live",
+    "finished_at_utc": "2026-10-12T23:43:49.408408Z"
+  },
+  "ci": {
+    "url": "https://github.com/jsdhwfmax/branchshift-ai/actions/runs/38323270878",
+    "head_sha": "2480ed91dac5cc70e3a9486acaa2ea41c04ab8f2",
+    "status": "completed",
+    "conclusion": "success",
+    "verified_via": "Public GitHub Actions API"
+  },
+  "run": {
+    "id": "e9290cae7c9c",
+    "mode": "live",
+    "status": "completed",
+    "created_at_utc": "2026-10-12T23:44:47.519560Z",
+    "updated_at_utc": "2026-10-12T23:46:07.236410Z",
+    "ledger_seconds": 79.71685,
+    "model_id": "nvidia/Nemotron-3-Ultra-550b-a55b",
+    "baseline_commit_sha": "2480ed91dac5cc70e3a9486acaa2ea41c04ab8f2",
+    "baseline_tests_collected": 13,
+    "baseline_test_contract_digest": "425a9c3c2f3a1a564707e77d054b359cf5e4459f59d9c2fa38cdeceed616948f",
+    "winner_id": "refactor"
+  },
+  "runtime_identity": {
+    "orchestrator_revision": null,
+    "orchestrator_dirty": null,
+    "orchestrator_digest": "b3c8e876e8ae769a59498bd5bcc06318ce1dc049b812647bd290b386f09e3940",
+    "runtime_config_digest": "99c4a77f36522aaf6cc6830ab6f0f40f45ab95066077dda61cf4ad75a81a7b8e",
+    "exact_commit_digest_match_verified": true,
+    "limitation": "Content identity for the files included by source_provenance only. Does not prove Git metadata, frontend assets, installed dependencies, environment or runtime settings. The hosted report revision remains null; it is not filled in from this comparison.",
+    "verified_source_commit": "2480ed91dac5cc70e3a9486acaa2ea41c04ab8f2",
+    "verified_at_utc": "2026-10-12T23:54:32.401809+00:00",
+    "hashed_file_count": 42,
+    "source_url": "https://codeload.github.com/jsdhwfmax/branchshift-ai/zip/2480ed91dac5cc70e3a9486acaa2ea41c04ab8f2",
+    "source_archive_sha256": "0dd64d23c90c93d0e9f2b561824d27e6874de6abb1853c942d3d7c73ef98403d",
+    "algorithm_source": "https://github.com/jsdhwfmax/branchshift-ai/blob/2480ed91dac5cc70e3a9486acaa2ea41c04ab8f2/services/api/app/provenance.py",
+    "algorithm": "SHA256 of sorted app/**/*.py then services/api/pyproject.toml; for each existing file append UTF-8 path relative to services/api, NUL, original file bytes, NUL."
+  },
+  "candidates": [
+    {
+      "strategy_id": "minimal",
+      "status": "failed",
+      "tests_collected": 2,
+      "tests_passed": 0,
+      "tests_failed": 2,
+      "pip_check_passed": true,
+      "lint_findings": 1,
+      "changed_files": 3,
+      "changed_lines": 37,
+      "pydantic_major": 2,
+      "test_exit_code": 2,
+      "pip_exit_code": 0,
+      "test_contract_preserved": true
+    },
+    {
+      "strategy_id": "compatibility",
+      "status": "passed",
+      "tests_collected": 13,
+      "tests_passed": 13,
+      "tests_failed": 0,
+      "pip_check_passed": true,
+      "lint_findings": 1,
+      "changed_files": 2,
+      "changed_lines": 82,
+      "pydantic_major": 2,
+      "test_exit_code": 0,
+      "pip_exit_code": 0,
+      "test_contract_preserved": true
+    },
+    {
+      "strategy_id": "refactor",
+      "status": "passed",
+      "tests_collected": 13,
+      "tests_passed": 13,
+      "tests_failed": 0,
+      "pip_check_passed": true,
+      "lint_findings": 1,
+      "changed_files": 3,
+      "changed_lines": 55,
+      "pydantic_major": 2,
+      "test_exit_code": 0,
+      "pip_exit_code": 0,
+      "test_contract_preserved": true
+    }
+  ],
+  "selection": "The two passed candidates tied on test ratio, dependency consistency and lint; refactor had 55 changed lines versus compatibility 82.",
+  "clean_revalidation": {
+    "strategy_id": "refactor",
+    "status": "passed",
+    "tests_collected": 13,
+    "tests_passed": 13,
+    "tests_failed": 0,
+    "pip_check_passed": true,
+    "lint_findings": 1,
+    "changed_files": 3,
+    "changed_lines": 55,
+    "pydantic_major": 2,
+    "test_exit_code": 0,
+    "pip_exit_code": 0,
+    "test_contract_preserved": true,
+    "checkpoint_distinct_from_baseline_and_candidates": true,
+    "patch_matches_winner_and_download": true
+  },
+  "warnings": {
+    "compatibility_pytest_warning_count": 14,
+    "refactor_pytest_warning_count": 25,
+    "revalidation_pytest_warning_count": 25,
+    "refactor_and_revalidation_lint": "F401 typing.Optional imported but unused",
+    "minimal_failure": "Two test collection errors from model_validator(skip_on_failure=True), an unsupported argument. Failed candidate retained.",
+    "warning_categories": "Not enumerated in stored diagnostic; counts only."
+  },
+  "event_replay": {
+    "retained_event_count": 24,
+    "collected_after_run_completed": true,
+    "initial_connection_event_ids": [
+      1
+    ],
+    "reconnect_last_event_id": 1,
+    "reconnect_event_id_range": [
+      2,
+      24
+    ],
+    "combined_events_match_report": true,
+    "started_proposal_attempts": {
+      "minimal": 3,
+      "compatibility": 2,
+      "refactor": 2
+    },
+    "scope": "HTTP SSE replay/reconnection; not a browser EventSource interruption test."
+  },
+  "downloads": {
+    "safari_json_and_patch_match_http_exports": true,
+    "json_repeated_bytes_identical": true,
+    "markdown_repeated_bytes_identical": true,
+    "artifacts": [
+      {
+        "kind": "json_report",
+        "bytes": 78549,
+        "sha256": "ffafcee2ecf2922eb478c4f706725ad1f599aa3d13a4ffaa8c84b9badaa3bd32"
+      },
+      {
+        "kind": "markdown_report",
+        "bytes": 60196,
+        "sha256": "1b5e8d68fbbd6e2fbecc11e58625d543a9178ba0353dbde8bda01e899bcabb2b"
+      },
+      {
+        "kind": "winner_patch",
+        "bytes": 3610,
+        "sha256": "96325e7de7d17cd2cd5b17b4af6d7e4332e8e74a0058681c213c86acd38a5313"
+      }
+    ]
+  },
+  "browser_observation": {
+    "source": "Primary observer using Safari; download bytes independently compared",
+    "completed_page_verified": true,
+    "json_and_patch_downloads_verified": true,
+    "completed_state_after_refresh_verified": true
+  },
+  "disk_retention": {
+    "source": "Render Web Shell output, read-only existing database query",
+    "observed_at_utc": "2026-10-12T23:44:40.225903+00:00",
+    "replacement_instance": "ffnlk",
+    "previous_marker_retained": true,
+    "integrity": "ok",
+    "observed_before_this_live_run": true,
+    "limitation": "One replacement instance; not backup recovery or retention of this run through a later replacement."
+  },
+  "usage": {
+    "model_requests": 8,
+    "responses_with_usage": 8,
+    "input_tokens": 36468,
+    "output_tokens": 17487,
+    "model_usage_version": 1,
+    "sandbox_usage_version": 1,
+    "sandbox_sdk_calls_attempted": 16,
+    "sandbox_sdk_calls_completed": 16,
+    "sandbox_sdk_calls_failed": 0,
+    "sandbox_sdk_calls_cancelled": 0,
+    "sandbox_completed_by_kind": {
+      "image_use": 1,
+      "run": 9,
+      "read": 6
+    },
+    "scope": "Observed adapter calls and response tokens; not billed operations or monetary totals."
+  },
+  "admission": {
+    "daily_run_limit_at_acceptance": 1,
+    "purpose": "Temporary commissioning allowance",
+    "final_judge_capacity_established": false
+  }
+}

@@ -56,24 +56,25 @@ login is not a competition gate. Judges still need the free working access
 route required above. The FAQ also confirms that the published promotional
 credits are for Token Factory; no separate AI Cloud credit grant is published.
 
-As of 2026-10-13, Render browser sign-in and **My Workspace** are confirmed.
-The user has added a payment card, confirmed in the Render interface. The first
-Render deployment at `6137d89` is live at
-https://branchshift.onrender.com with private judge authentication. Anonymous
-access is rejected, authenticated HTTP asset/route checks pass, and nonroot
-SQLite WAL writes on the attached disk pass. New runs remain closed during
-commissioning. Browser acceptance, replacement retention, a real hosted run
-and final judge capacity remain pending. This is a paid service; the approved
-additional cloud-service budget is USD 20 total, not per month.
+As of 2026-10-13, Render deployment `2480ed9` is live at https://branchshift.onrender.com with private
+judge authentication. Anonymous access is rejected. Safari sign-in, a real
+browser-started migration, saved-result refresh, report and patch downloads,
+and SQLite persistence across instance replacement have passed. Hosted run
+`e9290cae7c9c` completed in 79.717 seconds: refactor won with 13/13 tests and
+55 changed lines, then passed clean-baseline revalidation. One lint finding
+and 25 test warnings remain in the evidence. The current one-run daily
+commissioning allowance is not the final judge-access configuration; sufficient
+judge capacity through judging end remains a release gate. The service has no
+configured automatic shutdown or hard total-spend cap; admission limits are
+not monetary spending caps.
 
 No explicit AI-assistance ban or disclosure requirement was found in the rules;
 ownership obligations remain. Rules govern conflicting event materials. The
 current FAQ confirms that City Winner eligibility requires in-person attendance.
 
-Eligibility remains unverified: this audit has no authoritative evidence of the
-entrant's age, residence, affiliations, or external funding. The computer's
-Sydney timezone does not establish residency. Preserve any previously supplied
-answers; obtain only missing declarations when completing the actual form.
+Entrant eligibility must be checked separately from technical verification.
+This public evidence record does not establish age, residence, affiliations,
+funding, or ownership of submission materials.
 
 ## Submission package
 

@@ -4,10 +4,11 @@
 
 Bundled browser assets retain their
 [third-party licenses](apps/web/public/third-party-notices.txt).
-The pinned runtime candidate is
+The earlier pinned runtime candidate is
 [`v0.1.0-rc.1`](https://github.com/jsdhwfmax/branchshift-ai/tree/v0.1.0-rc.1);
 later packaging changes are documented in the
-[asset provenance record](docs/evidence/third-party-assets.md).
+[asset provenance record](docs/evidence/third-party-assets.md). The current
+private hosted preview is verified separately below.
 
 [![CI](https://github.com/jsdhwfmax/branchshift-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/jsdhwfmax/branchshift-ai/actions/workflows/ci.yml)
 
@@ -26,14 +27,23 @@ configuration remain protected; the final runtime must use Pydantic v2.
 
 An explicitly labelled offline sample is also available. Sample metrics are
 illustrative. Five controlled cases now have verified live migration evidence;
-broader reliability and public hosting remain under validation.
+broader reliability remains under validation. A credential-protected
+[hosted preview](https://branchshift.onrender.com) has completed one live
+commissioning run; final judge capacity remains to be set.
 
 ## Current evaluation evidence
 
-The [latest runtime release verification](docs/evidence/runtime-release-63cf7fd/README.md)
+The [hosted acceptance record](docs/evidence/render-hosted-20261013/README.md)
+documents a real Safari-started migration on Render at deployment commit
+`2480ed9`: two passing candidates, a verified winner and clean-baseline retest,
+working downloads and refresh, event replay, persistent-disk replacement
+retention and passing CI. This is a private commissioning preview with a
+one-run daily allowance at the time of acceptance, not the final judge allowance.
+
+The [earlier runtime release verification](docs/evidence/runtime-release-63cf7fd/README.md)
 records a real UI-started migration at `63cf7fd`, its downloadable JSON/Markdown
 reports and patch, desktop/mobile refresh checks, passing CI and the published
-container digest. Public Cloud hosting remains pending.
+container digest. It remains separate from the later hosted acceptance.
 
 The [predeclared three-round evaluation](evaluation/series-20260910/README.md)
 completed **15/15 qualified live migrations**: validators, configuration,
@@ -163,15 +173,19 @@ same-origin Python/UI image and persistence requirements. At commit `92c733a`,
 [CI](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34443169993) and
 [image build, smoke and publication](https://github.com/jsdhwfmax/branchshift-ai/actions/runs/34443329138)
 passed. The published Linux `amd64` image manifest is anonymously accessible.
-Hosted deployment, persistent-disk retention and judge-access checks remain
-pending; a published image is not a hosted demo.
+The later [private Render preview](https://branchshift.onrender.com) has passed
+the bounded [hosted acceptance checks](docs/evidence/render-hosted-20261013/README.md),
+including disk retention across one replacement instance. Final judge access
+capacity remains pending.
 
 The [Render configuration](render.yaml) prepares one Docker service with a
 1 GB persistent disk and explicit Ultra/thinking settings matching the live
 evaluation. It starts with new runs closed (`HTTP_DAILY_RUN_LIMIT=0`) until
 billing, mounted-disk writes and provider access have been verified. Attempt
-quotas are not dollar spending caps. Set the final private judge allowance
-before submission; the commissioning configuration is not a usable live demo.
+quotas are not dollar spending caps. Hosted commissioning temporarily allowed
+one daily run, which completed successfully. Set the final private judge
+allowance before submission; this temporary allowance does not establish
+ongoing evaluation capacity.
 
 For private judge access, set `BRANCHSHIFT_REQUIRE_AUTH=true` and both
 `BRANCHSHIFT_AUTH_USERNAME` and `BRANCHSHIFT_AUTH_PASSWORD` in backend secrets.
