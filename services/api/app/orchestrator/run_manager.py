@@ -414,7 +414,7 @@ class RunManager:
             payload={"winner_id": winner.strategy_id},
         )
         await self._repository.set_status(
-            run_id, RunStatus.COMPLETED, "Verified migration package ready"
+            run_id, RunStatus.COMPLETED, "Sample patch and evidence ready"
         )
         await self._repository.append_event(
             run_id,
@@ -649,7 +649,7 @@ class RunManager:
         await self._repository.set_status(
             run_id,
             RunStatus.COMPLETED,
-            "Verified live migration package ready",
+            "Patch checks passed in a Pydantic 2 environment",
         )
         await self._repository.append_event(
             run_id,

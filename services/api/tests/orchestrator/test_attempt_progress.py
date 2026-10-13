@@ -149,6 +149,12 @@ async def test_manager_persists_per_branch_attempt_starts_before_model_calls(
             "revalidation_failed": RunStatus.FAILED,
         }[outcome]
         assert summary.status is expected_status
+        if outcome == "completed":
+            assert any(
+                event.message == "Patch checks passed in a Pydantic 2 environment"
+                for event in events
+            )
+            assert not any("migration package ready" in event.message for event in events)
         for field, value in provenance.items():
             assert getattr(summary, field) == value
         assert summary.baseline_commit_sha == baseline.commit_sha
@@ -209,7 +215,7 @@ async def test_manager_persists_per_branch_attempt_starts_before_model_calls(
                     assert markdown.status_code == 200
                     assert "Clean-baseline revalidation did not pass" in markdown.text
                     assert "Retained synthetic check output" in markdown.text
-                    assert "Successful live migration is not established" in markdown.text
+                    assert "Passing live patch checks are not established" in markdown.text
                     assert (await client.get(f"/api/runs/{created.id}/patch")).status_code == 409
             finally:
                 app.state.repository.close()

@@ -104,7 +104,7 @@ test('keeps one stream across status changes, deduplicates events, and clears re
 
   current = sampleRun({ status: 'completed', winner_id: 'minimal', branches: [result()], patch: '+ migrated', baseline_tests_collected: 18, baseline_commit_sha: 'a'.repeat(40), baseline_test_contract_digest: 'b'.repeat(64), baseline_checkpoint_id: 'original-baseline', revalidated_checkpoint_id: 'clean-baseline-abcdefgh', revalidation: result({ checkpoint_id: 'clean-baseline-abcdefgh' }) })
   act(() => stream.emit('run.completed', { id: 2 }))
-  expect(await screen.findByRole('heading', { name: 'Migration verified.' })).toBeInTheDocument()
+  expect(await screen.findByRole('heading', { name: 'Patch checks passed.' })).toBeInTheDocument()
   expect(stream.close).toHaveBeenCalledTimes(1)
   expect(TestEventSource.instances).toHaveLength(1)
   expect(screen.getByLabelText('Clean revalidation checkpoint')).toHaveTextContent('clean-baseli…')
@@ -145,6 +145,7 @@ test('labels completed mock metrics, patch, and events as illustrative samples',
   expect(await screen.findByRole('heading', { name: 'Sample replay complete.' })).toBeInTheDocument()
   expect(screen.getByLabelText('Execution evidence scope')).toHaveTextContent('No providers were called')
   expect(screen.queryByText('Migration verified.')).not.toBeInTheDocument()
+  expect(screen.queryByText('Patch checks passed.')).not.toBeInTheDocument()
   expect(screen.queryByText('verified winner')).not.toBeInTheDocument()
   expect(screen.queryByText('The patch was verified in a sandbox.')).not.toBeInTheDocument()
   expect(screen.getByText(/Illustrative sample metrics/)).toBeInTheDocument()
@@ -291,11 +292,15 @@ test('rejects malformed or cross-run events without crashing or polluting eviden
 })
 
 
-test('completed live view prioritizes exact clean revalidation over model plans', async () => {
-  const candidate = result()
-  vi.mocked(getRun).mockResolvedValue(sampleRun({ status: 'completed', winner_id: 'minimal', branches: [candidate], patch: candidate.patch!, baseline_tests_collected: 18, baseline_checkpoint_id: 'base', baseline_commit_sha: 'a'.repeat(40), baseline_test_contract_digest: 'b'.repeat(64), revalidated_checkpoint_id: 'clean', revalidation: result({ checkpoint_id: 'clean' }), strategies: [{ id: 'minimal', title: 'Proposed migration', rationale: 'Everything will pass.', ordered_steps: [], source_urls: [] }] }))
+test('passing compatibility patch shows the scope of checks without claiming full v2 adoption', async () => {
+  const candidate = result({ patch: '+ from pydantic.v1 import BaseModel' })
+  vi.mocked(getRun).mockResolvedValue(sampleRun({ status: 'completed', winner_id: 'minimal', branches: [candidate], patch: candidate.patch!, baseline_tests_collected: 18, baseline_checkpoint_id: 'base', baseline_commit_sha: 'a'.repeat(40), baseline_test_contract_digest: 'b'.repeat(64), revalidated_checkpoint_id: 'clean', revalidation: result({ checkpoint_id: 'clean', patch: candidate.patch }), strategies: [{ id: 'minimal', title: 'Proposed migration', rationale: 'Everything will pass.', ordered_steps: [], source_urls: [] }] }))
   renderRun()
-  expect(await screen.findByRole('heading', { name: 'Migration verified.' })).toBeVisible()
+  expect(await screen.findByRole('heading', { name: 'Patch checks passed.' })).toBeVisible()
+  expect(screen.queryByRole('heading', { name: 'Migration verified.' })).not.toBeInTheDocument()
+  expect(screen.getByText('Pydantic 2 installed · dependency check passed')).toBeVisible()
+  expect(screen.getByText(/does not confirm full v2 API adoption/)).toHaveTextContent('models may still use the v1 compatibility API')
+  expect(screen.getByRole('link', { name: /Download checked patch/ })).toBeVisible()
   const resultHeading = screen.getByRole('heading', { name: 'minimal selected.' })
   const plans = screen.getByRole('heading', { name: 'Proposed plans and execution' })
   expect(resultHeading.compareDocumentPosition(plans) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
@@ -313,7 +318,7 @@ test('requested but missing behavior observations prevent a blanket verified hea
   expect(await screen.findByRole('heading', { level: 1, name: 'Behavior review incomplete.' })).toBeVisible()
   expect(screen.getByText('Original tests verified')).toBeVisible()
   expect(screen.getByRole('link', { name: /Download selected patch/ })).toBeVisible()
-  expect(screen.queryByRole('link', { name: /Download verified patch/ })).not.toBeInTheDocument()
+  expect(screen.queryByRole('link', { name: /Download checked patch/ })).not.toBeInTheDocument()
   const review = screen.getByRole('region', { name: 'Behavior review incomplete' })
   expect(within(review).getAllByText(/0 match · 0 different · 1 unsupported/)).toHaveLength(2)
   expect(within(review).getByText('Unavailable: Probe timed out')).toBeVisible()

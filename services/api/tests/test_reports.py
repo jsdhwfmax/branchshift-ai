@@ -27,6 +27,9 @@ def test_recorded_lint_winner_explanation_preserves_larger_patch_and_history():
     assert "Stored live winner and clean-revalidation evidence satisfy" in report
     assert "Verification scope: the repository's existing test suite" in report
     assert "does not establish behavior equivalence for untested inputs" in report
+    assert "installed Pydantic package version" in report
+    assert "can still run models through the v1 compatibility API" in report
+    assert "do not establish full v2 API adoption" in report
     assert "lint findings is 1 versus 2" in report
     assert "selected patch is larger (71 versus 57 changed lines)" in report
     assert r"nvidia/Nemotron\-3\-Ultra\-550b\-a55b" in report
@@ -53,7 +56,7 @@ def test_recorded_winner_alone_cannot_establish_a_verified_live_result(missing):
     else:
         run.status = RunStatus.FAILED
     report = render_markdown_report(run, [])
-    assert "Successful live migration is not established" in report
+    assert "Passing live patch checks are not established" in report
     assert "Stored live winner and clean-revalidation evidence satisfy" not in report
 
 
@@ -62,7 +65,7 @@ def test_conflicting_selection_is_described_without_replacing_history():
     run.winner_id = "refactor"
     report = render_markdown_report(run, [])
     assert "conflicts with the stored selection; it has not been replaced" in report
-    assert "Successful live migration is not established" in report
+    assert "Passing live patch checks are not established" in report
     assert run.winner_id == "refactor"
 
 
@@ -92,7 +95,7 @@ def test_absent_optional_field_is_not_reported_as_its_model_default():
     run.branches = [BranchResult.model_validate(data) if b is winner else b for b in run.branches]
     report = render_markdown_report(run, [])
     assert "| Patch applicable | Unknown (not recorded) |" in report
-    assert "Successful live migration is not established" in report
+    assert "Passing live patch checks are not established" in report
 
 
 def test_untrusted_text_cannot_create_html_markdown_links_tables_or_bidi_controls():
@@ -119,7 +122,7 @@ def test_mock_record_never_claims_live_verification():
     run.mode = "mock"
     report = render_markdown_report(run, [])
     assert "Illustrative sample (mock mode)" in report
-    assert "Successful live migration is not established" in report
+    assert "Passing live patch checks are not established" in report
 
 
 def test_incomplete_usage_and_settled_sdk_calls_are_distinguished_from_billing():
@@ -178,7 +181,7 @@ def test_report_requires_new_outcome_evidence_when_either_baseline_field_is_reco
         branch.tests_passed = 12 if baseline_passed == 12 else 13
     report = render_markdown_report(run, [])
     assert ("Stored live winner and clean-revalidation evidence satisfy" in report) is verified
-    assert ("Successful live migration is not established" in report) is not verified
+    assert ("Passing live patch checks are not established" in report) is not verified
 
 
 def test_legacy_report_still_requires_the_exact_baseline_collected_count():
@@ -187,4 +190,4 @@ def test_legacy_report_still_requires_the_exact_baseline_collected_count():
         branch.tests_collected = 14
         branch.tests_passed = 14
     report = render_markdown_report(run, [])
-    assert "Successful live migration is not established" in report
+    assert "Passing live patch checks are not established" in report

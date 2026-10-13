@@ -23,7 +23,7 @@ export function passedCheck(result: BranchResult | null | undefined, baselineTes
 
 export function verification(run: RunSummary): { verified: boolean; reason: string } {
   const incomplete = (reason: string) => ({ verified: false, reason })
-  if (run.mode !== 'live' || run.status !== 'completed') return incomplete('This is not a completed live migration.')
+  if (run.mode !== 'live' || run.status !== 'completed') return incomplete('This is not a completed live run.')
   const winner = run.branches.find((branch) => branch.strategy_id === run.winner_id)
   const clean = run.revalidation
   if (!positiveInteger(run.baseline_tests_collected) || !recorded(run.baseline_checkpoint_id)
@@ -31,7 +31,7 @@ export function verification(run: RunSummary): { verified: boolean; reason: stri
     || !/^[a-f0-9]{64}$/i.test(run.baseline_test_contract_digest ?? '')) {
     return incomplete('The retained baseline test count, commit, checkpoint or test fingerprint is incomplete.')
   }
-  if (!passedCheck(winner, run.baseline_tests_collected, run.baseline_tests_passed, run.baseline_tests_skipped)) return incomplete('The selected candidate does not have a complete passing Pydantic v2 test contract.')
+  if (!passedCheck(winner, run.baseline_tests_collected, run.baseline_tests_passed, run.baseline_tests_skipped)) return incomplete('The selected patch does not have complete passing test and dependency evidence in a Pydantic 2 environment.')
   if (!passedCheck(clean, run.baseline_tests_collected, run.baseline_tests_passed, run.baseline_tests_skipped)) return incomplete('A complete passing clean-baseline revalidation result is not retained.')
   if (!winner || !clean || clean.strategy_id !== run.winner_id || clean.tests_collected !== winner.tests_collected) {
     return incomplete('The clean check does not match the selected candidate and its test count.')

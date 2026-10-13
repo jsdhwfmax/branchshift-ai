@@ -37,7 +37,7 @@ function heading(run: RunSummary) {
     const review = behaviorReviewState(run)
     if (review === 'different') return 'Review behavior changes.'
     if (review === 'unsupported') return 'Behavior review incomplete.'
-    return hasVerifiedWinner(run) ? 'Migration verified.' : 'Run complete.'
+    return hasVerifiedWinner(run) ? 'Patch checks passed.' : 'Run complete.'
   }
   if (run.status === 'queued') return 'Run queued.'
   if (run.status === 'preparing') return 'Preparing the baseline.'
@@ -121,7 +121,7 @@ export default function RunPage() {
       {terminal && !completed && <section className="failure-notice" role="alert">
         <strong>{run.status === 'cancelled' ? 'Execution cancelled' : 'Execution stopped before verification'}</strong>
         <p>{run.failure_reason || (run.status === 'cancelled' ? 'This run was cancelled.' : 'No failure detail was retained. Review the last recorded events.')}</p>
-        <p>Available branch results remain below. No winning migration is verified by this run.</p>
+        <p>Available branch results remain below. No winning patch passed all required checks in this run.</p>
         <Link to="/" className="recovery-link">Return to preflight</Link>
       </section>}
 
@@ -134,7 +134,7 @@ export default function RunPage() {
           <EvidenceTable branches={branches} winnerId={sample || verified ? winnerId : null} terminal={terminal} sample={sample} />
           {winnerId && <p className={`verdict ${sample ? 'sample-verdict' : ''}`}>{sample
             ? `The fixed sample selects ${winnerId}. These metrics demonstrate the deterministic decision rule.`
-            : verified ? run.report || 'The winning patch passed clean baseline revalidation on Pydantic v2.' : 'A candidate was selected, but its retained evidence does not establish a verified Pydantic v2 migration.'}</p>}
+            : verified ? run.report || 'The winning patch passed clean baseline checks with Pydantic 2 installed.' : 'A candidate was selected, but its retained evidence does not establish passing patch checks in a Pydantic 2 environment.'}</p>}
           <RuntimeFingerprint run={run} />
         </article>
       </section>
@@ -170,7 +170,7 @@ export default function RunPage() {
         <div className={`winner-node ${winnerId && (sample || verified) ? 'locked' : ''}`}>
           <span>{winnerId ? (sample ? 'sample selection' : verified ? 'verified winner' : 'selected candidate') : 'evidence gate'}</span>
           <strong>{winnerId ?? (terminal ? 'no winner' : 'pending')}</strong>
-          <small>{winnerId ? (sample ? 'illustrative outcome' : verified ? 'Pydantic v2 · revalidated' : 'verification evidence incomplete') : terminal ? 'verification incomplete' : 'tests → pip → lint → Δ lines'}</small>
+          <small>{winnerId ? (sample ? 'illustrative outcome' : verified ? 'Pydantic 2 environment · checked' : 'verification evidence incomplete') : terminal ? 'verification incomplete' : 'tests → pip → lint → Δ lines'}</small>
           {!sample && completed && run.revalidated_checkpoint_id && <div className="winner-checkpoint" aria-label="Clean revalidation checkpoint">
             <span>clean revalidation</span><code title={run.revalidated_checkpoint_id}>{run.revalidated_checkpoint_id.slice(0, 12)}{run.revalidated_checkpoint_id.length > 12 ? '…' : ''}</code>
           </div>}

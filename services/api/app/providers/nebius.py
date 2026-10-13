@@ -88,9 +88,15 @@ class NebiusModelProvider:
                 count = usage.get(provider_name)
                 if type(count) is int and count >= 0:
                     self.usage[local_name] += count
-            message = envelope["choices"][0]["message"]
+            choice = envelope["choices"][0]
+            message = choice["message"]
+            finish_reason = choice.get("finish_reason")
         except (KeyError, IndexError, TypeError, ValueError) as exc:
             raise ProviderUnavailable("Model returned an invalid response envelope") from exc
+        if finish_reason == "length":
+            raise ProviderUnavailable(
+                "Model response reached the output token limit (finish_reason=length)"
+            )
         if message.get("refusal"):
             raise ProviderUnavailable(f"Model refused request: {message['refusal']}")
         content = message.get("content")

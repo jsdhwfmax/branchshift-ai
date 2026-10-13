@@ -28,10 +28,12 @@ The live pipeline clones the public repository in a Nebius Sandbox, records
 its commit and original tests, retrieves official migration guidance, and asks
 an NVIDIA Nemotron model to edit exact source files. Three bounded repair
 loops execute independently from the same baseline. Test files and test
-configuration remain protected; the final runtime must use Pydantic v2.
+configuration remain protected; checks run with the Pydantic 2 package installed.
+Models may still use its v1 compatibility API: passing these checks does not
+establish full native-v2 API adoption.
 
 An explicitly labelled offline sample is also available. Sample metrics are
-illustrative. Five controlled cases now have verified live migration evidence;
+illustrative. Five controlled cases now have verified live patch-check evidence;
 broader reliability remains under validation. A credential-protected
 [hosted preview](https://branchshift.onrender.com) has completed one live
 commissioning run; final judge capacity remains to be set.
@@ -51,7 +53,7 @@ reports and patch, desktop/mobile refresh checks, passing CI and the published
 container digest. It remains separate from the later hosted acceptance.
 
 The [predeclared three-round evaluation](evaluation/series-20260910/README.md)
-completed **15/15 qualified live migrations**: validators, configuration,
+completed **15/15 live runs passing the recorded checks**: validators, configuration,
 serialization, parsing and compatibility, each attempted three times at frozen
 source/baseline `92c733a`. Every winner preserved the original tests, ran under
 Pydantic 2 and passed clean-baseline revalidation. All 45 candidate outcomes
@@ -154,8 +156,8 @@ This command is a live, credit-consuming execution; the placeholder SHA must be
 replaced by an actual commit. The selected commit is verified before installing
 the project. Pytest and Ruff are installed as execution tools. Existing skipped
 or expected-failure tests are recorded separately. Each original passing test
-must still pass: new skips, missing or renamed tests cannot masquerade as a
-successful migration. The API accepts the same `baseline_ref` and `test_extras`
+must still pass: new skips, missing or renamed tests cannot masquerade as
+passing patch checks. The API accepts the same `baseline_ref` and `test_extras`
 fields, and the live form exposes them under advanced options.
 
 Optional [behavior review examples](docs/behavior-review.md) freeze a small set
@@ -243,7 +245,7 @@ preserves unauthenticated local development.
 
 ## Hackathon technology
 
-- **NVIDIA Nemotron on Nebius Token Factory** plans and explains migrations.
+- **NVIDIA Nemotron on Nebius Token Factory** proposes migration plans and code edits.
 - **Token Factory Sandboxes / Contree** branch reproducible filesystem states.
 - **Tavily** retrieves allowlisted official migration documentation.
 - **FastAPI + React** expose a judge-friendly live audit trail.

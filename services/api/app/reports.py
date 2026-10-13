@@ -308,8 +308,10 @@ def render_markdown_report(run: RunSummary, events: Sequence[RunEvent]) -> str:
         "The JSON report remains the full machine-readable record. Durations below are "
         "rounded to three decimal places.",
         "Verification scope: the repository's existing test suite, test-contract integrity, "
-        "dependency consistency and recorded Pydantic runtime. Passing these checks does "
-        "not establish behavior equivalence for untested inputs, coercion, validation "
+        "dependency consistency and installed Pydantic package version. A Pydantic 2 "
+        "environment can still run models through the v1 compatibility API. These checks "
+        "do not establish full v2 API adoption. Passing these checks does not establish "
+        "behavior equivalence for untested inputs, coercion, validation "
         "errors or serialization. Maintainer review and additional behavior tests may "
         "still be needed.",
         "",
@@ -321,7 +323,7 @@ def render_markdown_report(run: RunSummary, events: Sequence[RunEvent]) -> str:
         ]
     else:
         lines += [
-            "Successful live migration is not established by this record's reporting gates.",
+            "Passing live patch checks are not established by this record's reporting gates.",
             "",
         ]
     lines += _table(

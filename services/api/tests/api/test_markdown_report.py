@@ -43,6 +43,6 @@ async def test_report_json_compatibility_and_markdown_download_with_closed_admis
         assert markdown.headers["content-type"].startswith("text/markdown")
         assert 'filename="partial-evidence.md"' in markdown.headers["content-disposition"]
         assert markdown.text == render_markdown_report(stored, events)
-        assert "Successful live migration is not established" in markdown.text
+        assert "Passing live patch checks are not established" in markdown.text
         assert (await client.get("/api/runs/partial/report?format=html")).status_code == 422
         assert (await client.get("/api/runs/missing/report?format=markdown")).status_code == 404

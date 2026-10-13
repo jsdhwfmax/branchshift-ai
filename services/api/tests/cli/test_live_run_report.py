@@ -54,4 +54,4 @@ async def test_cli_exports_matching_markdown_without_provider_calls(
         assert (tmp_path / f"{run.id}.patch").read_text() == run.patch
     else:
         assert not (tmp_path / f"{run.id}.patch").exists()
-        assert "Successful live migration is not established" in markdown
+        assert "Passing live patch checks are not established" in markdown

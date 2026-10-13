@@ -91,3 +91,50 @@ async def test_failed_request_retains_attempt_without_inventing_usage():
         await provider.complete_json(system="JSON", user="Status", schema=HealthCheck)
     assert provider.usage["requests"] == 1
     assert provider.usage["responses_with_usage"] == 0
+
+
+@pytest.mark.parametrize("content", ['{"status":', '{"status":"ok"}'])
+@pytest.mark.parametrize("output_tokens", [7, 16_384])
+async def test_explicit_length_finish_reason_reports_limit_and_retains_usage(
+    content, output_tokens,
+):
+    provider = NebiusModelProvider(
+        "test-key", "https://api.tokenfactory.nebius.com/v1/", "nvidia/test",
+        transport=httpx.MockTransport(lambda _: httpx.Response(200, json={
+            "usage": {"prompt_tokens": 25, "completion_tokens": output_tokens},
+            "choices": [{"finish_reason": "length", "message": {"content": content}}],
+        })), enable_thinking=True,
+    )
+    with pytest.raises(ProviderUnavailable, match="output token limit.*finish_reason=length"):
+        await provider.complete_json(system="JSON", user="Status", schema=HealthCheck)
+    assert provider.usage == {
+        "requests": 1, "input_tokens": 25, "output_tokens": output_tokens,
+        "model_usage_version": 1, "responses_with_usage": 1,
+    }
+
+
+@pytest.mark.parametrize("finish_reason", ["stop", None])
+async def test_token_count_at_limit_does_not_imply_truncation(finish_reason):
+    provider = NebiusModelProvider(
+        "test-key", "https://api.tokenfactory.nebius.com/v1/", "nvidia/test",
+        transport=httpx.MockTransport(lambda _: httpx.Response(200, json={
+            "usage": {"prompt_tokens": 25, "completion_tokens": 16_384},
+            "choices": [{"finish_reason": finish_reason,
+                         "message": {"content": '{"status":"ok"}'}}],
+        })), enable_thinking=True,
+    )
+    assert await provider.complete_json(
+        system="JSON", user="Status", schema=HealthCheck,
+    ) == HealthCheck(status="ok")
+
+
+async def test_invalid_json_at_token_limit_without_length_reason_stays_schema_error():
+    provider = NebiusModelProvider(
+        "test-key", "https://api.tokenfactory.nebius.com/v1/", "nvidia/test",
+        transport=httpx.MockTransport(lambda _: httpx.Response(200, json={
+            "usage": {"prompt_tokens": 25, "completion_tokens": 16_384},
+            "choices": [{"message": {"content": '{"status":'}}],
+        })), enable_thinking=True,
+    )
+    with pytest.raises(ProviderUnavailable, match="^Model returned invalid structured content$"):
+        await provider.complete_json(system="JSON", user="Status", schema=HealthCheck)
