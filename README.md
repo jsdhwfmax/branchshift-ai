@@ -19,6 +19,11 @@ candidate supported by deterministic tests, dependency checks, lint results,
 and patch size. The candidate must pass a second execution from the clean
 baseline before its patch becomes a verified result.
 
+The current development revision brings saved runs and their outcomes to the
+front of the interface. Optional explicit model-input examples compare baseline,
+candidate and fresh-check behavior for maintainer review. Passing the original
+tests is not a claim that every possible input behaves identically.
+
 The live pipeline clones the public repository in a Nebius Sandbox, records
 its commit and original tests, retrieves official migration guidance, and asks
 an NVIDIA Nemotron model to edit exact source files. Three bounded repair
@@ -51,6 +56,13 @@ serialization, parsing and compatibility, each attempted three times at frozen
 source/baseline `92c733a`. Every winner preserved the original tests, ran under
 Pydantic 2 and passed clean-baseline revalidation. All 45 candidate outcomes
 remain visible, including seven failed candidates.
+
+A [retrospective candidate comparison](evaluation/series-20260910/README.md)
+finds a smaller selected patch than the passing refactor alternative in 11 of
+those 15 runs, equal size in three, and a larger patch with fewer lint findings
+in one. The refactor branch itself passed in all 15, so this evidence does not
+show a success-rate advantage over a standalone refactor agent. No standalone
+or matched-budget comparison has been performed.
 
 Median ledger duration was **53.022 seconds** and nearest-rank p95
 **114.892 seconds**. The collector observed 79 model requests, 275,634 input and
@@ -128,6 +140,36 @@ optional **Project directory** field in the live form. Empty input uses the
 controlled example directory for this repository and the root for other
 repositories. The project must have `pyproject.toml`, installable test
 dependencies, and a passing Pydantic v1 baseline.
+
+Use an optional full lowercase commit SHA to repeat a historical baseline,
+and choose the project's declared extras when it does not provide `[test]`:
+
+```bash
+python -m app.cli.live_run --repo-url https://github.com/owner/repo \
+  --baseline-ref FULL_40_CHARACTER_COMMIT_SHA --test-extras pyyaml,semver \
+  --output ./local-evidence/experiment
+```
+
+This command is a live, credit-consuming execution; the placeholder SHA must be
+replaced by an actual commit. The selected commit is verified before installing
+the project. Pytest and Ruff are installed as execution tools. Existing skipped
+or expected-failure tests are recorded separately. Each original passing test
+must still pass: new skips, missing or renamed tests cannot masquerade as a
+successful migration. The API accepts the same `baseline_ref` and `test_extras`
+fields, and the live form exposes them under advanced options.
+
+Optional [behavior review examples](docs/behavior-review.md) freeze a small set
+of model inputs before any edit. They run in separate Sandbox child states and
+report acceptance and JSON-output differences for each candidate and its fresh
+validation. They do not change the test-based winner or prove full equivalence.
+Unknown or unsupported checks stay visible; existing historical records do not
+gain invented review results. This feature is covered by local tests; new live
+external-project validation remains pending.
+
+A [local replay of the retained winning patch](docs/evidence/local-behavior-review-20261013/README.md)
+found why this matters: a numeric name accepted by the original model was
+rejected after migration, despite all 13 original tests passing. The replay's
+versions and scope are documented separately from the unchanged cloud record.
 
 The UI exports JSON evidence for successful and failed runs. A deterministic
 Markdown report is available at `/api/runs/{id}/report?format=markdown`; the CLI

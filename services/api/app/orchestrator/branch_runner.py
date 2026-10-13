@@ -12,6 +12,7 @@ from typing import Annotated, Any
 from pydantic import AfterValidator, BaseModel, Field, JsonValue, ValidationError, create_model
 
 from app.domain.models import BranchResult, BranchStatus, Citation, MigrationStrategy
+from app.orchestrator.baseline import editable_requirement
 from app.orchestrator.dependencies import migrate_pyproject_pydantic
 from app.orchestrator.patches import PatchStats, UnsafePatch, build_apply_command
 from app.orchestrator.patches import validate_unified_diff as validate_patch
@@ -219,6 +220,8 @@ class BranchRunner:
                     workdir=workdir,
                     minimum_tests=evidence.baseline_tests_collected,
                     test_contract_digest=evidence.test_contract_digest,
+                    expected_outcomes=evidence.test_outcomes,
+                    test_extras=evidence.test_extras,
                 )
             except UnsafePatch as exc:
                 diagnostics = f"Patch safety validation failed: {exc}"
@@ -288,15 +291,23 @@ class BranchRunner:
         workdir: str = "/workspace/repo",
         minimum_tests: int = 1,
         test_contract_digest: str | None = None,
+        expected_outcomes: dict[str, str] | None = None,
+        test_extras: list[str] | None = None,
     ) -> BranchResult:
         stats = validate_patch(patch, allowed_files=set(strategy.target_files))
-        command = self._validation_command(workdir, patch)
+        command = self._validation_command(
+            workdir, patch, expected_outcomes=expected_outcomes, test_extras=test_extras,
+        )
         completed = await self._sandbox.run(
             parent,
             command,
             timeout_seconds=self._timeout_seconds,
         )
         metrics = _parse_validation_output(completed.stdout)
+        outcomes_preserved = (
+            marker_int(completed.stdout, "TEST_OUTCOMES_PRESERVED") == 1
+            if expected_outcomes is not None else None
+        )
         contract_before = marker_text(completed.stdout, "CONTRACT_BEFORE")
         contract_after = marker_text(completed.stdout, "CONTRACT_AFTER")
         contract_preserved = None
@@ -309,7 +320,10 @@ class BranchRunner:
             and metrics.test_exit == 0
             and metrics.tests_failed == 0
             and metrics.tests_collected >= minimum_tests
-            and metrics.tests_passed >= minimum_tests
+            and (
+                outcomes_preserved is True if expected_outcomes is not None
+                else metrics.tests_passed >= minimum_tests
+            )
             and metrics.pip_exit == 0
             and metrics.install_exit == 0
             and metrics.pydantic_major == 2
@@ -328,6 +342,7 @@ class BranchRunner:
             contract_preserved=contract_preserved,
             checkpoint_id=completed.state.checkpoint_id,
             contract_required=test_contract_digest is not None,
+            outcomes_preserved=outcomes_preserved,
         )
 
     @staticmethod
@@ -399,7 +414,10 @@ class BranchRunner:
         return json.dumps(payload, separators=(",", ":"))
 
     @staticmethod
-    def _validation_command(workdir: str, patch: str) -> str:
+    def _validation_command(
+        workdir: str, patch: str, *, expected_outcomes: dict[str, str] | None = None,
+        test_extras: list[str] | None = None,
+    ) -> str:
         path = PurePosixPath(workdir)
         if not path.is_absolute() or ".." in path.parts:
             raise ValueError("Sandbox workdir must be an absolute normalized path")
@@ -408,7 +426,8 @@ class BranchRunner:
             + build_apply_command(patch)
             + "; set +e; "
             ".venv/bin/python -m pip install --disable-pip-version-check "
-            "-e '.[test]' 'pydantic>=2,<3' ruff > /tmp/branchshift-install.out 2>&1; "
+            f"-e {editable_requirement(test_extras)} 'pydantic>=2,<3' pytest ruff "
+            "> /tmp/branchshift-install.out 2>&1; "
             "install_exit=$?; "
             + test_contract_command("CONTRACT_BEFORE") + "; "
             +
@@ -425,7 +444,9 @@ class BranchRunner:
             "printf '\\n__BRANCHSHIFT_TEST_EXIT=%s\\n__BRANCHSHIFT_PIP_EXIT=%s"
             "\\n__BRANCHSHIFT_RUFF_EXIT=%s\\n__BRANCHSHIFT_INSTALL_EXIT=%s\\n' "
             "\"$test_exit\" \"$pip_exit\" \"$ruff_exit\" \"$install_exit\"; "
-            + junit_metrics_command("/tmp/branchshift-pytest.xml") + "; "
+            + junit_metrics_command(
+                "/tmp/branchshift-pytest.xml", expected_outcomes=expected_outcomes,
+            ) + "; "
             + runtime_version_command() + "; "
             + test_contract_command("CONTRACT_AFTER") + "; "
             +
@@ -460,6 +481,7 @@ class ValidationMetrics(BaseModel):
     tests_collected: int
     tests_passed: int
     tests_failed: int
+    tests_skipped: int | None = None
     test_exit: int
     pip_exit: int
     ruff_exit: int
@@ -497,10 +519,13 @@ def _parse_validation_output(output: str) -> ValidationMetrics:
     collected = marker_int(output, "TESTS_COLLECTED")
     passed = marker_int(output, "TESTS_PASSED")
     failed = marker_int(output, "TESTS_FAILED")
+    skipped = marker_int(output, "TESTS_SKIPPED")
     test_exit = marker_int(output, "TEST_EXIT")
     pip_exit = marker_int(output, "PIP_EXIT")
     ruff_exit = marker_int(output, "RUFF_EXIT")
     if collected < passed + failed or min(collected, passed, failed) < 0:
+        test_exit = -1
+    if skipped >= 0 and collected != passed + failed + skipped:
         test_exit = -1
     lint_findings = _last_int(output, r"Found (\d+) errors?")
     if ruff_exit and lint_findings == 0:
@@ -509,6 +534,7 @@ def _parse_validation_output(output: str) -> ValidationMetrics:
         tests_collected=max(0, collected),
         tests_passed=max(0, passed),
         tests_failed=max(0, failed),
+        tests_skipped=skipped if skipped >= 0 else None,
         test_exit=test_exit,
         pip_exit=pip_exit,
         ruff_exit=ruff_exit,
@@ -536,6 +562,7 @@ def _branch_result(
     contract_preserved: bool | None = None,
     checkpoint_id: str | None = None,
     contract_required: bool = False,
+    outcomes_preserved: bool | None = None,
 ) -> BranchResult:
     failure_reason = None
     if status is not BranchStatus.PASSED:
@@ -549,6 +576,10 @@ def _branch_result(
             failure_reason = "Original test files or pytest configuration changed"
         elif contract_required and contract_preserved is None:
             failure_reason = "The original test contract could not be verified"
+        elif outcomes_preserved is False:
+            failure_reason = (
+                "Original test outcomes changed: missing, newly skipped or failing tests"
+            )
         else:
             failure_reason = "Pydantic v2, dependency, or baseline test verification failed"
     return BranchResult(
@@ -557,6 +588,8 @@ def _branch_result(
         tests_collected=metrics.tests_collected,
         tests_passed=metrics.tests_passed,
         tests_failed=metrics.tests_failed,
+        tests_skipped=metrics.tests_skipped,
+        test_outcomes_preserved=outcomes_preserved,
         pip_check_passed=metrics.pip_exit == 0,
         lint_findings=metrics.lint_findings,
         changed_files=len(stats.files),

@@ -1,4 +1,5 @@
 import asyncio
+from datetime import datetime, timezone
 
 from app.domain.models import BranchResult, BranchStatus, RunStatus, RunSummary
 from app.storage.repositories import RunRepository
@@ -20,6 +21,27 @@ async def test_repository_persists_summary_and_ordered_events(tmp_path):
     assert stored.status == RunStatus.PREPARING
     assert [event.id for event in events] == [1, 2]
     assert events[-1].message == "Baseline ready"
+
+
+async def test_saved_run_index_is_bounded_durable_and_excludes_full_evidence(tmp_path):
+    url = f"sqlite:///{tmp_path / 'recent.db'}"
+    repository = RunRepository(url)
+    for run_id, day in (("new-b", 3), ("old", 1), ("new-a", 3)):
+        await repository.create_run(RunSummary(
+            id=run_id, repo_url="https://github.com/owner/repo", mode="live",
+            status=RunStatus.COMPLETED, created_at=datetime(2026, 10, day, tzinfo=timezone.utc),
+            patch="large private source diff", report="diagnostic details",
+            failure_reason="provider details",
+        ))
+    repository.close()
+    reopened = RunRepository(url)
+    results = await reopened.list_runs(2)
+    reopened.close()
+    assert [item.id for item in results] == ["new-b", "new-a"]
+    assert set(results[0].model_dump()) == {
+        "id", "repo_url", "project_path", "mode", "status", "created_at", "updated_at",
+        "winner_id", "baseline_tests_collected",
+    }
 
 
 async def test_concurrent_branch_results_survive_reopen(tmp_path):

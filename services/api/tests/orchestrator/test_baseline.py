@@ -1,3 +1,4 @@
+import json
 import subprocess
 
 import pytest
@@ -92,6 +93,38 @@ async def test_configured_repository_limit_reaches_remote_setup_guard():
     )
     assert "/workspace/repo 123456; " in sandbox.setup_command
     assert sandbox.setup_command.index("ls-files") < sandbox.setup_command.index("-m venv")
+
+
+async def test_pinned_baseline_checkout_is_verified_before_source_evidence():
+    sandbox = FakeSandbox()
+    sha = "0123456789abcdef0123456789abcdef01234567"
+    await BaselineRunner(sandbox).prepare(
+        "python:3.13-slim", "https://github.com/owner/repo", baseline_ref=sha,
+        test_extras=["pyyaml", "semver"],
+    )
+    assert f"fetch --depth 1 origin {sha}" in sandbox.setup_command
+    assert f"checkout --detach {sha}" in sandbox.setup_command
+    assert "-e '.[pyyaml,semver]' pytest ruff" in sandbox.setup_command
+    assert sandbox.setup_command.index("checkout --detach") < sandbox.setup_command.index("-m venv")
+    with pytest.raises(BaselineError, match="requested commit"):
+        await BaselineRunner(FakeSandbox()).prepare(
+            "python:3.13-slim", "https://github.com/owner/repo", baseline_ref="a" * 40,
+        )
+
+
+async def test_existing_skipped_tests_require_and_retain_per_test_baseline_contract():
+    output = OUTPUT.replace("TESTS_PASSED=13", "TESTS_PASSED=12")
+    with pytest.raises(BaselineError, match="per-test outcome"):
+        await BaselineRunner(FakeSandbox(output)).prepare(
+            "python:3.13-slim", "https://github.com/owner/repo",
+        )
+    outcomes = {f"app::test_{i}": "passed" if i < 12 else "skipped" for i in range(13)}
+    output += "__BRANCHSHIFT_TEST_OUTCOMES=" + json.dumps(outcomes) + "\n"
+    result = await BaselineRunner(FakeSandbox(output)).prepare(
+        "python:3.13-slim", "https://github.com/owner/repo",
+    )
+    assert result.tests_passed == 12
+    assert result.evidence.test_outcomes == outcomes
 
 
 def test_arbitrary_repository_uses_repository_root():

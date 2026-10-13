@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import AppHeader from '../components/AppHeader'
 import RunForm from '../components/RunForm'
 import HowRunWorks from '../components/HowRunWorks'
+import SavedRuns from '../components/SavedRuns'
 import { createRun, getIntegrationHealth, type IntegrationHealth } from '../lib/api'
 
 const lanes = [
@@ -32,9 +33,9 @@ export default function HomePage() {
       <section className="preflight-section" aria-labelledby="main-content">
         <div className="section-kicker"><span>01</span> migration preflight</div>
         <div className="preflight-heading-row">
-          <h1 id="main-content" tabIndex={-1}>One baseline.<br />Three attempts.<br /><em>Proof decides.</em></h1>
+          <h1 id="main-content" tabIndex={-1}>One baseline.<br />Three candidates.<br /><em>Proof decides.</em></h1>
           <p>
-            Compare three Pydantic v1 → v2 migration candidates. In live execution, Nemotron plans;
+            Migrate a Pydantic v1 project while preserving its tested behavior. Compare three candidate patches. In live execution, Nemotron plans;
             isolated Nebius Sandboxes test the patches; deterministic evidence selects the winner.
           </p>
         </div>
@@ -46,8 +47,10 @@ export default function HomePage() {
                 : health.ready ? 'Provider access is configured. Sandbox availability is checked when the run starts.'
                   : 'Provider access needs configuration before a live run can start.'}</p>}
         </div>
-        <RunForm mode={health?.mode} disabled={!health?.ready || !!healthError} onSubmit={async (repoUrl, projectPath) => {
-          const run = await createRun(repoUrl, projectPath)
+        <SavedRuns />
+        <h2 className="start-run-heading">Start a migration</h2>
+        <RunForm mode={health?.mode} disabled={!health?.ready || !!healthError} onSubmit={async (repoUrl, projectPath, options) => {
+          const run = options ? await createRun(repoUrl, projectPath, options) : await createRun(repoUrl, projectPath)
           navigate(`/runs/${run.id}`)
         }} />
       </section>

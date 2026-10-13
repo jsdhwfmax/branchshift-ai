@@ -129,6 +129,22 @@ async def test_branch_runner_returns_verified_metrics():
     assert result.checkpoint_id == "child-1"
 
 
+@pytest.mark.parametrize("preserved", [0, 1])
+async def test_original_skip_is_allowed_only_with_matching_per_test_outcomes(preserved):
+    output = validation_output(passed=1).replace("TESTS_COLLECTED=1", "TESTS_COLLECTED=2")
+    output += f"__BRANCHSHIFT_TESTS_SKIPPED=1\n__BRANCHSHIFT_TEST_OUTCOMES_PRESERVED={preserved}\n"
+    sandbox = FakeSandbox([(output, 0)])
+    result = await BranchRunner(FakeModel([]), sandbox).validate_existing_patch(
+        SandboxState(checkpoint_id="baseline"), strategy(), VALID_PATCH, minimum_tests=2,
+        expected_outcomes={"app::one": "passed", "app::known_issue": "skipped"},
+    )
+    assert result.tests_skipped == 1
+    assert result.test_outcomes_preserved is bool(preserved)
+    assert result.status is (BranchStatus.PASSED if preserved else BranchStatus.FAILED)
+    if not preserved:
+        assert "Original test outcomes changed" in result.failure_reason
+
+
 async def test_unsafe_first_patch_retries_without_entering_sandbox():
     unsafe = proposal("../outside.py")
     model = FakeModel([unsafe, proposal()])

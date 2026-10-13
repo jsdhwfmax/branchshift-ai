@@ -32,6 +32,7 @@ export default function BranchLane({ id, strategy, result, active, winner, termi
           <span className="state-chip">{winner ? (sample ? 'sample winner' : 'winner') : state.replaceAll('_', ' ')}</span>
         </div>
         <h3>{strategy?.title ?? FALLBACK_TITLES[id]}</h3>
+        <p className="proposal-label">Proposed plan · model-authored, not an execution result</p>
         <p>{strategy?.rationale ?? (terminal ? 'No migration plan was retained for this branch.' : 'Waiting for a cited migration plan.')}</p>
         {proposalProgress && <p className="branch-progress">Proposal attempts started: {proposalProgress.attempt} (limit {proposalProgress.maxAttempts})</p>}
         {!sample && result && <dl className="branch-provenance">
@@ -44,7 +45,7 @@ export default function BranchLane({ id, strategy, result, active, winner, termi
         {result?.diagnostics && <details className="strategy-details branch-diagnostics"><summary>Execution diagnostics</summary><pre>{result.diagnostics}</pre></details>}
       </div>
       <dl className="lane-metrics">
-        <div><dt>tests</dt><dd>{hasTests ? `${result.tests_passed}/${result.tests_collected}` : '—'}</dd></div>
+        <div><dt>tests</dt><dd>{hasTests ? `${result.tests_passed}/${result.tests_collected}` : '—'}{result?.tests_skipped != null && <small className="skipped-count">{result.tests_skipped} skipped</small>}</dd></div>
         <div><dt>Δ lines</dt><dd>{result ? result.changed_lines : '—'}</dd></div>
         <div><dt>Pydantic</dt><dd>{result?.pydantic_major ? `v${result.pydantic_major}` : '—'}</dd></div>
         <div><dt>time</dt><dd>{formatDuration(result?.elapsed_seconds)}</dd></div>

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import shlex
 from collections.abc import Coroutine
 from typing import Any
 from uuid import uuid4
@@ -18,12 +19,24 @@ from app.domain.models import (
     RunSummary,
     http_url,
 )
-from app.orchestrator.baseline import BaselineRunner, repository_workdir
+from app.orchestrator.baseline import (
+    BaselineRunner,
+    effective_project_path,
+    repository_workdir,
+)
+from app.orchestrator.behavior_probes import (
+    BehaviorProbeResults,
+    BehaviorProbeSuite,
+    build_probe_command,
+    compare_behavior_probes,
+    parse_probe_output,
+)
 from app.orchestrator.branch_runner import BranchRunner
 from app.orchestrator.evaluator import rank_results
 from app.orchestrator.planner import MigrationPlanner
 from app.orchestrator.research import MigrationResearch
 from app.provenance import runtime_config_digest, source_provenance
+from app.providers.base import SandboxProvider, SandboxState
 from app.providers.contree import ContreeSandboxProvider
 from app.providers.nebius import NebiusModelProvider
 from app.providers.redaction import redact
@@ -34,6 +47,55 @@ PYDANTIC_MIGRATION_URL = "https://docs.pydantic.dev/latest/migration/"
 CONTREE_BRANCHING_URL = (
     "https://docs.tokenfactory.nebius.com/sandboxes/sdk/python_sdk/branching"
 )
+PROBE_TIMEOUT_SECONDS = 30
+
+
+async def _observe_behavior_probes(
+    sandbox: SandboxProvider, parent: SandboxState, suite: BehaviorProbeSuite, workdir: str,
+) -> tuple[BehaviorProbeResults | None, str | None]:
+    """A disposable child observation must never replace its parent's verification evidence."""
+    try:
+        command = f"cd {shlex.quote(workdir)} && {build_probe_command(suite)}"
+        checked = await asyncio.wait_for(
+            sandbox.run(parent, command, timeout_seconds=PROBE_TIMEOUT_SECONDS),
+            timeout=PROBE_TIMEOUT_SECONDS,
+        )
+        if checked.exit_code != 0:
+            return None, "Behavior probe evidence unavailable: the observation did not finish."
+        return parse_probe_output(checked.stdout, suite), None
+    except TimeoutError:
+        return None, "Behavior probe evidence unavailable: observation timed out."
+    except Exception:  # noqa: BLE001 - optional review must not erase a completed test result
+        # No provider exception, repository message or payload is copied into this field.
+        return None, "Behavior probe evidence unavailable: outputs could not be verified."
+
+
+async def _add_behavior_probe_review(
+    result: BranchResult, sandbox: SandboxProvider, suite: BehaviorProbeSuite,
+    baseline: BehaviorProbeResults | None, workdir: str,
+) -> None:
+    if not result.checkpoint_id or not result.patch:
+        result.behavior_probe_error = (
+            "Behavior review unavailable: no recorded candidate checkpoint and patch."
+        )
+        return
+    observed, error = await _observe_behavior_probes(
+        sandbox, SandboxState(result.checkpoint_id), suite, workdir,
+    )
+    result.behavior_probe_results = observed
+    result.behavior_probe_error = error
+    if observed is not None:
+        if baseline is None:
+            result.behavior_probe_error = (
+                "Baseline behavior probe evidence is unavailable; comparison is unknown."
+            )
+        else:
+            try:
+                result.behavior_probe_comparison = compare_behavior_probes(baseline, observed)
+            except ValueError:
+                result.behavior_probe_error = (
+                    "Behavior comparison unavailable: frozen inputs did not match."
+                )
 
 WINNING_PATCH = """diff --git a/src/sample_app/models.py b/src/sample_app/models.py
 index 1ae36c2..6e23591 100644
@@ -154,7 +216,16 @@ class RunManager:
             id=uuid4().hex[:12],
             repo_url=request.repo_url,
             target=request.target,
-            project_path=request.project_path,
+            baseline_ref=request.baseline_ref,
+            test_extras=request.test_extras,
+            behavior_probes=(
+                BehaviorProbeSuite.model_validate(request.behavior_probes.model_dump(mode="json"))
+                if request.behavior_probes is not None else None
+            ),
+            project_path=(
+                request.project_path if self._settings.is_mock
+                else effective_project_path(request.repo_url, request.project_path)
+            ),
             mode="mock" if self._settings.is_mock else "live",
             **self._source_provenance,
             runtime_config_digest=runtime_config_digest(self._settings),
@@ -389,11 +460,15 @@ class RunManager:
                 self._settings.contree_image,
                 summary.repo_url,
                 project_path=summary.project_path,
+                baseline_ref=summary.baseline_ref,
+                test_extras=summary.test_extras,
             )
             summary = await self._repository.require_run(run_id)
             summary.baseline_commit_sha = baseline.commit_sha
             summary.baseline_checkpoint_id = baseline.state.checkpoint_id
             summary.baseline_tests_collected = baseline.tests_collected
+            summary.baseline_tests_passed = baseline.tests_passed
+            summary.baseline_tests_skipped = baseline.tests_collected - baseline.tests_passed
             summary.baseline_test_contract_digest = baseline.evidence.test_contract_digest
             await self._repository.save_run(summary)
             await self._repository.append_event(
@@ -403,6 +478,15 @@ class RunManager:
                 f"{baseline.tests_passed}/{baseline.tests_collected} tests passed",
                 payload={"commit_sha": baseline.commit_sha},
             )
+            if summary.behavior_probes is not None:
+                probe_results, probe_error = await _observe_behavior_probes(
+                    sandbox, baseline.state, summary.behavior_probes,
+                    repository_workdir(summary.repo_url, summary.project_path),
+                )
+                summary = await self._repository.require_run(run_id)
+                summary.baseline_probe_results = probe_results
+                summary.baseline_probe_error = probe_error
+                await self._repository.save_run(summary)
             await self._repository.set_status(
                 run_id,
                 RunStatus.PLANNING,
@@ -483,6 +567,12 @@ class RunManager:
                         failure_reason=message or type(exc).__name__,
                     )
                 await self._repository.save_branch_result(run_id, result)
+                if summary.behavior_probes is not None:
+                    await _add_behavior_probe_review(
+                        result, sandbox, summary.behavior_probes, summary.baseline_probe_results,
+                        repository_workdir(summary.repo_url, summary.project_path),
+                    )
+                    await self._repository.save_branch_result(run_id, result)
                 await self._repository.append_event(
                     run_id,
                     EVENTS.BRANCH_COMPLETED,
@@ -516,7 +606,24 @@ class RunManager:
                 workdir=repository_workdir(summary.repo_url, summary.project_path),
                 minimum_tests=baseline.tests_collected,
                 test_contract_digest=baseline.evidence.test_contract_digest,
+                expected_outcomes=baseline.evidence.test_outcomes,
+                test_extras=baseline.evidence.test_extras,
             )
+            # Keep the fresh check even when it disqualifies the otherwise passing candidate.
+            # A failed gate must not discard the evidence a maintainer needs to investigate it.
+            summary = await self._repository.require_run(run_id)
+            summary.revalidated_checkpoint_id = final_verification.checkpoint_id
+            summary.revalidation = final_verification
+            await self._repository.save_run(summary)
+            if summary.behavior_probes is not None:
+                await _add_behavior_probe_review(
+                    final_verification, sandbox, summary.behavior_probes,
+                    summary.baseline_probe_results,
+                    repository_workdir(summary.repo_url, summary.project_path),
+                )
+                summary = await self._repository.require_run(run_id)
+                summary.revalidation = final_verification
+                await self._repository.save_run(summary)
             if final_verification.status is not BranchStatus.PASSED:
                 raise RuntimeError("Winner patch failed clean baseline revalidation")
 
@@ -531,8 +638,6 @@ class RunManager:
             f"{winner.tests_passed}/{winner.tests_collected} tests, "
             f"{winner.lint_findings} lint findings, {winner.changed_lines} changed lines."
         )
-        summary.revalidated_checkpoint_id = final_verification.checkpoint_id
-        summary.revalidation = final_verification
         await self._repository.save_run(summary)
         await self._repository.append_event(
             run_id,

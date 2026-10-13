@@ -93,6 +93,15 @@ def test_mock_missing_revalidation_and_wrong_project_do_not_qualify():
     assert not assess(synthetic_run(), case(public_repo_url=None))["qualified_success"]
 
 
+def test_preexisting_skip_requires_per_test_evidence_in_winner_and_revalidation():
+    run = synthetic_run(baseline_tests_passed=12, baseline_tests_skipped=1)
+    for branch in [*run["branches"], run["revalidation"]]:
+        branch.update(tests_passed=12, tests_skipped=1, test_outcomes_preserved=True)
+    assert assess(run, case())["qualified_success"]
+    run["revalidation"]["test_outcomes_preserved"] = False
+    assert not assess(run, case())["qualified_success"]
+
+
 def test_revalidation_must_match_patch_and_preserve_runtime_contract():
     run = synthetic_run()
     run["revalidation"]["patch"] = "different patch"

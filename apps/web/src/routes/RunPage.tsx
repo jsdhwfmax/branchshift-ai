@@ -7,6 +7,11 @@ import EvidenceTable from '../components/EvidenceTable'
 import PatchViewer from '../components/PatchViewer'
 import RuntimeFingerprint from '../components/RuntimeFingerprint'
 import HowRunWorks from '../components/HowRunWorks'
+import ResultSummary from '../components/ResultSummary'
+import ApplyPatchGuide from '../components/ApplyPatchGuide'
+import BehaviorReview from '../components/BehaviorReview'
+import { behaviorReviewState } from '../lib/probes'
+import { verification } from '../lib/evidence'
 import { patchUrl, reportUrl, type BranchResult, type RunSummary } from '../lib/api'
 import { isTerminal, useRunLedger } from '../lib/useRunLedger'
 import { proposalProgress } from '../lib/events'
@@ -28,7 +33,12 @@ function heading(run: RunSummary) {
   if (run.status === 'failed') return 'Run stopped.'
   if (run.status === 'cancelled') return 'Run cancelled.'
   if (run.mode === 'mock') return run.status === 'completed' ? 'Sample replay complete.' : 'Replaying sample branches.'
-  if (run.status === 'completed') return hasVerifiedWinner(run) ? 'Migration verified.' : 'Run complete.'
+  if (run.status === 'completed') {
+    const review = behaviorReviewState(run)
+    if (review === 'different') return 'Review behavior changes.'
+    if (review === 'unsupported') return 'Behavior review incomplete.'
+    return hasVerifiedWinner(run) ? 'Migration verified.' : 'Run complete.'
+  }
   if (run.status === 'queued') return 'Run queued.'
   if (run.status === 'preparing') return 'Preparing the baseline.'
   if (run.status === 'planning') return 'Planning three candidates.'
@@ -37,11 +47,7 @@ function heading(run: RunSummary) {
 }
 
 function hasVerifiedWinner(run: RunSummary) {
-  const winner = run.branches.find((result) => result.strategy_id === run.winner_id)
-  return run.status === 'completed' && run.mode === 'live' && !!run.patch && winner?.status === 'passed'
-    && winner.pydantic_major === 2 && winner.tests_collected > 0 && winner.tests_failed === 0
-    && winner.test_exit_code === 0 && winner.pip_exit_code === 0 && winner.pip_check_passed && winner.patch_applicable
-    && winner.test_contract_preserved === true
+  return verification(run).verified
 }
 
 function repositoryName(value: string) {
@@ -119,6 +125,20 @@ export default function RunPage() {
         <Link to="/" className="recovery-link">Return to preflight</Link>
       </section>}
 
+      <ResultSummary run={run} />
+      <BehaviorReview run={run} />
+      <nav className="run-section-nav" aria-label="Run sections"><a href="#evidence-heading">Comparison</a><a href="#plans-heading">Proposed plans</a><a href="#patch-heading">Patch</a><a href="#sources-heading">Sources</a></nav>
+      <section className="result-evidence" aria-label="Recorded candidate comparison">
+        <article className="instrument-panel evidence-panel">
+          <div className="panel-title"><span>04</span><h2 id="evidence-heading">{sample ? 'Sample evidence matrix' : 'Evidence matrix'}</h2></div>
+          <EvidenceTable branches={branches} winnerId={sample || verified ? winnerId : null} terminal={terminal} sample={sample} />
+          {winnerId && <p className={`verdict ${sample ? 'sample-verdict' : ''}`}>{sample
+            ? `The fixed sample selects ${winnerId}. These metrics demonstrate the deterministic decision rule.`
+            : verified ? run.report || 'The winning patch passed clean baseline revalidation on Pydantic v2.' : 'A candidate was selected, but its retained evidence does not establish a verified Pydantic v2 migration.'}</p>}
+          <RuntimeFingerprint run={run} />
+        </article>
+      </section>
+      <h2 id="plans-heading" className="run-section-title">Proposed plans and execution</h2>
       <section className="branch-board" aria-label="Three migration branches">
         <h2 className="sr-only">Migration branch progress</h2>
         <div className="board-label">
@@ -157,20 +177,11 @@ export default function RunPage() {
         </div>
       </section>
 
-      <HowRunWorks mode={run.mode} modelId={run.model_id} />
 
       {streamNote && <p className="stream-note" role="status">{streamNote}</p>}
       {error && <p className="stream-note" role="alert">Results could not refresh: {error} <button className="retry-button" onClick={retry}>Reload ledger</button></p>}
 
       <section className="run-grid">
-        <article className="instrument-panel evidence-panel">
-          <div className="panel-title"><span>04</span><h2>{sample ? 'Sample evidence matrix' : 'Evidence matrix'}</h2></div>
-          <EvidenceTable branches={branches} winnerId={sample || verified ? winnerId : null} terminal={terminal} sample={sample} />
-          {winnerId && <p className={`verdict ${sample ? 'sample-verdict' : ''}`}>{sample
-            ? `The fixed sample selects ${winnerId}. These metrics demonstrate the deterministic decision rule.`
-            : verified ? run.report || 'The winning patch passed clean baseline revalidation on Pydantic v2.' : 'A candidate was selected, but its retained evidence does not establish a verified Pydantic v2 migration.'}</p>}
-          <RuntimeFingerprint run={run} />
-        </article>
         <article className="instrument-panel event-panel">
           <div className="panel-title"><span>{ledgerLabel}</span><h2>{sample ? 'Sample event ledger' : 'Event ledger'}</h2></div>
           {sample && <p className="ledger-disclosure">Illustrative events from the replay script.</p>}
@@ -186,14 +197,16 @@ export default function RunPage() {
           {!events.length && <p className="empty-state">{stream === 'closed' ? 'No event history was retained.' : terminal ? 'Loading retained event history…' : 'Waiting for the first recorded event…'}</p>}
         </article>
         <article className="instrument-panel patch-panel">
-          <div className="panel-title"><span>05</span><h2>{sample ? 'Sample patch' : 'Winning patch'}</h2></div>
-          <PatchViewer patch={completed ? run.patch : null} downloadUrl={patchUrl(run.id)} terminal={terminal} sample={sample} />
+          <div className="panel-title"><span>05</span><h2 id="patch-heading">{sample ? 'Sample patch' : completed && !verified ? 'Selected candidate patch' : 'Winning patch'}</h2></div>
+          <PatchViewer patch={completed ? run.patch : null} downloadUrl={patchUrl(run.id)} terminal={terminal} sample={sample} verified={verified} />
+          <ApplyPatchGuide run={run} />
         </article>
         <article className="instrument-panel source-panel">
-          <div className="panel-title"><span>src</span><h2>{sample ? 'Sample source set' : 'Retained sources'}</h2></div>
+          <div className="panel-title"><span>src</span><h2 id="sources-heading">{sample ? 'Sample source set' : 'Retained sources'}</h2></div>
           <CitationList citations={run.citations} terminal={terminal} />
         </article>
       </section>
+      <HowRunWorks mode={run.mode} modelId={run.model_id} />
     </main>
   )
 }

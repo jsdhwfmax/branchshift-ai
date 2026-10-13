@@ -4,10 +4,12 @@ from collections import defaultdict
 from unittest.mock import AsyncMock
 
 import pytest
+from httpx import ASGITransport, AsyncClient
 
 from app.config import Settings
 from app.domain.events import EVENTS
 from app.domain.models import CreateRunRequest, MigrationStrategy, RunStatus
+from app.main import create_app
 from app.orchestrator import run_manager
 from app.orchestrator.baseline import BaselineOutcome
 from app.orchestrator.branch_runner import FileReplacement, PatchProposal
@@ -17,10 +19,11 @@ from app.providers.base import CommandResult, SandboxState
 from app.storage.repositories import RunRepository
 
 
-@pytest.mark.parametrize("cancel_during_proposal", [False, True])
+@pytest.mark.parametrize("outcome", ["completed", "cancelled", "revalidation_failed"])
 async def test_manager_persists_per_branch_attempt_starts_before_model_calls(
-    tmp_path, monkeypatch, cancel_during_proposal,
+    tmp_path, monkeypatch, outcome,
 ):
+    cancel_during_proposal = outcome == "cancelled"
     database_url = f"sqlite:///{tmp_path / 'attempt-events.db'}"
     repository = RunRepository(database_url)
     provenance = {
@@ -57,6 +60,7 @@ async def test_manager_persists_per_branch_attempt_starts_before_model_calls(
     ) for branch_id in ("minimal", "compatibility", "refactor")]
     async def prepare(runner, *args, **kwargs):
         assert runner._max_repository_bytes == settings.max_repository_bytes
+        assert kwargs["baseline_ref"] == "d" * 40
         return baseline
 
     monkeypatch.setattr(run_manager.BaselineRunner, "prepare", prepare)
@@ -112,9 +116,12 @@ async def test_manager_persists_per_branch_attempt_starts_before_model_calls(
                 "PYDANTIC_MAJOR": 2, "INSTALL_EXIT": 0,
                 "CONTRACT_BEFORE": contract, "CONTRACT_AFTER": contract,
             }
+            if outcome == "revalidation_failed" and len(parents) == 4:
+                markers.update(TEST_EXIT=1, TESTS_PASSED=0, TESTS_FAILED=1)
             return CommandResult(
                 state=SandboxState(checkpoint_id=checkpoint),
-                stdout="\n".join(f"__BRANCHSHIFT_{key}={value}" for key, value in markers.items()),
+                stdout="\n".join(f"__BRANCHSHIFT_{key}={value}" for key, value in markers.items())
+                + "\nRetained synthetic check output",
                 stderr="", exit_code=0, elapsed_seconds=0.01,
             )
 
@@ -122,7 +129,9 @@ async def test_manager_persists_per_branch_attempt_starts_before_model_calls(
     monkeypatch.setattr(
         run_manager, "ContreeSandboxProvider", lambda *args, **kwargs: SyntheticSandbox(),
     )
-    created = await manager.create(CreateRunRequest(repo_url="https://github.com/owner/repo"))
+    created = await manager.create(CreateRunRequest(
+        repo_url="https://github.com/owner/repo", baseline_ref="d" * 40,
+    ))
     if cancel_during_proposal:
         await asyncio.wait_for(model_started.wait(), timeout=1)
         await manager.shutdown()
@@ -135,12 +144,15 @@ async def test_manager_persists_per_branch_attempt_starts_before_model_calls(
     try:
         summary = await reopened.require_run(created.id)
         events = await reopened.list_events(created.id)
-        assert summary.status is (
-            RunStatus.CANCELLED if cancel_during_proposal else RunStatus.COMPLETED
-        )
+        expected_status = {
+            "cancelled": RunStatus.CANCELLED, "completed": RunStatus.COMPLETED,
+            "revalidation_failed": RunStatus.FAILED,
+        }[outcome]
+        assert summary.status is expected_status
         for field, value in provenance.items():
             assert getattr(summary, field) == value
         assert summary.baseline_commit_sha == baseline.commit_sha
+        assert summary.baseline_ref == baseline.commit_sha
         assert summary.baseline_checkpoint_id == baseline.state.checkpoint_id
         assert summary.runtime_config_digest == created.runtime_config_digest
         assert [event.id for event in events] == list(range(1, len(events) + 1))
@@ -169,5 +181,37 @@ async def test_manager_persists_per_branch_attempt_starts_before_model_calls(
             assert parents == [baseline.state] * 4  # Three branches plus clean revalidation.
             assert len(summary.branches) == 3
             assert summary.revalidation is not None
+        if outcome == "revalidation_failed":
+            assert summary.revalidation.tests_failed == 1
+            assert summary.revalidation.tests_passed == 0
+            assert summary.revalidation.test_exit_code == 1
+            assert summary.revalidated_checkpoint_id == "synthetic-child-4"
+            assert "Retained synthetic check output" in summary.revalidation.diagnostics
+            assert all(branch.tests_passed == 1 for branch in summary.branches)
+            assert summary.winner_id is None and summary.patch is None
+            assert summary.failure_reason == "Winner patch failed clean baseline revalidation"
+            assert not any(event.type == EVENTS.WINNER_SELECTED for event in events)
+            assert events[-1].type == EVENTS.RUN_FAILED
+
+            # Exercise the public exports after a database close/reopen, not only the object.
+            app = create_app(Settings(mode="mock", database_url=database_url))
+            try:
+                async with AsyncClient(
+                    transport=ASGITransport(app=app), base_url="http://test",
+                ) as client:
+                    report = await client.get(f"/api/runs/{created.id}/report")
+                    assert report.status_code == 200
+                    stored = report.json()["run"]
+                    assert stored["revalidation"]["tests_failed"] == 1
+                    assert stored["revalidation"]["checkpoint_id"] == "synthetic-child-4"
+                    assert stored["winner_id"] is None and stored["patch"] is None
+                    markdown = await client.get(f"/api/runs/{created.id}/report?format=markdown")
+                    assert markdown.status_code == 200
+                    assert "Clean-baseline revalidation did not pass" in markdown.text
+                    assert "Retained synthetic check output" in markdown.text
+                    assert "Successful live migration is not established" in markdown.text
+                    assert (await client.get(f"/api/runs/{created.id}/patch")).status_code == 409
+            finally:
+                app.state.repository.close()
     finally:
         reopened.close()

@@ -8,6 +8,7 @@ from app.domain.models import (
     TERMINAL_RUN_STATUSES,
     BranchResult,
     RunEvent,
+    RunListItem,
     RunStatus,
     RunSummary,
     assert_transition,
@@ -73,6 +74,17 @@ class RunRepository:
                 "SELECT document FROM runs WHERE id = ?", (run_id,)
             ).fetchone()
         return RunSummary.model_validate_json(row["document"]) if row else None
+
+    async def list_runs(self, limit: int = 5) -> list[RunListItem]:
+        if not 1 <= limit <= 20:
+            raise ValueError("Saved-run limit must be between 1 and 20")
+        async with self._lock:
+            rows = self._connection.execute(
+                "SELECT document FROM runs "
+                "ORDER BY json_extract(document, '$.created_at') DESC, id DESC LIMIT ?",
+                (limit,),
+            ).fetchall()
+        return [RunListItem.model_validate_json(row["document"]) for row in rows]
 
     async def unfinished_run_ids(self) -> list[str]:
         async with self._lock:

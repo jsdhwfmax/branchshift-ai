@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import re
 import shlex
 import textwrap
@@ -17,15 +18,55 @@ def _guarded_python_command(script: str, error_marker: str) -> str:
     return ".venv/bin/python -I -c " + shlex.quote(wrapped)
 
 
-def junit_metrics_command(report_path: str) -> str:
+def junit_metrics_command(
+    report_path: str, expected_outcomes: dict[str, str] | None = None,
+) -> str:
     # The orchestrator supplies this script; repository stdout is never parsed as test counts.
+    if expected_outcomes is not None and (
+        len(expected_outcomes) > 500
+        or any(not isinstance(name, str) or not isinstance(status, str)
+               or status not in {"passed", "skipped", "failed"}
+               for name, status in expected_outcomes.items())
+        or len(json.dumps(expected_outcomes, separators=(",", ":")).encode()) > 16_000
+    ):
+        raise ValueError("Expected test outcomes exceed bounded evidence limits or are invalid")
     script = f"import json, xml.etree.ElementTree as ET\nroot=ET.parse({report_path!r}).getroot()\n"
-    script += '''cases = list(root.iter('testcase'))
-failed = sum(c.find('failure') is not None or c.find('error') is not None for c in cases)
-skipped = sum(c.find('skipped') is not None for c in cases)
+    script += f"expected = {expected_outcomes!r}\n"
+    script += '''cases = []
+outcomes = {}
+for case in root.iter('testcase'):
+    if len(cases) >= 500:
+        raise ValueError('Test outcomes exceed 500 cases')
+    identity = case.get('classname', '') + '::' + case.get('name', 'unknown')
+    if identity in outcomes:
+        raise ValueError('Duplicate testcase identity')
+    status = ('failed' if case.find('failure') is not None or case.find('error') is not None
+              else 'skipped' if case.find('skipped') is not None else 'passed')
+    outcomes[identity] = status
+    cases.append(case)
+serialized = json.dumps(outcomes, sort_keys=True, separators=(',', ':'))
+if len(serialized.encode()) > 16_000:
+    raise ValueError('Test outcomes exceed 16000 bytes')
+failed = sum(status == 'failed' for status in outcomes.values())
+skipped = sum(status == 'skipped' for status in outcomes.values())
+changed = []
+preserved = expected is not None and set(expected) == set(outcomes) and failed == 0
+if expected is not None:
+    for identity in sorted(set(expected) | set(outcomes)):
+        before, after = expected.get(identity), outcomes.get(identity)
+        allowed = (before == 'passed' and after == 'passed'
+                   or before == 'skipped' and after in {'skipped', 'passed'})
+        if not allowed:
+            preserved = False
+            if len(changed) < 3:
+                changed.append({'test': identity[:180], 'expected': before, 'actual': after})
 print('__BRANCHSHIFT_TESTS_COLLECTED=' + str(len(cases)))
 print('__BRANCHSHIFT_TESTS_PASSED=' + str(len(cases) - failed - skipped))
 print('__BRANCHSHIFT_TESTS_FAILED=' + str(failed))
+print('__BRANCHSHIFT_TESTS_SKIPPED=' + str(skipped))
+print('__BRANCHSHIFT_TEST_OUTCOMES=' + serialized)
+print('__BRANCHSHIFT_TEST_OUTCOMES_PRESERVED=' + str(int(preserved)))
+print('__BRANCHSHIFT_TEST_OUTCOMES_CHANGED=' + json.dumps(changed, separators=(',', ':')))
 failures = []
 seen = set()
 for case in cases:

@@ -1,0 +1,253 @@
+{
+  "scope": "Retrospective paired candidate comparison within the existing 15 three-branch runs. No standalone ablation, new provider call, success-rate improvement claim, or time-saved claim. Original bytes unchanged.",
+  "strategy_passes": {
+    "minimal": 13,
+    "compatibility": 10,
+    "refactor": 15
+  },
+  "smaller_than_refactor": 11,
+  "equal_to_refactor": 3,
+  "larger_than_refactor": 1,
+  "rows": [
+    {
+      "source_path": "evaluation/series-20260910/round-01/compatibility/97b310dcbde7.json",
+      "source_sha256": "690dc912be0385d4446bb2087e7f571bca569a2cd8b858d4b018abe1d707726b",
+      "id": "97b310dcbde7",
+      "case": "compatibility",
+      "winner": "minimal",
+      "strategy_statuses": {
+        "minimal": "passed",
+        "compatibility": "passed",
+        "refactor": "passed"
+      },
+      "winner_lines": 4,
+      "refactor_lines": 11,
+      "winner_lint": 0,
+      "refactor_lint": 0
+    },
+    {
+      "source_path": "evaluation/series-20260910/round-01/config/2e86cf16dfc0.json",
+      "source_sha256": "928f4a286d4d39f74f034f14df2d36e0d4020ee74f8dde72e01ba4f93607dd2c",
+      "id": "2e86cf16dfc0",
+      "case": "config",
+      "winner": "refactor",
+      "strategy_statuses": {
+        "minimal": "passed",
+        "compatibility": "failed",
+        "refactor": "passed"
+      },
+      "winner_lines": 17,
+      "refactor_lines": 17,
+      "winner_lint": 0,
+      "refactor_lint": 0
+    },
+    {
+      "source_path": "evaluation/series-20260910/round-01/parsing/b6475ac669f8.json",
+      "source_sha256": "d311b3babd63a7da6aac2dc71fb711ebab2e4673e1e151b784326e96232738c2",
+      "id": "b6475ac669f8",
+      "case": "parsing",
+      "winner": "minimal",
+      "strategy_statuses": {
+        "minimal": "passed",
+        "compatibility": "passed",
+        "refactor": "passed"
+      },
+      "winner_lines": 8,
+      "refactor_lines": 10,
+      "winner_lint": 0,
+      "refactor_lint": 0
+    },
+    {
+      "source_path": "evaluation/series-20260910/round-01/serialization/eea3304afbe6.json",
+      "source_sha256": "4e68115bfefbf4756350f183177f5e5f70e9759af019416e9d73602d6f51d4c6",
+      "id": "eea3304afbe6",
+      "case": "serialization",
+      "winner": "compatibility",
+      "strategy_statuses": {
+        "minimal": "passed",
+        "compatibility": "passed",
+        "refactor": "passed"
+      },
+      "winner_lines": 6,
+      "refactor_lines": 18,
+      "winner_lint": 2,
+      "refactor_lint": 2
+    },
+    {
+      "source_path": "evaluation/series-20260910/round-01/validators/3c96a45e7a8b.json",
+      "source_sha256": "c8cc50ba8202f848512da2f9be0f254520e8d46a3300cb7aaa92032b5a15d1b4",
+      "id": "3c96a45e7a8b",
+      "case": "validators",
+      "winner": "minimal",
+      "strategy_statuses": {
+        "minimal": "passed",
+        "compatibility": "failed",
+        "refactor": "passed"
+      },
+      "winner_lines": 43,
+      "refactor_lines": 58,
+      "winner_lint": 1,
+      "refactor_lint": 2
+    },
+    {
+      "source_path": "evaluation/series-20260910/round-02/compatibility/e6dd367c1436.json",
+      "source_sha256": "af98c6af619accaeb39757b3f0931a6b8c9f388d3b3a62d4427122a0694026a5",
+      "id": "e6dd367c1436",
+      "case": "compatibility",
+      "winner": "minimal",
+      "strategy_statuses": {
+        "minimal": "passed",
+        "compatibility": "passed",
+        "refactor": "passed"
+      },
+      "winner_lines": 4,
+      "refactor_lines": 13,
+      "winner_lint": 0,
+      "refactor_lint": 0
+    },
+    {
+      "source_path": "evaluation/series-20260910/round-02/config/f87a0a787413.json",
+      "source_sha256": "6d19b2817173e2f7ae8e65f2c0c7d31357909736fa3a1a7ff2e30860afdccfca",
+      "id": "f87a0a787413",
+      "case": "config",
+      "winner": "refactor",
+      "strategy_statuses": {
+        "minimal": "passed",
+        "compatibility": "failed",
+        "refactor": "passed"
+      },
+      "winner_lines": 17,
+      "refactor_lines": 17,
+      "winner_lint": 0,
+      "refactor_lint": 0
+    },
+    {
+      "source_path": "evaluation/series-20260910/round-02/parsing/67cfd318e689.json",
+      "source_sha256": "3473ab715f9442138167d1b8bdb61e02a1ad2940798308028e020ba79dc11efa",
+      "id": "67cfd318e689",
+      "case": "parsing",
+      "winner": "minimal",
+      "strategy_statuses": {
+        "minimal": "passed",
+        "compatibility": "passed",
+        "refactor": "passed"
+      },
+      "winner_lines": 8,
+      "refactor_lines": 10,
+      "winner_lint": 0,
+      "refactor_lint": 0
+    },
+    {
+      "source_path": "evaluation/series-20260910/round-02/serialization/6bc43693144a.json",
+      "source_sha256": "cc89cced8b5f93a8da13ee39ca4dde8733402cb28002e73dd70dd55684b8cff4",
+      "id": "6bc43693144a",
+      "case": "serialization",
+      "winner": "compatibility",
+      "strategy_statuses": {
+        "minimal": "failed",
+        "compatibility": "passed",
+        "refactor": "passed"
+      },
+      "winner_lines": 6,
+      "refactor_lines": 18,
+      "winner_lint": 2,
+      "refactor_lint": 2
+    },
+    {
+      "source_path": "evaluation/series-20260910/round-02/validators/73347c34a2ef.json",
+      "source_sha256": "253c550c1065addf67054c928f5a0b6ac860a1ed8c400874faf5268900ccc4e5",
+      "id": "73347c34a2ef",
+      "case": "validators",
+      "winner": "minimal",
+      "strategy_statuses": {
+        "minimal": "passed",
+        "compatibility": "failed",
+        "refactor": "passed"
+      },
+      "winner_lines": 43,
+      "refactor_lines": 58,
+      "winner_lint": 1,
+      "refactor_lint": 2
+    },
+    {
+      "source_path": "evaluation/series-20260910/round-03/compatibility/b249a85a9f78.json",
+      "source_sha256": "1ce93917fc40ed17ec83ac9804348d44b9887af3b51ccc617f17fc38363b8397",
+      "id": "b249a85a9f78",
+      "case": "compatibility",
+      "winner": "minimal",
+      "strategy_statuses": {
+        "minimal": "passed",
+        "compatibility": "passed",
+        "refactor": "passed"
+      },
+      "winner_lines": 4,
+      "refactor_lines": 11,
+      "winner_lint": 0,
+      "refactor_lint": 0
+    },
+    {
+      "source_path": "evaluation/series-20260910/round-03/config/ee4ce9911531.json",
+      "source_sha256": "397190cb3bf913d8d4966bb9a2d0098e62007aa96fa957ee8dc6535e8be319be",
+      "id": "ee4ce9911531",
+      "case": "config",
+      "winner": "minimal",
+      "strategy_statuses": {
+        "minimal": "passed",
+        "compatibility": "failed",
+        "refactor": "passed"
+      },
+      "winner_lines": 17,
+      "refactor_lines": 17,
+      "winner_lint": 0,
+      "refactor_lint": 0
+    },
+    {
+      "source_path": "evaluation/series-20260910/round-03/parsing/2d501a3e059f.json",
+      "source_sha256": "a5fc1fbd180f21f7516eda388ec4e06be41c0a33eae6383ede19017a73be63d9",
+      "id": "2d501a3e059f",
+      "case": "parsing",
+      "winner": "minimal",
+      "strategy_statuses": {
+        "minimal": "passed",
+        "compatibility": "passed",
+        "refactor": "passed"
+      },
+      "winner_lines": 2,
+      "refactor_lines": 10,
+      "winner_lint": 0,
+      "refactor_lint": 0
+    },
+    {
+      "source_path": "evaluation/series-20260910/round-03/serialization/f3f3b10e5df1.json",
+      "source_sha256": "09ee3ca9de121d5fb9bc6a1b55305d3109340deb5ccebc5c1a90b971a1aa43d7",
+      "id": "f3f3b10e5df1",
+      "case": "serialization",
+      "winner": "compatibility",
+      "strategy_statuses": {
+        "minimal": "passed",
+        "compatibility": "passed",
+        "refactor": "passed"
+      },
+      "winner_lines": 6,
+      "refactor_lines": 18,
+      "winner_lint": 2,
+      "refactor_lint": 2
+    },
+    {
+      "source_path": "evaluation/series-20260910/round-03/validators/b93c8df744ac.json",
+      "source_sha256": "d08c7a3d7728444b06bc810f44e3bb876b1fb56abc56f42b0a0646545f9313e5",
+      "id": "b93c8df744ac",
+      "case": "validators",
+      "winner": "compatibility",
+      "strategy_statuses": {
+        "minimal": "failed",
+        "compatibility": "passed",
+        "refactor": "passed"
+      },
+      "winner_lines": 63,
+      "refactor_lines": 57,
+      "winner_lint": 1,
+      "refactor_lint": 2
+    }
+  ]
+}

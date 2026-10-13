@@ -1,0 +1,177 @@
+{
+  "classification": "LOCAL REPLAY of a retained hosted winning patch; no new provider migration",
+  "created_at_utc": "2026-10-13T00:36:06.244487+00:00",
+  "run_id": "e9290cae7c9c",
+  "baseline_commit": "2480ed91dac5cc70e3a9486acaa2ea41c04ab8f2",
+  "effective_project_directory": "fixtures/pydantic-v1-app",
+  "source_archive_sha256": "0dd64d23c90c93d0e9f2b561824d27e6874de6abb1853c942d3d7c73ef98403d",
+  "all_archive_source_files_verified": 275,
+  "orchestrator_digest_recomputed": "b3c8e876e8ae769a59498bd5bcc06318ce1dc049b812647bd290b386f09e3940",
+  "original_summary_sha256": "473c4807a0f7819674142554be73eb98d8e501bf10db5927bd92783c459dec16",
+  "patch_sha256": "96325e7de7d17cd2cd5b17b4af6d7e4332e8e74a0058681c213c86acd38a5313",
+  "patch_bytes": 3610,
+  "patch_matches_download_summary_winner_revalidation": true,
+  "git_apply_check_exit": 0,
+  "git_apply_exit": 0,
+  "shared_environments_modified": false,
+  "dependencies_installed": false,
+  "credential_environment_inherited": false,
+  "fixture_source_files": [
+    {
+      "path": "LICENSE",
+      "bytes": 812,
+      "sha256": "7e4e034c5bed2d6f34a50c1acddb5300cda2dbbbbf8a560bbcff8aa0887df53b"
+    },
+    {
+      "path": "pyproject.toml",
+      "bytes": 372,
+      "sha256": "b7ebbbeded16fbc7c3f44c96f3f7868b1f406a1bf056691bdd080007dc36435a"
+    },
+    {
+      "path": "src/sample_app/__init__.py",
+      "bytes": 70,
+      "sha256": "2e81d4f321a22ad0c62691b185d726ffdf2a58716297e23cc5e8695a3b2dc783"
+    },
+    {
+      "path": "src/sample_app/api.py",
+      "bytes": 297,
+      "sha256": "d884965bda4aff05d1a9363a8d03d82d8ad9c903036668a44568c577223b1a26"
+    },
+    {
+      "path": "src/sample_app/models.py",
+      "bytes": 1254,
+      "sha256": "e8a7e6905c984149c7c9f6d1e5cc67cfd486d1c7ce74ffe0a6eb1edb8b167c17"
+    },
+    {
+      "path": "tests/test_api.py",
+      "bytes": 609,
+      "sha256": "6be698a8a6887ba90519b2ef9df42c8a812195a4fc60e4aa86736fbe37e94668"
+    },
+    {
+      "path": "tests/test_models.py",
+      "bytes": 1350,
+      "sha256": "521bc204a1fa35f32d89faf5b30cbb3d108c8f007a8f636dae5de447a0fd2f4a"
+    }
+  ],
+  "changed_fixture_files": [
+    {
+      "path": "pyproject.toml",
+      "before_sha256": "b7ebbbeded16fbc7c3f44c96f3f7868b1f406a1bf056691bdd080007dc36435a",
+      "after_sha256": "01e6ca35a35206ed5eb182d171afe58bb5a2d00da177450456f49f55500f68ba"
+    },
+    {
+      "path": "src/sample_app/api.py",
+      "before_sha256": "d884965bda4aff05d1a9363a8d03d82d8ad9c903036668a44568c577223b1a26",
+      "after_sha256": "aab86d08bec749fbf406da40d8ad16e3cee36181ad319a591da7da7ede66f491"
+    },
+    {
+      "path": "src/sample_app/models.py",
+      "before_sha256": "e8a7e6905c984149c7c9f6d1e5cc67cfd486d1c7ce74ffe0a6eb1edb8b167c17",
+      "after_sha256": "e9cc1bf82357c0a695896c20b058ddd618145dbf236821ef8a493f307395b11a"
+    }
+  ],
+  "scope": "Local replay of the authored example project. Historical hosted records are unchanged. This is not a new cloud run or an external-project evaluation.",
+  "observations": {
+    "baseline": {
+      "python_version": "3.13.9",
+      "pydantic_distribution_version": "1.10.26",
+      "uses_pydantic_v1_fallback": false,
+      "cases": [
+        {
+          "case": "whitespace_only_name",
+          "input": {
+            "id": 7,
+            "name": "   ",
+            "email": " ADA@EXAMPLE.COM ",
+            "created_at": "2026-01-02T03:04:05"
+          },
+          "accepted": false,
+          "normalized_json": null,
+          "error_type": "ValidationError"
+        },
+        {
+          "case": "valid_string_name",
+          "input": {
+            "id": 7,
+            "name": "  Ada  ",
+            "email": " ADA@EXAMPLE.COM ",
+            "created_at": "2026-01-02T03:04:05"
+          },
+          "accepted": true,
+          "normalized_json": {
+            "id": 7,
+            "name": "Ada",
+            "email": "ada@example.com",
+            "created_at": "2026-01-02T03:04:05"
+          },
+          "error_type": null
+        },
+        {
+          "case": "numeric_name",
+          "input": {
+            "id": 7,
+            "name": 123,
+            "email": " ADA@EXAMPLE.COM ",
+            "created_at": "2026-01-02T03:04:05"
+          },
+          "accepted": true,
+          "normalized_json": {
+            "id": 7,
+            "name": "123",
+            "email": "ada@example.com",
+            "created_at": "2026-01-02T03:04:05"
+          },
+          "error_type": null
+        }
+      ]
+    },
+    "winner": {
+      "python_version": "3.13.9",
+      "pydantic_distribution_version": "2.13.5",
+      "uses_pydantic_v1_fallback": false,
+      "cases": [
+        {
+          "case": "whitespace_only_name",
+          "input": {
+            "id": 7,
+            "name": "   ",
+            "email": " ADA@EXAMPLE.COM ",
+            "created_at": "2026-01-02T03:04:05"
+          },
+          "accepted": false,
+          "normalized_json": null,
+          "error_type": "ValidationError"
+        },
+        {
+          "case": "valid_string_name",
+          "input": {
+            "id": 7,
+            "name": "  Ada  ",
+            "email": " ADA@EXAMPLE.COM ",
+            "created_at": "2026-01-02T03:04:05"
+          },
+          "accepted": true,
+          "normalized_json": {
+            "id": 7,
+            "name": "Ada",
+            "email": "ada@example.com",
+            "created_at": "2026-01-02T03:04:05"
+          },
+          "error_type": null
+        },
+        {
+          "case": "numeric_name",
+          "input": {
+            "id": 7,
+            "name": 123,
+            "email": " ADA@EXAMPLE.COM ",
+            "created_at": "2026-01-02T03:04:05"
+          },
+          "accepted": false,
+          "normalized_json": null,
+          "error_type": "ValidationError"
+        }
+      ]
+    }
+  }
+}

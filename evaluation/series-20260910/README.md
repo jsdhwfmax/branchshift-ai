@@ -33,6 +33,26 @@ That run is not described as three executed child states.
 | parsing | 3/3 | 48.271 s | [b6475ac669f8](round-01/parsing/b6475ac669f8.json) · [67cfd318e689](round-02/parsing/67cfd318e689.json) · [2d501a3e059f](round-03/parsing/2d501a3e059f.json) |
 | compatibility | 3/3 | 53.022 s | [97b310dcbde7](round-01/compatibility/97b310dcbde7.json) · [e6dd367c1436](round-02/compatibility/e6dd367c1436.json) · [b249a85a9f78](round-03/compatibility/b249a85a9f78.json) |
 
+A [retrospective candidate comparison](candidate-comparison-20261013.json),
+checked on 13 October against all 15 original summary hashes and stored metrics,
+shows how the selected patches compared with the refactor candidates already
+generated in those same runs. The original records remain unchanged.
+
+| Observed comparison | Result |
+| --- | ---: |
+| Selected patch smaller / equal / larger than refactor | 11 / 3 / 1 runs |
+| Total changed lines: selected / refactor | 248 / 343 |
+| Candidate passes: minimal / compatibility / refactor | 13 / 10 / 15 of 15 |
+
+The [one larger selected patch](round-03/validators/b93c8df744ac.json) changed
+63 lines versus refactor's 57, but had one lint finding versus two: the ranking
+prioritizes lint before patch size. Refactor itself passed in all 15 runs, so
+this cohort provides **no evidence of a success-rate gain** from three strategies.
+This is not an independent single-strategy or matched-budget ablation, and it
+does not establish cost or time savings. Only the selected winners received the
+separate clean-baseline revalidation step; unselected candidate passes do not
+represent independently revalidated single-strategy runs.
+
 ## Timing, usage and estimated inference cost
 
 - Median ledger duration: **53.022 seconds**; nearest-rank p95:

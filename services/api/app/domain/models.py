@@ -8,6 +8,12 @@ from urllib.parse import urlparse
 
 from pydantic import AfterValidator, BaseModel, Field, HttpUrl, TypeAdapter, field_validator
 
+from app.orchestrator.behavior_probes import (
+    BehaviorProbeComparison,
+    BehaviorProbeResults,
+    BehaviorProbeSuite,
+)
+
 
 def utc_now() -> datetime:
     return datetime.now(timezone.utc)
@@ -62,12 +68,17 @@ def validate_project_path(value: str) -> str:
 ProjectPath = Annotated[
     str, Field(min_length=1, max_length=200), AfterValidator(validate_project_path)
 ]
+CommitSHA = Annotated[str, Field(pattern=r"^[0-9a-f]{40}$")]
+PackageExtra = Annotated[str, Field(pattern=r"^[A-Za-z0-9][A-Za-z0-9._-]{0,49}$")]
 
 
 class CreateRunRequest(BaseModel):
     repo_url: HttpUrl
     target: Literal["pydantic-v2"] = "pydantic-v2"
     project_path: ProjectPath | None = None
+    baseline_ref: CommitSHA | None = None
+    test_extras: list[PackageExtra] = Field(default_factory=lambda: ["test"], max_length=8)
+    behavior_probes: BehaviorProbeSuite | None = None
 
     @field_validator("repo_url")
     @classmethod
@@ -106,6 +117,8 @@ class BranchResult(BaseModel):
     tests_collected: int = Field(ge=0)
     tests_passed: int = Field(ge=0)
     tests_failed: int = Field(ge=0)
+    tests_skipped: int | None = Field(default=None, ge=0)
+    test_outcomes_preserved: bool | None = None
     pip_check_passed: bool
     lint_findings: int = Field(ge=0)
     changed_files: int = Field(ge=0)
@@ -120,6 +133,9 @@ class BranchResult(BaseModel):
     pip_exit_code: int | None = None
     test_contract_preserved: bool | None = None
     checkpoint_id: str | None = None
+    behavior_probe_results: BehaviorProbeResults | None = None
+    behavior_probe_comparison: BehaviorProbeComparison | None = None
+    behavior_probe_error: str | None = Field(default=None, max_length=500)
 
     @property
     def pass_ratio(self) -> float:
@@ -143,6 +159,11 @@ class RunSummary(BaseModel):
     repo_url: HttpUrl
     target: Literal["pydantic-v2"] = "pydantic-v2"
     project_path: ProjectPath | None = None
+    baseline_ref: CommitSHA | None = None
+    test_extras: list[PackageExtra] = Field(default_factory=lambda: ["test"], max_length=8)
+    behavior_probes: BehaviorProbeSuite | None = None
+    baseline_probe_results: BehaviorProbeResults | None = None
+    baseline_probe_error: str | None = Field(default=None, max_length=500)
     mode: Literal["mock", "live"] = "mock"
     status: RunStatus = RunStatus.QUEUED
     created_at: datetime = Field(default_factory=utc_now)
@@ -157,6 +178,8 @@ class RunSummary(BaseModel):
     baseline_commit_sha: str | None = None
     baseline_checkpoint_id: str | None = None
     baseline_tests_collected: int | None = Field(default=None, ge=1)
+    baseline_tests_passed: int | None = Field(default=None, ge=1)
+    baseline_tests_skipped: int | None = Field(default=None, ge=0)
     model_id: str | None = None
     provider_usage: dict[str, int] = Field(default_factory=dict)
     baseline_test_contract_digest: str | None = None
@@ -166,6 +189,25 @@ class RunSummary(BaseModel):
     orchestrator_digest: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
     orchestrator_dirty: bool | None = None
     runtime_config_digest: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+
+
+class RunListItem(BaseModel):
+    """Small saved-run index; full evidence stays on the individual run."""
+
+    id: str
+    repo_url: HttpUrl
+    project_path: ProjectPath | None = None
+    mode: Literal["mock", "live"]
+    status: RunStatus
+    created_at: datetime
+    updated_at: datetime
+    winner_id: str | None = None
+    baseline_tests_collected: int | None = Field(default=None, ge=1)
+
+
+class RunList(BaseModel):
+    runs: list[RunListItem]
+    limit: int = Field(ge=1, le=20)
 
 
 ALLOWED_TRANSITIONS: dict[RunStatus, set[RunStatus]] = {

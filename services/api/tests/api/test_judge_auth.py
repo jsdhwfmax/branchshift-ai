@@ -151,6 +151,7 @@ def test_module_startup_rejects_missing_required_credentials_without_loading_dot
         ("GET", "/assets/app.js"),
         ("GET", "/runs/stored"),
         ("GET", "/api/health/integrations"),
+        ("GET", "/api/runs"),
         ("GET", "/api/runs/missing"),
         ("GET", "/api/runs/missing/report"),
         ("GET", "/api/runs/missing/patch"),

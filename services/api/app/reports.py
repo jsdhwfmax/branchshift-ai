@@ -22,8 +22,50 @@ from app.domain.models import (
     RunStatus,
     RunSummary,
 )
+from app.orchestrator.behavior_probes import BehaviorProbeResults
 
 UNKNOWN = "Unknown (not recorded)"
+
+
+def _probe_review(run: RunSummary) -> list[str]:
+    lines = ["## Explicit behavior review", ""]
+    if run.behavior_probes is None:
+        return lines + ["No optional input examples were requested for this run.", ""]
+    lines += [
+        "These fixed model inputs are an additional maintainer review, not a migration "
+        "acceptance gate or proof of general behavior equivalence. Differences require "
+        "review even when the original test suite passes. A rejected input records only "
+        "its exception class; error messages and side effects are not compared.", "",
+    ]
+
+    def observation(results: BehaviorProbeResults | None, case_id: str) -> str:
+        item = next((item for item in results.observations if item.id == case_id), None) \
+            if results else None
+        if item is None:
+            return UNKNOWN
+        if item.status == "accepted":
+            value = json.dumps(item.value, sort_keys=True, ensure_ascii=True)
+            return "accepted: " + value[:600] + ("… (see JSON export)" if len(value) > 600 else "")
+        return item.status + ": " + str(item.error_type or item.reason)
+
+    for case in run.behavior_probes.cases:
+        lines += [f"### Example {_text(case.id)}", ""] + _table([
+            ("Model", f"{case.module}.{case.model}"),
+            ("Baseline observation", observation(run.baseline_probe_results, case.id)),
+        ])
+        for candidate in [*run.branches, *([run.revalidation] if run.revalidation else [])]:
+            label = "Clean revalidation" if candidate is run.revalidation else candidate.strategy_id
+            comparison = candidate.behavior_probe_comparison
+            finding = next((item for item in comparison.cases if item.id == case.id), None) \
+                if comparison else None
+            lines += _table([
+                (f"{label} observation", observation(candidate.behavior_probe_results, case.id)),
+                (f"{label} review", f"{finding.status}: {finding.basis}" if finding else None),
+                (f"{label} unavailable detail", candidate.behavior_probe_error),
+            ])
+    if run.baseline_probe_error:
+        lines += ["Baseline review unavailable: " + _text(run.baseline_probe_error), ""]
+    return lines
 
 
 def _recorded(model: BaseModel, name: str) -> object:
@@ -125,13 +167,31 @@ def _comparison(run: RunSummary) -> tuple[list[str], bool]:
     return lines + [""], consistent
 
 
-def _live_checks(result: BranchResult | None, minimum_tests: int | None) -> bool:
+def _live_checks(result: BranchResult | None, run: RunSummary) -> bool:
+    original_tests_pass = bool(
+        result is not None and (
+            result.tests_passed == result.tests_collected and (result.tests_skipped or 0) == 0
+            if run.baseline_tests_passed is None and run.baseline_tests_skipped is None else
+            result.test_outcomes_preserved is True
+            and result.tests_collected == run.baseline_tests_collected
+            and run.baseline_tests_passed is not None
+            and run.baseline_tests_skipped is not None
+            and (
+                run.baseline_tests_passed + run.baseline_tests_skipped
+                == run.baseline_tests_collected
+            )
+            and result.tests_passed >= run.baseline_tests_passed
+            and result.tests_skipped is not None
+            and result.tests_passed + result.tests_skipped == result.tests_collected
+        )
+    )
     return bool(
         result is not None
         and _passed_candidate(result)
-        and result.tests_passed == result.tests_collected
-        and minimum_tests is not None
-        and result.tests_collected >= minimum_tests
+        and original_tests_pass
+        and result.test_outcomes_preserved is not False
+        and run.baseline_tests_collected is not None
+        and result.tests_collected == run.baseline_tests_collected
         and result.pydantic_major == 2
         and result.test_exit_code == 0
         and result.pip_exit_code == 0
@@ -214,7 +274,7 @@ def render_markdown_report(run: RunSummary, events: Sequence[RunEvent]) -> str:
     winner = next((b for b in run.branches if b.strategy_id == run.winner_id), None)
     revalidation = run.revalidation
     clean = bool(
-        _live_checks(revalidation, run.baseline_tests_collected)
+        _live_checks(revalidation, run)
         and revalidation is not None
         and revalidation.strategy_id == run.winner_id
         and revalidation.patch == run.patch
@@ -231,7 +291,7 @@ def render_markdown_report(run: RunSummary, events: Sequence[RunEvent]) -> str:
         and run.baseline_checkpoint_id
         and run.baseline_test_contract_digest
         and {b.strategy_id for b in run.branches} == {"minimal", "compatibility", "refactor"}
-        and _live_checks(winner, run.baseline_tests_collected)
+        and _live_checks(winner, run)
         and winner is not None
         and winner.patch == run.patch
         and clean
@@ -247,6 +307,11 @@ def render_markdown_report(run: RunSummary, events: Sequence[RunEvent]) -> str:
         "provider records.",
         "The JSON report remains the full machine-readable record. Durations below are "
         "rounded to three decimal places.",
+        "Verification scope: the repository's existing test suite, test-contract integrity, "
+        "dependency consistency and recorded Pydantic runtime. Passing these checks does "
+        "not establish behavior equivalence for untested inputs, coercion, validation "
+        "errors or serialization. Maintainer review and additional behavior tests may "
+        "still be needed.",
         "",
     ]
     if supported:
@@ -273,9 +338,15 @@ def render_markdown_report(run: RunSummary, events: Sequence[RunEvent]) -> str:
             ("Orchestrator content digest", run.orchestrator_digest),
             ("Orchestrator dirty checkout", run.orchestrator_dirty),
             ("Runtime-config digest", run.runtime_config_digest),
+            ("Requested baseline commit", run.baseline_ref),
             ("Baseline commit", run.baseline_commit_sha),
             ("Baseline checkpoint", run.baseline_checkpoint_id),
             ("Baseline collected tests", run.baseline_tests_collected),
+            ("Baseline passing tests", run.baseline_tests_passed),
+            ("Baseline skipped tests (includes expected failures)", run.baseline_tests_skipped),
+            ("Requested commit", run.baseline_ref),
+            ("Installed project extras", (", ".join(run.test_extras) or "None")
+             if "test_extras" in run.model_fields_set else None),
             ("Baseline test-contract digest", run.baseline_test_contract_digest),
             ("Stored winner ID", run.winner_id),
             (
@@ -305,6 +376,8 @@ def render_markdown_report(run: RunSummary, events: Sequence[RunEvent]) -> str:
                 ("Tests collected", branch.tests_collected),
                 ("Tests passed", branch.tests_passed),
                 ("Tests failed / collection errors", branch.tests_failed),
+                ("Tests skipped (includes expected failures)", branch.tests_skipped),
+                ("Original individual test outcomes preserved", branch.test_outcomes_preserved),
                 ("Dependency consistency", branch.pip_check_passed),
                 ("Lint findings", branch.lint_findings),
                 ("Changed files", branch.changed_files),
@@ -331,16 +404,22 @@ def render_markdown_report(run: RunSummary, events: Sequence[RunEvent]) -> str:
         "",
         "Matching clean-revalidation evidence is recorded."
         if clean
+        else "Clean-baseline revalidation did not pass; its retained evidence follows."
+        if revalidation is not None and revalidation.status is not BranchStatus.PASSED
         else "Clean-revalidation evidence is absent, incomplete or inconsistent.",
         "",
     ]
     lines += _table(
         [
             ("Revalidation checkpoint ID", run.revalidated_checkpoint_id),
+            ("Candidate checked", revalidation.strategy_id if revalidation else None),
             ("Status", revalidation.status if revalidation else None),
             ("Tests collected", revalidation.tests_collected if revalidation else None),
             ("Tests passed", revalidation.tests_passed if revalidation else None),
             ("Tests failed", revalidation.tests_failed if revalidation else None),
+            ("Tests skipped", revalidation.tests_skipped if revalidation else None),
+            ("Original individual test outcomes preserved",
+             revalidation.test_outcomes_preserved if revalidation else None),
             ("Pydantic major", revalidation.pydantic_major if revalidation else None),
             (
                 "Test contract preserved",
@@ -353,6 +432,7 @@ def render_markdown_report(run: RunSummary, events: Sequence[RunEvent]) -> str:
             ("Diagnostics", revalidation.diagnostics if revalidation else None),
         ]
     )
+    lines += _probe_review(run)
     lines += ["## Retained citations", ""]
     for citation in run.citations:
         lines += [

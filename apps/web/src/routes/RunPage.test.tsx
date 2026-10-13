@@ -31,7 +31,7 @@ const result = (changes: Partial<BranchResult> = {}): BranchResult => ({
   pip_check_passed: true, lint_findings: 0, changed_files: 2, changed_lines: 15,
   elapsed_seconds: 5, patch_applicable: true,
   pydantic_major: 2, test_exit_code: 0, pip_exit_code: 0, test_contract_preserved: true,
-  checkpoint_id: 'child-minimal-abcdefgh', ...changes,
+  checkpoint_id: 'child-minimal-abcdefgh', patch: '+ migrated', ...changes,
 })
 
 function renderRun() {
@@ -102,7 +102,7 @@ test('keeps one stream across status changes, deduplicates events, and clears re
   act(() => stream.onopen?.())
   await waitFor(() => expect(screen.queryByText(/Reconnecting automatically/)).not.toBeInTheDocument())
 
-  current = sampleRun({ status: 'completed', winner_id: 'minimal', branches: [result()], patch: '+ migrated', revalidated_checkpoint_id: 'clean-baseline-abcdefgh' })
+  current = sampleRun({ status: 'completed', winner_id: 'minimal', branches: [result()], patch: '+ migrated', baseline_tests_collected: 18, baseline_commit_sha: 'a'.repeat(40), baseline_test_contract_digest: 'b'.repeat(64), baseline_checkpoint_id: 'original-baseline', revalidated_checkpoint_id: 'clean-baseline-abcdefgh', revalidation: result({ checkpoint_id: 'clean-baseline-abcdefgh' }) })
   act(() => stream.emit('run.completed', { id: 2 }))
   expect(await screen.findByRole('heading', { name: 'Migration verified.' })).toBeInTheDocument()
   expect(stream.close).toHaveBeenCalledTimes(1)
@@ -288,4 +288,33 @@ test('rejects malformed or cross-run events without crashing or polluting eviden
   })
   expect(screen.queryByText('Wrong run')).not.toBeInTheDocument()
   expect(screen.queryByRole('table')).not.toBeInTheDocument()
+})
+
+
+test('completed live view prioritizes exact clean revalidation over model plans', async () => {
+  const candidate = result()
+  vi.mocked(getRun).mockResolvedValue(sampleRun({ status: 'completed', winner_id: 'minimal', branches: [candidate], patch: candidate.patch!, baseline_tests_collected: 18, baseline_checkpoint_id: 'base', baseline_commit_sha: 'a'.repeat(40), baseline_test_contract_digest: 'b'.repeat(64), revalidated_checkpoint_id: 'clean', revalidation: result({ checkpoint_id: 'clean' }), strategies: [{ id: 'minimal', title: 'Proposed migration', rationale: 'Everything will pass.', ordered_steps: [], source_urls: [] }] }))
+  renderRun()
+  expect(await screen.findByRole('heading', { name: 'Migration verified.' })).toBeVisible()
+  const resultHeading = screen.getByRole('heading', { name: 'minimal selected.' })
+  const plans = screen.getByRole('heading', { name: 'Proposed plans and execution' })
+  expect(resultHeading.compareDocumentPosition(plans) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  expect(screen.getByText(/tests passed again/)).toHaveTextContent('18/18')
+  expect(screen.getAllByText('Proposed plan · model-authored, not an execution result')).toHaveLength(3)
+  fireEvent.click(screen.getByText('Apply this patch to the recorded commit'))
+  expect(screen.getByLabelText('Patch application commands')).toHaveTextContent('git worktree add --detach')
+  expect(screen.getByLabelText('Patch application commands')).not.toHaveTextContent('git checkout')
+})
+
+test('requested but missing behavior observations prevent a blanket verified headline', async () => {
+  const candidate = result()
+  vi.mocked(getRun).mockResolvedValue(sampleRun({ status: 'completed', winner_id: 'minimal', branches: [candidate], patch: candidate.patch!, baseline_tests_collected: 18, baseline_checkpoint_id: 'base', baseline_commit_sha: 'a'.repeat(40), baseline_test_contract_digest: 'b'.repeat(64), revalidated_checkpoint_id: 'clean', revalidation: result({ checkpoint_id: 'clean' }), behavior_probes: { cases: [{ id: 'numeric', module: 'app.models', model: 'User', payload: { name: 123 } }] }, baseline_probe_error: 'Probe timed out' }))
+  renderRun()
+  expect(await screen.findByRole('heading', { level: 1, name: 'Behavior review incomplete.' })).toBeVisible()
+  expect(screen.getByText('Original tests verified')).toBeVisible()
+  expect(screen.getByRole('link', { name: /Download selected patch/ })).toBeVisible()
+  expect(screen.queryByRole('link', { name: /Download verified patch/ })).not.toBeInTheDocument()
+  const review = screen.getByRole('region', { name: 'Behavior review incomplete' })
+  expect(within(review).getAllByText(/0 match · 0 different · 1 unsupported/)).toHaveLength(2)
+  expect(within(review).getByText('Unavailable: Probe timed out')).toBeVisible()
 })

@@ -25,6 +25,8 @@ def test_recorded_lint_winner_explanation_preserves_larger_patch_and_history():
     before = run.model_dump_json(), event.model_dump_json()
     report = render_markdown_report(run, [event])
     assert "Stored live winner and clean-revalidation evidence satisfy" in report
+    assert "Verification scope: the repository's existing test suite" in report
+    assert "does not establish behavior equivalence for untested inputs" in report
     assert "lint findings is 1 versus 2" in report
     assert "selected patch is larger (71 versus 57 changed lines)" in report
     assert r"nvidia/Nemotron\-3\-Ultra\-550b\-a55b" in report
@@ -151,3 +153,38 @@ def test_events_from_another_run_are_rejected_instead_of_mixed_into_evidence():
         render_markdown_report(
             run, [RunEvent(id=1, run_id="other", type="status", message="Other")]
         )
+
+
+@pytest.mark.parametrize("baseline_passed,baseline_skipped,preserved,skipped,verified", [
+    (None, None, None, None, True),  # Historical records retain their original count gate.
+    (13, 0, True, 0, True),
+    (12, 1, True, 1, True),
+    (13, 0, None, 0, False),
+    (13, 0, False, 0, False),
+    (13, None, True, 0, False),
+    (None, 0, True, 0, False),
+    (13, 0, True, None, False),
+    (13, 1, True, 0, False),
+])
+def test_report_requires_new_outcome_evidence_when_either_baseline_field_is_recorded(
+    baseline_passed, baseline_skipped, preserved, skipped, verified,
+):
+    run = retained_run()
+    run.baseline_tests_passed = baseline_passed
+    run.baseline_tests_skipped = baseline_skipped
+    for branch in [*run.branches, run.revalidation]:
+        branch.test_outcomes_preserved = preserved
+        branch.tests_skipped = skipped
+        branch.tests_passed = 12 if baseline_passed == 12 else 13
+    report = render_markdown_report(run, [])
+    assert ("Stored live winner and clean-revalidation evidence satisfy" in report) is verified
+    assert ("Successful live migration is not established" in report) is not verified
+
+
+def test_legacy_report_still_requires_the_exact_baseline_collected_count():
+    run = retained_run()
+    for branch in [*run.branches, run.revalidation]:
+        branch.tests_collected = 14
+        branch.tests_passed = 14
+    report = render_markdown_report(run, [])
+    assert "Successful live migration is not established" in report

@@ -26,6 +26,23 @@ def test_repository_url_accepts_public_root():
     assert request.target == "pydantic-v2"
 
 
+@pytest.mark.parametrize("ref", ["main", "a" * 39, "a" * 41, "A" * 40, "a; echo bad"])
+def test_baseline_ref_requires_immutable_full_commit(ref):
+    with pytest.raises(ValidationError):
+        CreateRunRequest(repo_url="https://github.com/owner/repo", baseline_ref=ref)
+
+
+def test_pinned_commit_and_package_extras_are_bounded_data():
+    request = CreateRunRequest(
+        repo_url="https://github.com/owner/repo", baseline_ref="a" * 40,
+        test_extras=["pyyaml", "semver"],
+    )
+    assert request.baseline_ref == "a" * 40
+    for extras in (["test;echo bad"], ["../path"], ["x"] * 9, ["test[shell]"]):
+        with pytest.raises(ValidationError):
+            CreateRunRequest(repo_url=request.repo_url, test_extras=extras)
+
+
 def test_run_transitions_are_ordered():
     assert_transition(RunStatus.QUEUED, RunStatus.PREPARING)
     with pytest.raises(ValueError, match="Invalid run transition"):

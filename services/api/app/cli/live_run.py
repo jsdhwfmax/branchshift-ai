@@ -15,20 +15,28 @@ from app.domain.models import (
     RunStatus,
     RunSummary,
 )
+from app.orchestrator.behavior_probes import BehaviorProbeSuite
 from app.orchestrator.run_manager import RunManager
 from app.providers.redaction import redact
 from app.reports import render_markdown_report
 from app.storage.repositories import RunRepository
 
 
-async def execute(repo_url: str, output: Path, *, project_path: str | None = None) -> bool:
+async def execute(
+    repo_url: str, output: Path, *, project_path: str | None = None,
+    baseline_ref: str | None = None,
+    test_extras: list[str] | None = None,
+    behavior_probes: BehaviorProbeSuite | None = None,
+) -> bool:
     output.mkdir(parents=True, exist_ok=True)
     config = replace(settings, mode="live", database_url=f"sqlite:///{output / 'runs.db'}")
     repository = RunRepository(config.database_url)
     manager = RunManager(repository, config)
     try:
         run = await manager.create(CreateRunRequest.model_validate({
-            "repo_url": repo_url, "project_path": project_path,
+            "repo_url": repo_url, "project_path": project_path, "baseline_ref": baseline_ref,
+            **({"test_extras": test_extras} if test_extras is not None else {}),
+            "behavior_probes": behavior_probes,
         }))
         print(f"RUN_ID={run.id}", flush=True)
         cursor = 0
@@ -72,9 +80,23 @@ def main() -> None:
     parser.add_argument(
         "--project-path", help="Python project directory relative to repository root"
     )
+    parser.add_argument(
+        "--baseline-ref", help="Full lowercase commit SHA; omitted uses the current default branch"
+    )
+    parser.add_argument(
+        "--test-extras", help="Comma-separated package extras (default: test); empty installs none"
+    )
+    parser.add_argument(
+        "--behavior-probes", type=Path,
+        help="Optional JSON file of explicit model inputs to compare for maintainer review",
+    )
     args = parser.parse_args()
     raise SystemExit(0 if asyncio.run(execute(
-        args.repo_url, args.output, project_path=args.project_path,
+        args.repo_url, args.output, project_path=args.project_path, baseline_ref=args.baseline_ref,
+        test_extras=(args.test_extras.split(",") if args.test_extras else [])
+        if args.test_extras is not None else None,
+        behavior_probes=BehaviorProbeSuite.model_validate_json(args.behavior_probes.read_text())
+        if args.behavior_probes else None,
     )) else 1)
 
 

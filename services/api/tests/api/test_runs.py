@@ -52,6 +52,22 @@ def test_health_never_exposes_secret(tmp_path):
     assert response.json()["integrations"]["nemotron"]["configured"] is True
 
 
+def test_saved_runs_remain_readable_when_execution_allowance_is_closed(tmp_path):
+    config = Settings(
+        mode="mock", database_url=f"sqlite:///{tmp_path / 'index.db'}",
+        http_daily_run_limit=0, http_lifetime_run_limit=0,
+    )
+    with TestClient(create_app(config)) as client:
+        assert client.post("/api/runs", json={
+            "repo_url": "https://github.com/owner/repo",
+        }).status_code == 429
+        response = client.get("/api/runs")
+        assert response.status_code == 200
+        assert response.json() == {"runs": [], "limit": 5}
+        for limit in (0, 21, "invalid"):
+            assert client.get(f"/api/runs?limit={limit}").status_code == 422
+
+
 def test_live_health_requires_sandbox_project(tmp_path):
     config = Settings(
         mode="live", database_url=f"sqlite:///{tmp_path / 'project-health.db'}",

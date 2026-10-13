@@ -9,7 +9,7 @@ from fastapi import APIRouter, Header, HTTPException, Query, Request, Response, 
 from fastapi.responses import PlainTextResponse, StreamingResponse
 from pydantic import BaseModel
 
-from app.domain.models import TERMINAL_RUN_STATUSES, CreateRunRequest, RunSummary
+from app.domain.models import TERMINAL_RUN_STATUSES, CreateRunRequest, RunList, RunSummary
 from app.reports import render_markdown_report
 from app.storage.admission import AdmissionDenied, http_admission
 
@@ -18,6 +18,12 @@ router = APIRouter(prefix="/api/runs", tags=["runs"])
 
 class RunAdmissionError(BaseModel):
     detail: str
+
+
+@router.get("", response_model=RunList)
+async def list_runs(request: Request, limit: int = Query(default=5, ge=1, le=20)) -> RunList:
+    """Browse saved outcomes without starting a run or consuming execution allowance."""
+    return RunList(runs=await request.app.state.repository.list_runs(limit), limit=limit)
 
 
 @router.post(

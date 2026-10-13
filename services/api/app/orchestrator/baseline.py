@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import re
 import shlex
 from dataclasses import dataclass
@@ -56,15 +57,22 @@ class BaselineRunner:
         repo_url: HttpUrl | str,
         *,
         project_path: str | None = None,
+        baseline_ref: str | None = None,
+        test_extras: list[str] | None = None,
     ) -> BaselineOutcome:
         request = CreateRunRequest.model_validate(
-            {"repo_url": repo_url, "project_path": project_path}
+            {"repo_url": repo_url, "project_path": project_path, "baseline_ref": baseline_ref}
         )
         validated_url = request.repo_url
         workdir = repository_workdir(validated_url, request.project_path)
+        extras = test_extras if test_extras is not None else ["test"]
         base = await self._sandbox.create_base(
             image,
-            build_setup_command(validated_url, workdir, self._max_repository_bytes),
+            build_setup_command(
+                validated_url, workdir, self._max_repository_bytes,
+                baseline_ref=request.baseline_ref,
+                test_extras=extras,
+            ),
         )
         checked = await self._sandbox.run(
             base,
@@ -84,9 +92,27 @@ class BaselineRunner:
             raise BaselineError(
                 "Repository baseline must pass at least one test: " + checked.stdout[-1_500:]
             )
+        outcomes = None
+        raw_outcomes = marker_text(checked.stdout, "TEST_OUTCOMES")
+        if raw_outcomes:
+            try:
+                outcomes = json.loads(raw_outcomes)
+            except ValueError as exc:
+                raise BaselineError("Baseline test outcome identities are invalid") from exc
+            if (
+                not isinstance(outcomes, dict) or len(outcomes) != collected
+                or any(value not in {"passed", "skipped"} for value in outcomes.values())
+                or sum(value == "passed" for value in outcomes.values()) != passed
+                or len(raw_outcomes.encode("utf-8")) > 16_000
+            ):
+                raise BaselineError("Baseline test outcome identities do not match the counts")
+        elif collected != passed:
+            raise BaselineError("Skipped baseline tests require per-test outcome identities")
         commit_sha = _marker_text(checked.stdout, "COMMIT")
         if not re.fullmatch(r"[0-9a-f]{40}", commit_sha):
             raise BaselineError("Sandbox did not return a valid pinned commit SHA")
+        if request.baseline_ref is not None and commit_sha != request.baseline_ref:
+            raise BaselineError("Sandbox baseline does not match the requested commit SHA")
         python_files = _section(checked.stdout, "PYTHON_FILES")[:200]
         manifests = _section(checked.stdout, "MANIFESTS")[:8]
         matches = _section(checked.stdout, "SYMBOL_MATCHES")[:200]
@@ -125,6 +151,9 @@ class BaselineRunner:
             symbol_matches=matches,
             baseline_summary=f"{collected} tests collected; {passed} passed; {failed} failed",
             baseline_tests_collected=collected,
+            baseline_tests_passed=passed,
+            test_outcomes=outcomes,
+            test_extras=extras,
             file_contents=file_contents,
             test_contract_digest=contract,
         )
@@ -137,31 +166,59 @@ class BaselineRunner:
         )
 
 
-def repository_workdir(repo_url: HttpUrl, project_path: str | None = None) -> str:
+def effective_project_path(repo_url: HttpUrl, project_path: str | None = None) -> str | None:
+    """Resolve the controlled example default without losing its repository-relative path."""
     if project_path is not None:
-        return f"{REPOSITORY_ROOT}/{validate_project_path(project_path)}"
+        return validate_project_path(project_path)
     normalized = str(repo_url).removesuffix("/").removesuffix(".git")
     if normalized == CONTROLLED_REPOSITORY:
-        return f"{REPOSITORY_ROOT}/fixtures/pydantic-v1-app"
-    return REPOSITORY_ROOT
+        return "fixtures/pydantic-v1-app"
+    return None
+
+
+def repository_workdir(repo_url: HttpUrl, project_path: str | None = None) -> str:
+    relative = effective_project_path(repo_url, project_path)
+    return f"{REPOSITORY_ROOT}/{relative}" if relative else REPOSITORY_ROOT
 
 
 def build_setup_command(
     repo_url: HttpUrl, workdir: str,
     max_repository_bytes: int = DEFAULT_MAX_REPOSITORY_BYTES,
+    *, baseline_ref: str | None = None,
+    test_extras: list[str] | None = None,
 ) -> str:
     url = shlex.quote(str(repo_url))
+    requirement = editable_requirement(test_extras)
+    pinned_checkout = ""
+    if baseline_ref is not None:
+        if not re.fullmatch(r"[0-9a-f]{40}", baseline_ref):
+            raise ValueError("Baseline ref must be a complete lowercase commit SHA")
+        pinned_checkout = (
+            f"git -C {REPOSITORY_ROOT} fetch --depth 1 origin {baseline_ref}; "
+            f"git -C {REPOSITORY_ROOT} checkout --detach {baseline_ref}; "
+            f'test "$(git -C {REPOSITORY_ROOT} rev-parse HEAD)" = {baseline_ref}; '
+        )
     return (
         "set -eu; "
         "if ! command -v git >/dev/null 2>&1; then "
         "apt-get update -qq && apt-get install -y --no-install-recommends git ca-certificates; fi; "
         f"git clone --depth 1 --filter=blob:none --single-branch -- {url} {REPOSITORY_ROOT}; "
+        + pinned_checkout
         + repository_size_guard_command(REPOSITORY_ROOT, max_repository_bytes) + "; "
         + project_guard_command(workdir) + "; "
         +
         "python -m venv .venv; "
-        ".venv/bin/python -m pip install --disable-pip-version-check -e '.[test]' ruff"
+        f".venv/bin/python -m pip install --disable-pip-version-check -e {requirement} pytest ruff"
     )
+
+
+def editable_requirement(test_extras: list[str] | None = None) -> str:
+    extras = ["test"] if test_extras is None else test_extras
+    if len(extras) > 8 or any(
+        not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,49}", name) for name in extras
+    ):
+        raise ValueError("Test extras must be bounded package extra names")
+    return shlex.quote(".[" + ",".join(sorted(set(extras))) + "]" if extras else ".")
 
 
 def build_baseline_command(workdir: str) -> str:

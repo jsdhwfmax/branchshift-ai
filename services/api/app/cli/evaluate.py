@@ -89,6 +89,22 @@ def assess(run: dict[str, Any], case: dict[str, Any]) -> dict[str, Any]:
     tests = _count(winner.get("tests_collected"))
     checkpoint = _text(run.get("revalidated_checkpoint_id"))
     baseline_checkpoint = _text(run.get("baseline_checkpoint_id"))
+    def passing_original_tests(result: dict[str, Any]) -> bool:
+        if result.get("test_outcomes_preserved") is False:
+            return False
+        collected = _count(result.get("tests_collected"))
+        passed = _count(result.get("tests_passed"))
+        if not run.get("baseline_tests_skipped"):
+            return collected is not None and passed == collected
+        skipped = _count(result.get("tests_skipped"))
+        originally_passed = _count(run.get("baseline_tests_passed"))
+        return (
+            collected == baseline_tests and result.get("test_outcomes_preserved") is True
+            and passed is not None and skipped is not None and originally_passed is not None
+            and originally_passed > 0 and passed >= originally_passed
+            and passed + skipped == collected
+        )
+
     gates = {
         "live_completed": run.get("mode") == "live" and run.get("status") == "completed",
         "pinned_baseline": bool(SHA.fullmatch(str(run.get("baseline_commit_sha", "")))),
@@ -104,7 +120,7 @@ def assess(run: dict[str, Any], case: dict[str, Any]) -> dict[str, Any]:
         "pydantic_2": _count(winner.get("pydantic_major")) == 2,
         "tests_pass": tests is not None and baseline_tests is not None
         and tests >= max(minimum, baseline_tests)
-        and _count(winner.get("tests_passed")) == tests
+        and passing_original_tests(winner)
         and _count(winner.get("tests_failed")) == 0
         and _count(winner.get("test_exit_code")) == 0,
         "dependencies_pass": winner.get("pip_check_passed") is True
@@ -121,7 +137,7 @@ def assess(run: dict[str, Any], case: dict[str, Any]) -> dict[str, Any]:
         and revalidation.get("test_contract_preserved") is True
         and _count(revalidation.get("pydantic_major")) == 2
         and _count(revalidation.get("tests_collected")) == tests
-        and _count(revalidation.get("tests_passed")) == tests
+        and passing_original_tests(revalidation)
         and _count(revalidation.get("tests_failed")) == 0
         and _count(revalidation.get("test_exit_code")) == 0
         and _count(revalidation.get("pip_exit_code")) == 0

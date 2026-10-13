@@ -26,7 +26,7 @@ export default function EvidenceTable({ branches, winnerId, terminal = false, sa
               <td>{branch.status.replaceAll('_', ' ')}</td>
               {!sample && <td title={branch.test_contract_preserved == null ? 'The contract check did not produce a result.' : undefined} className={branch.test_contract_preserved === false ? 'contract-changed' : ''}>{branch.test_contract_preserved === true ? 'preserved' : branch.test_contract_preserved === false ? 'changed' : 'unknown'}</td>}
               <td>{branch.pydantic_major ? `v${branch.pydantic_major}` : '—'}</td>
-              <td>{branch.tests_collected ? `${branch.tests_passed}/${branch.tests_collected}` : '—'}</td>
+              <td>{branch.tests_collected ? `${branch.tests_passed}/${branch.tests_collected}` : '—'}{branch.tests_skipped != null && <small className="skipped-count">{branch.tests_skipped} skipped</small>}</td>
               <td>{branch.pip_exit_code == null ? '—' : branch.pip_exit_code === 0 && branch.pip_check_passed ? 'pass' : 'fail'}</td>
               <td>{branch.tests_collected ? branch.lint_findings : '—'}</td>
               <td>{branch.changed_files}</td>

@@ -19,6 +19,9 @@ class RepositoryEvidence(BaseModel):
     baseline_summary: str = Field(max_length=2_000)
     file_contents: dict[str, str] = Field(default_factory=dict, max_length=40)
     baseline_tests_collected: int = Field(default=1, ge=1)
+    baseline_tests_passed: int | None = Field(default=None, ge=1)
+    test_outcomes: dict[str, str] | None = Field(default=None, max_length=500)
+    test_extras: list[str] = Field(default_factory=lambda: ["test"], max_length=8)
     test_contract_digest: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
 
     @model_validator(mode="after")
