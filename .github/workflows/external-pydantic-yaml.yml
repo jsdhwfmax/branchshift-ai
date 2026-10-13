@@ -1,0 +1,42 @@
+name: Fixed external Pydantic YAML comparison
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [evaluation/pydantic-yaml-20261013]
+    paths:
+      - '.github/workflows/external-pydantic-yaml.yml'
+      - 'evaluation/external-pydantic-yaml/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fixed-external-pydantic-yaml-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  baseline-and-codemod:
+    if: github.repository == 'jsdhwfmax/branchshift-ai'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out evaluation harness without persisted credentials
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Set up the declared Python patch version
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12.15'
+      - name: Run the fixed baseline and comparator
+        run: python evaluation/external-pydantic-yaml/run_comparator.py --output "$RUNNER_TEMP/external-pydantic-yaml/evidence"
+      - name: Retain bounded public evaluation evidence for one day
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: external-pydantic-yaml-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/external-pydantic-yaml/external-pydantic-yaml.tar.gz
+          retention-days: 1
+          compression-level: 0
+          if-no-files-found: warn
