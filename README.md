@@ -51,6 +51,12 @@ US$0.756100 model-usage estimate are retained. The comparator used an independen
 GitHub runner; this is not another Nebius Sandbox acceptance run or evidence
 of an AI success-rate advantage.
 
+A separate [Codex-assisted manual reference](evaluation/manual-native-control-20261013/README.md)
+now passes that original suite on native Pydantic 2.12.5, including a fresh-checkout
+repeat, using 14 edits and 210 new lines within the existing limits. This establishes
+feasibility on the inspected case; it does not change the 15-request autonomous
+result or demonstrate general reliability. No additional evaluated model calls were made.
+
 The [hosted acceptance record](docs/evidence/render-hosted-20261013/README.md)
 documents a real Safari-started migration on Render at deployment commit
 `2480ed9`: two passing candidates, a verified winner and clean-baseline retest,

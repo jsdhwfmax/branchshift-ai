@@ -1,0 +1,18 @@
+{
+  "commit": "ab98a73392e8493705008b97d12c334381bf36ec",
+  "run_id": 38338534313,
+  "job_id": 115104051144,
+  "conclusion": "success",
+  "checks": {
+    "api": 558,
+    "fixture": 13,
+    "web": 88,
+    "browser": 12,
+    "ruff": "passed",
+    "mypy_source_files": 43,
+    "typescript": "passed",
+    "build": "passed"
+  },
+  "evaluated_nebius_calls": 0,
+  "production_deployment_changed": false
+}

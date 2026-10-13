@@ -1,0 +1,56 @@
+{
+  "upstream_tracked_files_verified": 41,
+  "python_files_ast_parsed": 24,
+  "native_v2_import_scan": "no pydantic.v1 imports",
+  "test_data_files_unchanged": 11,
+  "test_and_data_hashes": {
+    "src/pydantic_yaml/test/__init__.py": "332e6df5c1e887e0b15e32a289962b3330b9091b045d95fb420bfe5986271f71",
+    "src/pydantic_yaml/test/recursive.yaml": "1021089459f48993213931a35049ed4855c49fb4b8a0998fff206dce75ce6a7b",
+    "src/pydantic_yaml/test/test_advanced_yaml.py": "7db726fbb448e00223834c86e74f3c8dfea9e005bb367f83b4ea9dd8f7955b53",
+    "src/pydantic_yaml/test/test_basic.py": "beb4a3d6c32789b9e78254b0cb45cd7ba563edbe3b61aabc292346ecd80c13f8",
+    "src/pydantic_yaml/test/test_io.py": "0db857f69d891210f71c868c0f2f9a147e039a745d4d259f02bc6a29eaac15be",
+    "src/pydantic_yaml/test/test_resursive.py": "f1a1554c77a7f01cd5c8042f6623d03a0f8c20584176ec9019ddf94633103f45",
+    "src/pydantic_yaml/test/test_secret_types.py": "2b792b395abbad5a32b2e4f57c0f662ad5fef0e5dbe2920eb66ea74feaf5df89",
+    "src/pydantic_yaml/test/test_sorting.py": "78ba03d4cc96281ef36c4aac4f2bd2626baf6bba6fa5c6da5fbc653427ee74b6",
+    "src/pydantic_yaml/test/test_types.py": "97f3af245abf4d0c868af46d3c6d7960c35cee6883bfeda97a20399965bb907c",
+    "src/pydantic_yaml/test/test_versioned.py": "54ccb81382cfafabbb713e452457854da5feaadc99f2f47ffbd28682b02252df",
+    "src/pydantic_yaml/test/versioned.yaml": "f942d90a30fe6aebda734bbf1dbcf5679b2123dab89732c93bb7c7b621dae90e"
+  },
+  "pytest_config_unchanged": true,
+  "changed_files": [
+    {
+      "path": "pyproject.toml",
+      "before_sha256": "3d46518b3d79bf4aa88ae54634fec25a1018387ecce56498a08bc3bb7392ae13",
+      "after_sha256": "37051404ce6de93dbf6d0790c3fc4ae81c4e6b664387962fa9d9f38f4356c98f"
+    },
+    {
+      "path": "src/pydantic_yaml/ext/semver.py",
+      "before_sha256": "5fec512e3ddf867c6c80627acb40bddb0638b5b26044bdde36d22ec78e8bffc8",
+      "after_sha256": "dbfc06a647bd77525ee0d37da59a51cc842c0bcc0884762c37c3616055f2cabf"
+    },
+    {
+      "path": "src/pydantic_yaml/ext/versioned_model.py",
+      "before_sha256": "7e6ee511f930180c45ddeb5017982bd3acbb48ceafbe43a66ff8ef9a4baa1412",
+      "after_sha256": "07318e908b89c6fbac12303aedbe8b4c6a820546331f0032e440df5d8d90422f"
+    },
+    {
+      "path": "src/pydantic_yaml/mixin.py",
+      "before_sha256": "bf300b02c3af01c0c4397ed89967738ed8289f8a84b6796d0a76e5e287cafa21",
+      "after_sha256": "6446b10720529c9cb994df9fcf7af580a7f2202c73ebc2e8b88ff538b156e26e"
+    }
+  ],
+  "edit_count": 15,
+  "maximum_lines_in_one_edit": 35,
+  "replacement_lines_including_context": 217,
+  "replacement_bytes_including_context": 7637,
+  "edit_replay_exact": true,
+  "runtime_validation": "not executed on developer host; pending isolated GitHub runner",
+  "nebius_model_calls": 0,
+  "sandbox_calls": 0,
+  "source_edit_count": 14,
+  "source_replacement_lines_including_context": 210,
+  "source_replacement_bytes_including_context": 7491,
+  "manifest_is_automatic": true,
+  "patch_sha256": "a1c6ba662e6bc6297f7206eaaf6a236563773b61ff0d2d0457a4a5ff05b779bc",
+  "edits_sha256": "b6ccc5dfad4fd9a3436ed4feaea3d10b5845db6ca76944de59fde2482ac4b1e7"
+}

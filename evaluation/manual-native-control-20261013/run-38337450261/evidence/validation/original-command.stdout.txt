@@ -1,0 +1,57 @@
+__BRANCHSHIFT_CONTRACT_BEFORE=b904563f71d38851af139911231703c997a1f56d6840690d9802c386c928a61c
+.......x.......                                                          [100%]
+--------------- generated xml file: /tmp/branchshift-pytest.xml ----------------
+14 passed, 1 xfailed, 14 warnings in 0.50s
+^^^^^
+21 |         return super().__new__(cls, int(val))
+   |
+
+D101 Missing docstring in public class
+  --> src/pydantic_yaml/test/test_types.py:24:7
+   |
+24 | class XS(YamlStr):
+   |       ^^
+25 |     def __new__(cls, val):
+26 |         return super().__new__(cls, f"My value is: {val!s}")
+   |
+
+D102 Missing docstring in public method
+  --> src/pydantic_yaml/test/test_types.py:25:9
+   |
+24 | class XS(YamlStr):
+25 |     def __new__(cls, val):
+   |         ^^^^^^^
+26 |         return super().__new__(cls, f"My value is: {val!s}")
+   |
+
+D202 [*] No blank lines allowed after function docstring (found 1)
+  --> src/pydantic_yaml/test/test_types.py:30:5
+   |
+29 | def test_str_enum():
+30 |     """Test for YamlStrEnum class."""
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+31 |
+32 |     x1 = XSE.a
+   |
+help: Remove blank line(s) after function docstring
+
+D100 Missing docstring in public module
+--> src/pydantic_yaml/test/test_versioned.py:1:1
+
+Found 65 errors.
+[*] 6 fixable with the `--fix` option.
+
+__BRANCHSHIFT_TEST_EXIT=0
+__BRANCHSHIFT_PIP_EXIT=0
+__BRANCHSHIFT_RUFF_EXIT=1
+__BRANCHSHIFT_INSTALL_EXIT=0
+__BRANCHSHIFT_TESTS_COLLECTED=15
+__BRANCHSHIFT_TESTS_PASSED=14
+__BRANCHSHIFT_TESTS_FAILED=0
+__BRANCHSHIFT_TESTS_SKIPPED=1
+__BRANCHSHIFT_TEST_OUTCOMES={"src.pydantic_yaml.test.test_advanced_yaml::test_yaml_refs[\\n# Thanks to https://stackoverflow.com/a/2063741\\nbill-to: &id001\\n    given  : Chris\\n    family : Dumars\\nship-to: *id001\\n-UsesRefs]":"passed","src.pydantic_yaml.test.test_basic::test_nested_models":"passed","src.pydantic_yaml.test.test_basic::test_readme":"passed","src.pydantic_yaml.test.test_basic::test_simple":"passed","src.pydantic_yaml.test.test_io::test_file_io":"passed","src.pydantic_yaml.test.test_resursive::test_recursive_yaml":"passed","src.pydantic_yaml.test.test_secret_types::test_secret_types_no_rt":"passed","src.pydantic_yaml.test.test_secret_types::test_secret_types_roundtrippable":"skipped","src.pydantic_yaml.test.test_sorting::test_sorting":"passed","src.pydantic_yaml.test.test_types::test_int":"passed","src.pydantic_yaml.test.test_types::test_int_enum":"passed","src.pydantic_yaml.test.test_types::test_str":"passed","src.pydantic_yaml.test.test_types::test_str_enum":"passed","src.pydantic_yaml.test.test_versioned::test_versioned_docs":"passed","src.pydantic_yaml.test.test_versioned::test_versioned_yaml":"passed"}
+__BRANCHSHIFT_TEST_OUTCOMES_PRESERVED=1
+__BRANCHSHIFT_TEST_OUTCOMES_CHANGED=[]
+__BRANCHSHIFT_FAILURES=[]
+__BRANCHSHIFT_PYDANTIC_MAJOR=2
+__BRANCHSHIFT_CONTRACT_AFTER=b904563f71d38851af139911231703c997a1f56d6840690d9802c386c928a61c

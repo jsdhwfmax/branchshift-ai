@@ -1,0 +1,747 @@
+[
+  {
+    "argv": [
+      "git",
+      "init",
+      "-q"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/manual-native-control/work/candidate-source",
+    "elapsed_seconds": 0.0047635670000119035,
+    "exit_code": 0,
+    "name": "candidate-source/git-init",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "remote",
+      "add",
+      "origin",
+      "https://github.com/NowanIlfideme/pydantic-yaml"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/manual-native-control/work/candidate-source",
+    "elapsed_seconds": 0.0018274450000035358,
+    "exit_code": 0,
+    "name": "candidate-source/git-remote",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "fetch",
+      "--depth",
+      "1",
+      "origin",
+      "54ff4bad7bca758a9dd22a791b707a2b9c27159e"
+    ],
+    "bytes_observed": {
+      "stderr": 128,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/manual-native-control/work/candidate-source",
+    "elapsed_seconds": 0.19282604199999298,
+    "exit_code": 0,
+    "name": "candidate-source/git-fetch",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "checkout",
+      "--detach",
+      "54ff4bad7bca758a9dd22a791b707a2b9c27159e"
+    ],
+    "bytes_observed": {
+      "stderr": 53,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/manual-native-control/work/candidate-source",
+    "elapsed_seconds": 0.0055184920000073134,
+    "exit_code": 0,
+    "name": "candidate-source/git-checkout",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 41
+    },
+    "cwd": "/home/runner/work/_temp/manual-native-control/work/candidate-source",
+    "elapsed_seconds": 0.0013104869999978064,
+    "exit_code": 0,
+    "name": "candidate-source/git-head",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "ls-files",
+      "-z"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 1183
+    },
+    "cwd": "/tmp/branchshift-external-case/repo",
+    "elapsed_seconds": 0.001375588000001926,
+    "exit_code": 0,
+    "name": "original/tracked-files",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/opt/hostedtoolcache/Python/3.12.15/x64/bin/python",
+      "-m",
+      "venv",
+      "/home/runner/work/_temp/manual-native-control/work/candidate-environment-env"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 0
+    },
+    "cwd": "/home/runner/work/_temp/manual-native-control/work",
+    "elapsed_seconds": 2.6291496139999992,
+    "exit_code": 0,
+    "name": "candidate-environment/venv",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/manual-native-control/work/candidate-environment-env/bin/python",
+      "-m",
+      "pip",
+      "install",
+      "--no-cache-dir",
+      "--report",
+      "/home/runner/work/_temp/manual-native-control/evidence/candidate-environment/bootstrap-install.json",
+      "pip==25.2",
+      "setuptools==80.9.0",
+      "wheel==0.45.1",
+      "setuptools-scm==8.3.1",
+      "importlib-metadata==8.7.0"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 1782
+    },
+    "cwd": "/home/runner/work/_temp/manual-native-control/work",
+    "elapsed_seconds": 5.1938428529999925,
+    "exit_code": 0,
+    "name": "candidate-environment/bootstrap",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/manual-native-control/work/candidate-environment-env/bin/python",
+      "-m",
+      "pip",
+      "install",
+      "--no-cache-dir",
+      "--report",
+      "/home/runner/work/_temp/manual-native-control/evidence/candidate-environment/install.json",
+      "-r",
+      "/home/runner/work/_temp/manual-native-control/evidence/frozen/candidate-environment/constraints.txt"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 7115
+    },
+    "cwd": "/home/runner/work/_temp/manual-native-control/work",
+    "elapsed_seconds": 7.267376850000005,
+    "exit_code": 0,
+    "name": "candidate-environment/install-runtime",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/manual-native-control/work/candidate-environment-env/bin/python",
+      "-m",
+      "pip",
+      "freeze",
+      "--all"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 414
+    },
+    "cwd": "/home/runner/work/_temp/manual-native-control/work",
+    "elapsed_seconds": 0.2549321890000016,
+    "exit_code": 0,
+    "name": "candidate-environment/freeze",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/manual-native-control/work/candidate-environment-env/bin/python",
+      "-m",
+      "pip",
+      "list",
+      "--format=json"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 987
+    },
+    "cwd": "/home/runner/work/_temp/manual-native-control/work",
+    "elapsed_seconds": 0.2138110409999996,
+    "exit_code": 0,
+    "name": "candidate-environment/packages",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "apply",
+      "--numstat",
+      "/home/runner/work/_temp/manual-native-control/evidence/validation/candidate.patch"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 135
+    },
+    "cwd": "/tmp/branchshift-external-case/repo",
+    "elapsed_seconds": 0.0017391490000022714,
+    "exit_code": 0,
+    "name": "expected/numstat",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "read-tree",
+      "HEAD"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 0
+    },
+    "cwd": "/tmp/branchshift-external-case/repo",
+    "elapsed_seconds": 0.0025283079999951497,
+    "exit_code": 0,
+    "name": "expected/read-tree",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "apply",
+      "--cached",
+      "/home/runner/work/_temp/manual-native-control/evidence/validation/candidate.patch"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 0
+    },
+    "cwd": "/tmp/branchshift-external-case/repo",
+    "elapsed_seconds": 0.002941432000000077,
+    "exit_code": 0,
+    "name": "expected/apply-index",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "write-tree"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 41
+    },
+    "cwd": "/tmp/branchshift-external-case/repo",
+    "elapsed_seconds": 0.0027188190000089207,
+    "exit_code": 0,
+    "name": "expected/tree",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "diff",
+      "--raw",
+      "HEAD",
+      "8e7e79e44383d605e33e36041e3c779e5d853467"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 247
+    },
+    "cwd": "/tmp/branchshift-external-case/repo",
+    "elapsed_seconds": 0.0021577440000015713,
+    "exit_code": 0,
+    "name": "expected/raw-diff",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "show",
+      "8e7e79e44383d605e33e36041e3c779e5d853467:pyproject.toml"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 2728
+    },
+    "cwd": "/tmp/branchshift-external-case/repo",
+    "elapsed_seconds": 0.0018638939999959803,
+    "exit_code": 0,
+    "name": "expected/manifest",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/bin/sh",
+      "/home/runner/work/_temp/manual-native-control/evidence/validation/command.sh"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 2902
+    },
+    "cwd": "/tmp/branchshift-external-case/repo",
+    "elapsed_seconds": 5.239326603000009,
+    "exit_code": 0,
+    "name": "validation/original-command",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/manual-native-control/work/candidate-environment-env/bin/python",
+      "-c",
+      "import importlib.metadata; print(importlib.metadata.version('pydantic'))"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 7
+    },
+    "cwd": "/home/runner/work/_temp/manual-native-control/work",
+    "elapsed_seconds": 0.07197040599999127,
+    "exit_code": 0,
+    "name": "validation/pydantic-version",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/manual-native-control/work/candidate-environment-env/bin/python",
+      "-m",
+      "pip",
+      "freeze",
+      "--all"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 527
+    },
+    "cwd": "/home/runner/work/_temp/manual-native-control/work",
+    "elapsed_seconds": 0.7615624729999979,
+    "exit_code": 0,
+    "name": "after-command/freeze",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/manual-native-control/work/candidate-environment-env/bin/python",
+      "-m",
+      "pip",
+      "list",
+      "--format=json"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 1124
+    },
+    "cwd": "/home/runner/work/_temp/manual-native-control/work",
+    "elapsed_seconds": 0.2128454830000095,
+    "exit_code": 0,
+    "name": "after-command/packages",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "read-tree",
+      "HEAD"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 0
+    },
+    "cwd": "/tmp/branchshift-external-case/repo",
+    "elapsed_seconds": 0.0023389029999947297,
+    "exit_code": 0,
+    "name": "observed-after-command/read-tree",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "add",
+      "-u"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 0
+    },
+    "cwd": "/tmp/branchshift-external-case/repo",
+    "elapsed_seconds": 0.002536715000005074,
+    "exit_code": 0,
+    "name": "observed-after-command/add-tracked",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "write-tree"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 41
+    },
+    "cwd": "/tmp/branchshift-external-case/repo",
+    "elapsed_seconds": 0.0018979769999987184,
+    "exit_code": 0,
+    "name": "observed-after-command/tree",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/manual-native-control/work/candidate-environment-env/bin/python",
+      "-m",
+      "pip",
+      "check"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 30
+    },
+    "cwd": "/tmp/branchshift-external-case/repo",
+    "elapsed_seconds": 0.27930264500000135,
+    "exit_code": 0,
+    "name": "comparison/pip-check",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/manual-native-control/work/candidate-environment-env/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "src/pydantic_yaml/test",
+      "-ra",
+      "--tb=short",
+      "--junitxml=/home/runner/work/_temp/manual-native-control/evidence/comparison/junit.xml"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 5879
+    },
+    "cwd": "/tmp/branchshift-external-case/repo",
+    "elapsed_seconds": 0.7215909600000003,
+    "exit_code": 0,
+    "name": "comparison/pytest",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/manual-native-control/work/candidate-environment-env/bin/python",
+      "-c",
+      "import json,platform,importlib.metadata as m;print(json.dumps({'python':platform.python_version(),'pydantic':m.version('pydantic'),'pytest':m.version('pytest'),'PyYAML':m.version('PyYAML'),'semver':m.version('semver')}))"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 101
+    },
+    "cwd": "/home/runner/work/_temp/manual-native-control/work",
+    "elapsed_seconds": 0.07439377800000102,
+    "exit_code": 0,
+    "name": "comparison/runtime",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/manual-native-control/work/candidate-environment-env/bin/python",
+      "-c",
+      "import json, pydantic\nresult = {'installed_pydantic': pydantic.__version__, 'native_v2': False}\ntry:\n    from pydantic_yaml import YamlModel\n    result.update(subclass_of_native_BaseModel=issubclass(YamlModel, pydantic.BaseModel), model_fields=hasattr(YamlModel, 'model_fields'))\n    result['native_v2'] = pydantic.__version__.split('.')[0] == '2' and result['subclass_of_native_BaseModel'] and result['model_fields']\nexcept Exception as error:\n    result.update(error_type=type(error).__name__, error=str(error)[:1000])\nprint(json.dumps(result))\n"
+    ],
+    "bytes_observed": {
+      "stderr": 280,
+      "stdout": 112
+    },
+    "cwd": "/tmp/branchshift-external-case/repo",
+    "elapsed_seconds": 0.4183544840000053,
+    "exit_code": 0,
+    "name": "comparison/native-v2",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/manual-native-control/work/candidate-environment-env/bin/python",
+      "-m",
+      "ruff",
+      "check",
+      "--output-format=json",
+      "src/pydantic_yaml",
+      "--exclude",
+      "src/pydantic_yaml/test"
+    ],
+    "bytes_observed": {
+      "stderr": 234,
+      "stdout": 22289
+    },
+    "cwd": "/tmp/branchshift-external-case/repo",
+    "elapsed_seconds": 0.02684696999999403,
+    "exit_code": 1,
+    "name": "comparison/ruff",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/manual-native-control/work/candidate-environment-env/bin/python",
+      "-m",
+      "pip",
+      "freeze",
+      "--all"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 527
+    },
+    "cwd": "/home/runner/work/_temp/manual-native-control/work",
+    "elapsed_seconds": 0.3890633840000106,
+    "exit_code": 0,
+    "name": "after-comparison/freeze",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "/home/runner/work/_temp/manual-native-control/work/candidate-environment-env/bin/python",
+      "-m",
+      "pip",
+      "list",
+      "--format=json"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 1124
+    },
+    "cwd": "/home/runner/work/_temp/manual-native-control/work",
+    "elapsed_seconds": 0.2123666749999984,
+    "exit_code": 0,
+    "name": "after-comparison/packages",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "read-tree",
+      "HEAD"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 0
+    },
+    "cwd": "/tmp/branchshift-external-case/repo",
+    "elapsed_seconds": 0.0023849600000005466,
+    "exit_code": 0,
+    "name": "observed-after-comparison/read-tree",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "add",
+      "-u"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 0
+    },
+    "cwd": "/tmp/branchshift-external-case/repo",
+    "elapsed_seconds": 0.0025323960000065426,
+    "exit_code": 0,
+    "name": "observed-after-comparison/add-tracked",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "write-tree"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 41
+    },
+    "cwd": "/tmp/branchshift-external-case/repo",
+    "elapsed_seconds": 0.0024461649999949486,
+    "exit_code": 0,
+    "name": "observed-after-comparison/tree",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  },
+  {
+    "argv": [
+      "git",
+      "diff",
+      "--numstat"
+    ],
+    "bytes_observed": {
+      "stderr": 0,
+      "stdout": 135
+    },
+    "cwd": "/tmp/branchshift-external-case/repo",
+    "elapsed_seconds": 0.002225761999994802,
+    "exit_code": 0,
+    "name": "comparison/numstat",
+    "timed_out": false,
+    "truncated": {
+      "stderr": false,
+      "stdout": false
+    }
+  }
+]

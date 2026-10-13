@@ -1,0 +1,34 @@
+{
+  "protocol": "manual-native-control-20261013",
+  "evaluated_nebius_api_calls": 0,
+  "maximum_candidate_runs": 4,
+  "maximum_clean_repeats": 1,
+  "runs": [
+    {
+      "manual_iteration": 1,
+      "role": "candidate",
+      "run_id": 38337450261,
+      "source_commit": "8959a9a4339dc11ccd975743fd325c2b01f5b3c5",
+      "patch_sha256": "c1d9c8d185177a3d78a55a2fd20c213bbf3c424471e2cdf90930d6900a8582be",
+      "status": "completed",
+      "candidate_qualified": true,
+      "artifact_id": 11784984336,
+      "artifact_sha256": "18f23cfc1ba4f132ac25769747c3275423387c3f76ec37afa232ead2e2dbd88f"
+    },
+    {
+      "manual_iteration": 1,
+      "role": "clean_repeat",
+      "run_id": 38337713201,
+      "source_commit": "0d22c5f0ac97d3da873c2012f73454af8ee7adc0",
+      "patch_sha256": "c1d9c8d185177a3d78a55a2fd20c213bbf3c424471e2cdf90930d6900a8582be",
+      "status": "completed",
+      "candidate_qualified": true,
+      "artifact_id": 11785159397,
+      "artifact_sha256": "08f27a50c0b79e7c23b366fba6d8b741e9c944ebb525fa60991aebe67b7184cb"
+    }
+  ],
+  "status": "closed",
+  "candidate_iterations_used": 1,
+  "clean_repeats_used": 1,
+  "unused_candidate_iterations_not_executed": 3
+}

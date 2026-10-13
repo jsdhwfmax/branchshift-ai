@@ -1,0 +1,33 @@
+{
+  "issues": [],
+  "junit_sha256": "746e1c19fce910603649e8b4abef383dba75fd75b770c5b04151f2d2a466b468",
+  "skips_and_xfails": [
+    {
+      "message": "YAML/JSON encoder support doesn't exist yet.",
+      "test": "src.pydantic_yaml.test.test_secret_types::test_secret_types_roundtrippable",
+      "text": "",
+      "type": "pytest.xfail"
+    }
+  ],
+  "test_outcomes": {
+    "src.pydantic_yaml.test.test_advanced_yaml::test_yaml_refs[\\n# Thanks to https://stackoverflow.com/a/2063741\\nbill-to: &id001\\n    given  : Chris\\n    family : Dumars\\nship-to: *id001\\n-UsesRefs]": "passed",
+    "src.pydantic_yaml.test.test_basic::test_nested_models": "passed",
+    "src.pydantic_yaml.test.test_basic::test_readme": "passed",
+    "src.pydantic_yaml.test.test_basic::test_simple": "passed",
+    "src.pydantic_yaml.test.test_io::test_file_io": "passed",
+    "src.pydantic_yaml.test.test_resursive::test_recursive_yaml": "passed",
+    "src.pydantic_yaml.test.test_secret_types::test_secret_types_no_rt": "passed",
+    "src.pydantic_yaml.test.test_secret_types::test_secret_types_roundtrippable": "skipped",
+    "src.pydantic_yaml.test.test_sorting::test_sorting": "passed",
+    "src.pydantic_yaml.test.test_types::test_int": "passed",
+    "src.pydantic_yaml.test.test_types::test_int_enum": "passed",
+    "src.pydantic_yaml.test.test_types::test_str": "passed",
+    "src.pydantic_yaml.test.test_types::test_str_enum": "passed",
+    "src.pydantic_yaml.test.test_versioned::test_versioned_docs": "passed",
+    "src.pydantic_yaml.test.test_versioned::test_versioned_yaml": "passed"
+  },
+  "tests_collected": 15,
+  "tests_failed": 0,
+  "tests_passed": 14,
+  "tests_skipped": 1
+}

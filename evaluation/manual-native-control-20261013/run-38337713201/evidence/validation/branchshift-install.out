@@ -1,0 +1,35 @@
+Obtaining file:///tmp/branchshift-external-case/repo
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Getting requirements to build editable: started
+  Getting requirements to build editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Requirement already satisfied: pydantic<3,>=2 in ./.venv/lib/python3.12/site-packages (2.12.5)
+Requirement already satisfied: pytest in ./.venv/lib/python3.12/site-packages (8.3.5)
+Requirement already satisfied: ruff in ./.venv/lib/python3.12/site-packages (0.13.0)
+Requirement already satisfied: importlib_metadata in ./.venv/lib/python3.12/site-packages (from pydantic_yaml==0.1.dev1+g54ff4ba.d20261013) (8.7.0)
+Requirement already satisfied: deprecated~=1.2.5 in ./.venv/lib/python3.12/site-packages (from pydantic_yaml==0.1.dev1+g54ff4ba.d20261013) (1.2.18)
+Requirement already satisfied: types-Deprecated in ./.venv/lib/python3.12/site-packages (from pydantic_yaml==0.1.dev1+g54ff4ba.d20261013) (1.3.1.20260928)
+Requirement already satisfied: pyyaml in ./.venv/lib/python3.12/site-packages (from pydantic_yaml==0.1.dev1+g54ff4ba.d20261013) (6.0.2)
+Requirement already satisfied: types-PyYAML in ./.venv/lib/python3.12/site-packages (from pydantic_yaml==0.1.dev1+g54ff4ba.d20261013) (6.0.12.20260906)
+Requirement already satisfied: semver<4,>=2.13.0 in ./.venv/lib/python3.12/site-packages (from pydantic_yaml==0.1.dev1+g54ff4ba.d20261013) (3.0.4)
+Requirement already satisfied: annotated-types>=0.6.0 in ./.venv/lib/python3.12/site-packages (from pydantic<3,>=2) (0.8.0)
+Requirement already satisfied: pydantic-core==2.41.5 in ./.venv/lib/python3.12/site-packages (from pydantic<3,>=2) (2.41.5)
+Requirement already satisfied: typing-extensions>=4.14.1 in ./.venv/lib/python3.12/site-packages (from pydantic<3,>=2) (4.15.0)
+Requirement already satisfied: typing-inspection>=0.4.2 in ./.venv/lib/python3.12/site-packages (from pydantic<3,>=2) (0.4.4)
+Requirement already satisfied: wrapt<2,>=1.10 in ./.venv/lib/python3.12/site-packages (from deprecated~=1.2.5->pydantic_yaml==0.1.dev1+g54ff4ba.d20261013) (1.17.3)
+Requirement already satisfied: iniconfig in ./.venv/lib/python3.12/site-packages (from pytest) (2.3.1)
+Requirement already satisfied: packaging in ./.venv/lib/python3.12/site-packages (from pytest) (26.3)
+Requirement already satisfied: pluggy<2,>=1.5 in ./.venv/lib/python3.12/site-packages (from pytest) (1.6.0)
+Requirement already satisfied: zipp>=3.20 in ./.venv/lib/python3.12/site-packages (from importlib_metadata->pydantic_yaml==0.1.dev1+g54ff4ba.d20261013) (4.1.1)
+Building wheels for collected packages: pydantic_yaml
+  Building editable for pydantic_yaml (pyproject.toml): started
+  Building editable for pydantic_yaml (pyproject.toml): finished with status 'done'
+  Created wheel for pydantic_yaml: filename=pydantic_yaml-0.1.dev1+g54ff4ba.d20261013-0.editable-py3-none-any.whl size=5611 sha256=4320a66f2001388d146b7ccb9c4542af8148dbe46e3f335debec8bace9ea05f5
+  Stored in directory: /home/runner/work/_temp/manual-native-control/work/tmp/pip-ephem-wheel-cache-l6w2gamw/wheels/26/ff/9c/a0bec2819a7c93ff54fe347c6e8405e32b7797cdf02c9b2e6c
+Successfully built pydantic_yaml
+Installing collected packages: pydantic_yaml
+Successfully installed pydantic_yaml-0.1.dev1+g54ff4ba.d20261013

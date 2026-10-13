@@ -1,0 +1,17 @@
+{
+  "id": "minimal",
+  "ordered_steps": [
+    "Preserve original test behavior using native Pydantic v2 source APIs."
+  ],
+  "rationale": "Separate feasibility control, outside the evaluated BranchShift/Nemotron pipeline.",
+  "source_urls": [
+    "https://docs.pydantic.dev/2.12/migration/"
+  ],
+  "target_files": [
+    "pyproject.toml",
+    "src/pydantic_yaml/ext/semver.py",
+    "src/pydantic_yaml/ext/versioned_model.py",
+    "src/pydantic_yaml/mixin.py"
+  ],
+  "title": "Manually authored reference migration, Codex-assisted"
+}

@@ -1,0 +1,367 @@
+diff --git a/pyproject.toml b/pyproject.toml
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -26,7 +26,7 @@
+ ]
+ dependencies = [
+     "importlib_metadata",
+-    "pydantic>=1.8,<2",
++    "pydantic>=2,<3",
+     # "ruamel.yaml~=0.17.21",
+     "deprecated~=1.2.5",
+     "types-Deprecated",
+diff --git a/src/pydantic_yaml/ext/semver.py b/src/pydantic_yaml/ext/semver.py
+--- a/src/pydantic_yaml/ext/semver.py
++++ b/src/pydantic_yaml/ext/semver.py
+@@ -1,7 +1,7 @@
+ from functools import wraps
+ from typing import Any, Callable, Optional, Union, no_type_check
+ 
+-from pydantic import errors
++from pydantic_core import core_schema
+ from pydantic_yaml.compat.types import YamlStr
+ from semver import VersionInfo
+ 
+@@ -58,16 +58,17 @@
+         return str(VersionInfo(major, minor, patch, prerelease, build))
+ 
+     @classmethod
+-    def __get_validators__(cls):
+-        yield cls.validate
++    def __get_pydantic_core_schema__(cls, source_type, handler):
++        """Validate semantic versions through the native Pydantic v2 schema."""
++        return core_schema.no_info_after_validator_function(cls.validate, handler(str))
+ 
+     @classmethod
+     def validate(cls, value: Union[str, "SemVer"]) -> "SemVer":
+         vi = VersionInfo.parse(value)
+         if not cls.allow_build and (vi.build is None):
+-            raise errors.NotNoneError()
++            raise ValueError("value is not None")
+         if not cls.allow_prerelease and (vi.prerelease is None):
+-            raise errors.NotNoneError()
++            raise ValueError("value is not None")
+         return cls(value)
+ 
+     @property
+diff --git a/src/pydantic_yaml/ext/versioned_model.py b/src/pydantic_yaml/ext/versioned_model.py
+--- a/src/pydantic_yaml/ext/versioned_model.py
++++ b/src/pydantic_yaml/ext/versioned_model.py
+@@ -1,7 +1,7 @@
+ from typing import Optional, Tuple, Type
+ import warnings
+ 
+-from pydantic import validator
++from pydantic import field_validator
+ 
+ from pydantic_yaml.model import YamlModel
+ from .semver import SemVer
+@@ -21,15 +21,8 @@
+ def _get_minmax_robust(
+     cls: Type["VersionedYamlModel"],
+ ) -> Tuple[Optional[SemVer], Optional[SemVer]]:
+-    min_, max_ = None, None
+-    for supcls in cls.mro():
+-        Config = getattr(supcls, "Config", None)
+-        if Config is not None:
+-            if min_ is None:
+-                min_ = getattr(Config, "min_version", None)
+-            if max_ is None:
+-                max_ = getattr(Config, "max_version", None)
+-    return min_, max_
++    values = [cls.model_config.get(name) for name in ("min_version", "max_version")]
++    return tuple(None if value is None else SemVer(value) for value in values)
+ 
+ 
+ class VersionedYamlModel(YamlModel):
+@@ -63,20 +56,9 @@
+ 
+     version: SemVer
+ 
+-    def __init_subclass__(cls) -> None:
+-        # Check Config class types
+-        Config = getattr(cls, "Config", None)
+-        if Config is not None:
+-            # check one field
+-            minv = getattr(Config, "min_version", None)
+-            if minv is not None:
+-                if not isinstance(minv, SemVer):
+-                    setattr(Config, "min_version", SemVer(minv))
+-            # check other field
+-            maxv = getattr(Config, "max_version", None)
+-            if maxv is not None:
+-                if not isinstance(maxv, SemVer):
+-                    setattr(Config, "max_version", SemVer(maxv))
++    @classmethod
++    def __pydantic_init_subclass__(cls, **kwargs) -> None:
++        super().__pydantic_init_subclass__(**kwargs)
+ 
+         # Check ranges
+         min_, max_ = _get_minmax_robust(cls)
+@@ -84,26 +66,25 @@
+             raise ValueError(f"Minimum version higher than maximum: {min_!r} > {max_!r}")
+ 
+         # Check the default value of the "version" field
+-        fld = cls.__fields__["version"]
++        fld = cls.model_fields["version"]
+         d = fld.default
+-        if d is None:
++        if fld.is_required() or d is None:
+             pass
+         else:
+-            _chk_between(d, lo=min_, hi=max_)
++            _chk_between(SemVer.validate(d), lo=min_, hi=max_)
+             warnings.warn(
+                 f"Recommended to have `version` be required, but set default {d!r}",
+                 UserWarning,
+             )
+ 
+-        if not issubclass(fld.type_, SemVer):
+-            raise TypeError(f"Field type for `version` must be SemVer, got {fld.type_!r}")
++        if not isinstance(fld.annotation, type) or not issubclass(fld.annotation, SemVer):
++            raise TypeError(f"Field type for `version` must be SemVer, got {fld.annotation!r}")
+ 
+-    @validator("version", always=True)
++    @field_validator("version")
++    @classmethod
+     def _check_semver(cls, v):
+         min_, max_ = _get_minmax_robust(cls)
+         _chk_between(v, lo=min_, hi=max_)
+         return v
+ 
+-    class Config:
+-        min_version = SemVer("0.0.0")
+-        max_version = None
++    model_config = {"min_version": "0.0.0", "max_version": None, "validate_default": True}
+diff --git a/src/pydantic_yaml/mixin.py b/src/pydantic_yaml/mixin.py
+--- a/src/pydantic_yaml/mixin.py
++++ b/src/pydantic_yaml/mixin.py
+@@ -1,13 +1,17 @@
+ """Module to define the YamlModelMixin."""
+ 
+ from typing_extensions import Literal
++import json
++import pickle
+ import warnings
+ from pathlib import Path
+ from typing import (
+     TYPE_CHECKING,
+     Any,
++    AbstractSet,
+     Callable,
+-    ClassVar,
++    Dict,
++    Mapping,
+     Optional,
+     Type,
+     TypeVar,
+@@ -15,24 +19,20 @@
+     cast,
+     no_type_check,
+ )
+-from pydantic.parse import Protocol, load_file, load_str_bytes
+-from pydantic.main import ROOT_KEY, BaseModel, ModelMetaclass, BaseConfig
+-from pydantic.error_wrappers import ErrorWrapper, ValidationError
+-from pydantic.types import StrBytes
++from pydantic import BaseModel, ValidationError
+ 
+ if TYPE_CHECKING:
+-    from pydantic.typing import (
+-        DictStrAny,
+-        AbstractSetIntStr,
+-        MappingIntStrAny,
+-    )
++    DictStrAny = Dict[str, Any]
++    AbstractSetIntStr = AbstractSet[Union[int, str]]
++    MappingIntStrAny = Mapping[Union[int, str], Any]
+ 
+     Model = TypeVar("Model", bound="BaseModel")
+ 
+ from .compat.yaml_lib import yaml_safe_dump, yaml_safe_load
+ 
+ 
+-ExtendedProto = Union[Protocol, Literal["yaml"]]
++StrBytes = Union[str, bytes]
++ExtendedProto = Literal["json", "pickle", "yaml"]
+ 
+ YamlStyle = Union[
+     None,
+@@ -67,7 +67,7 @@
+     yaml_dumps: Callable[..., str] = yaml_safe_dump  # type: ignore
+ 
+ 
+-class YamlModelMixin(metaclass=ModelMetaclass):
++class YamlModelMixin:
+     """Mixin to add YAML compatibility to your class.
+ 
+     Usage
+@@ -89,26 +89,14 @@
+     to a YAML string.
+     """
+ 
+-    if TYPE_CHECKING:
+-        __custom_root_type__: ClassVar[bool] = False
+-        __config__: ClassVar[Type[BaseConfig]] = YamlModelMixinConfig  # type: ignore
+-
+     @no_type_check
+-    def __init_subclass__(cls) -> None:
+-        super().__init_subclass__()
+-
+-        # Set the config class
+-        cfg: Type[YamlModelMixinConfig] = cls.__config__
+-        if not issubclass(cfg, YamlModelMixinConfig):
+-
+-            class T(cfg, YamlModelMixinConfig):
+-                pass
+-
+-            T.__doc__ = cfg.__doc__
+-            T.__name__ = cfg.__name__
+-            T.__qualname__ = cfg.__qualname__
+-
+-            cls.__config__ = T
++    def __init_subclass__(cls, **kwargs) -> None:
++        super().__init_subclass__(**kwargs)
++        # This runs before the native model schema is built. Retain the public
++        # legacy Config spelling used by existing callers, with a v2 setting.
++        cfg = getattr(cls, "model_config", {})
++        if "allow_population_by_field_name" in cfg:
++            cfg.setdefault("populate_by_name", cfg["allow_population_by_field_name"])
+ 
+     def yaml(
+         self,
+@@ -149,25 +137,24 @@
+         indent, encoding, kwargs
+             Additional arguments for the dumper.
+         """
+-        data: "DictStrAny" = self.dict(  # type: ignore
++        if skip_defaults is not None:
++            warnings.warn("skip_defaults is deprecated; use exclude_unset", DeprecationWarning)
++            exclude_unset = skip_defaults
++        data: "DictStrAny" = self.model_dump(  # type: ignore
++            mode="python",
+             include=include,
+             exclude=exclude,
+             by_alias=by_alias,
+-            skip_defaults=skip_defaults,
+             exclude_unset=exclude_unset,
+             exclude_defaults=exclude_defaults,
+             exclude_none=exclude_none,
++            serialize_as_any=True,
+         )
+ 
+-        if self.__custom_root_type__:
+-            data = data[ROOT_KEY]
+-            warnings.warn(
+-                "Explicit custom root behavior not yet implemented for pydantic_yaml."
+-                " This may not work as expected. If so, please create a GitHub issue:"
+-                " https://github.com/NowanIlfideme/pydantic-yaml/issues/new"
+-            )
+-        cfg = cast(YamlModelMixinConfig, self.__config__)
+-        return cfg.yaml_dumps(
++        # Python-mode dumping preserves the existing YAML representers, including
++        # masked secrets. JSON encoders remain independent from YAML serialization.
++        dumper = type(self).model_config.get("yaml_dumps", YamlModelMixinConfig.yaml_dumps)
++        return dumper(
+             data,
+             sort_keys=sort_keys,
+             default_flow_style=default_flow_style,
+@@ -198,24 +185,35 @@
+         # even if JSON is passed. It will be slower, however.
+         if is_yaml:
+             try:
+-                cfg = cast(YamlModelMixinConfig, cls.__config__)
+-                obj = cfg.yaml_loads(b)
++                loader = cls.model_config.get("yaml_loads", YamlModelMixinConfig.yaml_loads)
++                obj = loader(b)
+             except RecursionError as e:
+                 raise ValueError("YAML files with recursive references are unsupported.") from e
+             except ValidationError:
+                 raise
+             except Exception as e:
+-                raise ValidationError([ErrorWrapper(e, loc=ROOT_KEY)], cls) from e
++                raise ValidationError.from_exception_data(cls.__name__, [{
++                    "type": "value_error", "loc": ("__root__",), "input": b,
++                    "ctx": {"error": ValueError(str(e))},
++                }]) from e
+         else:
+-            obj = load_str_bytes(
+-                b,
+-                proto=proto,
+-                content_type=content_type,
+-                encoding=encoding,
+-                allow_pickle=allow_pickle,
+-                json_loads=cls.__config__.json_loads,
+-            )
+-        res = cls.parse_obj(obj)  # type: ignore
++            if proto is None and content_type:
++                if content_type.endswith(("json", "javascript")):
++                    proto = "json"
++                elif allow_pickle and content_type.endswith("pickle"):
++                    proto = "pickle"
++                else:
++                    raise TypeError(f"Unknown content-type: {content_type}")
++            if proto in (None, "json"):
++                loader = cls.model_config.get("json_loads", json.loads)
++                obj = loader(b.decode(encoding) if isinstance(b, bytes) else b)
++            elif proto == "pickle":
++                if not allow_pickle:
++                    raise RuntimeError("Trying to decode with pickle with allow_pickle=False")
++                obj = pickle.loads(b if isinstance(b, bytes) else b.encode(encoding))
++            else:
++                raise TypeError(f"Unknown protocol: {proto}")
++        res = cls.model_validate(obj)
+         return cast("Model", res)
+ 
+     @no_type_check
+@@ -235,31 +233,15 @@
+         if (content_type is None) and (path.suffix in [".yml", ".yaml"]):
+             content_type = "application/yaml"
+ 
+-        # Check whether we're specifically asked to parse YAML
+-        is_yaml = is_yaml_requested(content_type=content_type, proto=proto, path_suffix=path.suffix)
+-
+-        # The first code path explicitly checks YAML compatibility.
+-        # We offload the rest to Pydantic.
+-        if is_yaml:
+-            b = path.read_bytes()
+-            return cls.parse_raw(
+-                b,
+-                content_type=content_type,
+-                encoding=encoding,
+-                proto=proto,
+-                allow_pickle=allow_pickle,
+-            )
+-        else:
+-            obj = load_file(
+-                path,
+-                proto=proto,
+-                content_type=content_type,
+-                encoding=encoding,
+-                allow_pickle=allow_pickle,
+-                json_loads=cls.__config__.json_loads,
+-            )
+-            res = cls.parse_obj(obj)  # type: ignore
+-            return cast("Model", res)
++        if content_type is None:
++            if path.suffix in (".js", ".json"):
++                proto = "json"
++            elif path.suffix == ".pkl":
++                proto = "pickle"
++        return cls.parse_raw(
++            path.read_bytes(), content_type=content_type, encoding=encoding,
++            proto=proto, allow_pickle=allow_pickle,
++        )
+ 
+     @classmethod
+     def __try_update_forward_refs__(cls, **localns: Any) -> None:
+@@ -267,8 +249,5 @@
+         Same as update_forward_refs but will not raise exception
+         when forward references are not defined.
+         """
+-        try:
+-            if issubclass(cls, BaseModel):
+-                super().__try_update_forward_refs__(**localns)  # type: ignore
+-        except AttributeError:
+-            pass
++        if issubclass(cls, BaseModel):
++            cls.model_rebuild(raise_errors=False, _types_namespace=localns or None)

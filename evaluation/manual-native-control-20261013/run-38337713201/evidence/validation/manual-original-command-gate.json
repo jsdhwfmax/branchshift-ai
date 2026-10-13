@@ -1,0 +1,15 @@
+{
+  "markers": {
+    "INSTALL_EXIT": 0,
+    "PIP_EXIT": 0,
+    "PYDANTIC_MAJOR": 2,
+    "TESTS_COLLECTED": 15,
+    "TESTS_FAILED": 0,
+    "TESTS_PASSED": 14,
+    "TESTS_SKIPPED": 1,
+    "TEST_EXIT": 0,
+    "TEST_OUTCOMES_PRESERVED": 1
+  },
+  "passed": true,
+  "scope": "Original command markers plus the unchanged independent suite/native gate; lint remains recorded, not an added migration gate"
+}

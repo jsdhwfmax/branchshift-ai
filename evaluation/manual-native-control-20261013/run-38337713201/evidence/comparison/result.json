@@ -1,0 +1,22 @@
+{
+  "candidate_constraints_sha256": "09cb776346095a5716b5ef8fb1b655bd9f7dafa615adaf7a6f0bdb2028abb007",
+  "checkpoint_id": null,
+  "constraint_applied": true,
+  "diagnostics": [],
+  "elapsed_seconds": 0.6063153400000019,
+  "lint_findings": 49,
+  "native_v2": true,
+  "pip_check_passed": true,
+  "pip_exit_code": 0,
+  "pydantic_version": "2.12.5",
+  "qualified": true,
+  "target_pydantic_version": "2.12.5",
+  "test_contract_preserved": true,
+  "test_exit_code": 0,
+  "test_gate_passed": true,
+  "test_outcomes_preserved": true,
+  "tests_collected": 15,
+  "tests_failed": 0,
+  "tests_passed": 14,
+  "tests_skipped": 1
+}

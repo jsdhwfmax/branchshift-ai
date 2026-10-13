@@ -1,0 +1,19 @@
+{
+  "shared_limits_refactor": true,
+  "unchanged_manual_patch": true,
+  "unchanged_validation_command": true,
+  "unchanged_limits": [
+    40,
+    120,
+    600,
+    24000
+  ],
+  "new_provider_calls": 0,
+  "runtime_reexecution_needed": false,
+  "reason": "Prompt/constant alignment does not change the preserved patch, command, runner, runtime lock, or test protocol.",
+  "changed_source_hashes": {
+    "services/api/app/orchestrator/edit_limits.py": "3a6749716be512abf3517fee605ac7c9e083a807a4e2b923c76270b0d039c46e",
+    "services/api/app/orchestrator/branch_runner.py": "e81793a00ab159c7904de3fa08bf7c6b157fcebc6b750aba3b3245d828870437",
+    "services/api/app/orchestrator/planner.py": "acf309a9286f10aa0b9360a370f3501d2dbba68f33567424fbaafa662fa9224c"
+  }
+}

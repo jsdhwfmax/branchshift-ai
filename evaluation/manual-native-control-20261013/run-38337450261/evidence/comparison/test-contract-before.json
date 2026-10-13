@@ -1,0 +1,25 @@
+{
+  "configuration": {
+    "pyproject.toml": {
+      "ini_options": {
+        "testpaths": [
+          "src/pydantic_yaml"
+        ]
+      }
+    }
+  },
+  "digest": "b904563f71d38851af139911231703c997a1f56d6840690d9802c386c928a61c",
+  "files": {
+    "src/pydantic_yaml/test/__init__.py": "332e6df5c1e887e0b15e32a289962b3330b9091b045d95fb420bfe5986271f71",
+    "src/pydantic_yaml/test/recursive.yaml": "1021089459f48993213931a35049ed4855c49fb4b8a0998fff206dce75ce6a7b",
+    "src/pydantic_yaml/test/test_advanced_yaml.py": "7db726fbb448e00223834c86e74f3c8dfea9e005bb367f83b4ea9dd8f7955b53",
+    "src/pydantic_yaml/test/test_basic.py": "beb4a3d6c32789b9e78254b0cb45cd7ba563edbe3b61aabc292346ecd80c13f8",
+    "src/pydantic_yaml/test/test_io.py": "0db857f69d891210f71c868c0f2f9a147e039a745d4d259f02bc6a29eaac15be",
+    "src/pydantic_yaml/test/test_resursive.py": "f1a1554c77a7f01cd5c8042f6623d03a0f8c20584176ec9019ddf94633103f45",
+    "src/pydantic_yaml/test/test_secret_types.py": "2b792b395abbad5a32b2e4f57c0f662ad5fef0e5dbe2920eb66ea74feaf5df89",
+    "src/pydantic_yaml/test/test_sorting.py": "78ba03d4cc96281ef36c4aac4f2bd2626baf6bba6fa5c6da5fbc653427ee74b6",
+    "src/pydantic_yaml/test/test_types.py": "97f3af245abf4d0c868af46d3c6d7960c35cee6883bfeda97a20399965bb907c",
+    "src/pydantic_yaml/test/test_versioned.py": "54ccb81382cfafabbb713e452457854da5feaadc99f2f47ffbd28682b02252df",
+    "src/pydantic_yaml/test/versioned.yaml": "f942d90a30fe6aebda734bbf1dbcf5679b2123dab89732c93bb7c7b621dae90e"
+  }
+}

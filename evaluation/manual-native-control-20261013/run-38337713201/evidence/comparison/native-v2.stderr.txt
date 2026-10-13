@@ -1,0 +1,2 @@
+/home/runner/work/_temp/manual-native-control/work/candidate-environment-env/lib/python3.12/site-packages/setuptools_scm/git.py:167: UserWarning: "/tmp/branchshift-external-case/repo" is shallow and may cause errors
+  warnings.warn(f'"{wd.path}" is shallow and may cause errors')

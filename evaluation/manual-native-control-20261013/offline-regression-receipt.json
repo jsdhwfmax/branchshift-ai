@@ -1,0 +1,116 @@
+{
+  "scope": "Offline regression against immutable retained model artifacts; no model, network, sandbox, or upstream project execution",
+  "head": "58ff031d8208c3e54511d26fa3c64ba4e1b0616e",
+  "changed_test": "services/api/tests/orchestrator/test_retained_model_failures.py",
+  "changed_test_sha256": "94ca07c54134992d697ffefff3f001558240f6d778bda0500c7e63dea2ac2087",
+  "source_artifacts": [
+    {
+      "path": "evaluation/external-pydantic-yaml/line-edit-session/repository-evidence.json",
+      "sha256": "5f881e2f0c3eb2448e96465e8fb4c3d10e4465b9bcc3f4427953156da8ea1d53",
+      "matches_HEAD_bytes": true
+    },
+    {
+      "path": "evaluation/external-pydantic-yaml/line-edit-session/plan/result.json",
+      "sha256": "5b2f7116f410b7add9ae38ebdc70d1840f79a774904091cb920159fdae4fdbf0",
+      "matches_HEAD_bytes": true
+    },
+    {
+      "path": "evaluation/external-pydantic-yaml/line-edit-session/citations.json",
+      "sha256": "66cfbb04e83ca2c28e8f41e5646fd404c40a3abbdd6575a1a4bc0fd9f442ae91",
+      "matches_HEAD_bytes": true
+    },
+    {
+      "path": "evaluation/external-pydantic-yaml/schema-fixed-session/repository-evidence.json",
+      "sha256": "5f881e2f0c3eb2448e96465e8fb4c3d10e4465b9bcc3f4427953156da8ea1d53",
+      "matches_HEAD_bytes": true
+    },
+    {
+      "path": "evaluation/external-pydantic-yaml/schema-fixed-session/plan/result.json",
+      "sha256": "5b2f7116f410b7add9ae38ebdc70d1840f79a774904091cb920159fdae4fdbf0",
+      "matches_HEAD_bytes": true
+    },
+    {
+      "path": "evaluation/external-pydantic-yaml/schema-fixed-session/citations.json",
+      "sha256": "66cfbb04e83ca2c28e8f41e5646fd404c40a3abbdd6575a1a4bc0fd9f442ae91",
+      "matches_HEAD_bytes": true
+    },
+    {
+      "path": "evaluation/external-pydantic-yaml/line-edit-session/minimal/model-01/response.json",
+      "sha256": "efa9382cbb124529d6d6508733f1b0e7f80a6cf72d1f2a4cfb1f42d06d8e4b2a",
+      "matches_HEAD_bytes": true
+    },
+    {
+      "path": "evaluation/external-pydantic-yaml/line-edit-session/minimal/model-02/response.json",
+      "sha256": "03827ac96cc5270595c1f352178a6377eaaf38b7ff54b5b2b9c8df8c98ea5773",
+      "matches_HEAD_bytes": true
+    },
+    {
+      "path": "evaluation/external-pydantic-yaml/line-edit-session/refactor/model-01/response.json",
+      "sha256": "a795d5fb3989756051dd6554d4c4eaa9a0bdd64a50baff0c3f11abf3177ac5c3",
+      "matches_HEAD_bytes": true
+    },
+    {
+      "path": "evaluation/external-pydantic-yaml/line-edit-session/refactor/model-02/response.json",
+      "sha256": "57c1c5357cce9bcf7cdde0913f107e608842fd1a43336b43f8340185d33fdbb1",
+      "matches_HEAD_bytes": true
+    },
+    {
+      "path": "evaluation/external-pydantic-yaml/schema-fixed-session/minimal/model-01/response.json",
+      "sha256": "05edce5e7472bc54d22271c50ee9991b9626bb5f0254d77129562e4a26ee186e",
+      "matches_HEAD_bytes": true
+    },
+    {
+      "path": "evaluation/external-pydantic-yaml/schema-fixed-session/compatibility/model-01/response.json",
+      "sha256": "5063fdf7dd68e50d4292c92cf5cdce10ecce5e3862ddd409da91739cb22a5622",
+      "matches_HEAD_bytes": true
+    },
+    {
+      "path": "evaluation/external-pydantic-yaml/schema-fixed-session/refactor/model-01/response.json",
+      "sha256": "9b7ca10f23cf76bb2c35c3aa7807d4d45992726ef1fe61d16f1c41d63b689995",
+      "matches_HEAD_bytes": true
+    },
+    {
+      "path": "evaluation/external-pydantic-yaml/schema-fixed-session/refactor/model-02/response.json",
+      "sha256": "ae99f7334d1d97ee6a9f80d35c7cd8a4a718f76a42ad3827581ac7a273819eaf",
+      "matches_HEAD_bytes": true
+    }
+  ],
+  "new_test_cases": 16,
+  "focused_result": "86 passed in 0.71s",
+  "ruff": "passed",
+  "runtime_files_changed_by_this_task": [],
+  "recorded_candidates_preflight_rejected": 8,
+  "executor_calls": 0,
+  "findings": {
+    "minimal_attempt_1_identical_range_count": 33,
+    "minimal_attempt_2_new_lines": 705,
+    "minimal_attempt_2_edit_bytes": 20096,
+    "refactor_attempt_1_new_lines": 834,
+    "refactor_attempt_1_edit_bytes": 33238,
+    "refactor_attempt_2_replacement_lines": 120,
+    "refactor_attempt_2_ast_rejected": true,
+    "actual_plan_undeclared_shim_rejected": true,
+    "legacy_response_rejected_by_active_schema": true
+  },
+  "limits": [
+    "These are tests that rejected recorded bad proposals; they do not establish a successful migration.",
+    "Unexecuted branch outcomes retain zero collected, passed, and failed tests, no test exit code, and no checkpoint; this is not a 0/15 executed test result.",
+    "The 834-line record breaches both aggregate line and byte limits; the 705-line record isolates the aggregate line limit.",
+    "Explicit output-limit bounded retries reuse existing mocked active-schema tests; no new live requests are needed.",
+    "Python text is parsed using ast only; upstream source is never imported or executed."
+  ],
+  "published_commit": "d7efab1778b801046d6ca2c874f2b2b52cacf5dd",
+  "ci_run_id": 38336750286,
+  "ci_job_id": 115098452113,
+  "ci_conclusion": "success",
+  "checks": {
+    "api": 555,
+    "fixture": 13,
+    "web": 88,
+    "browser": 12,
+    "ruff": "passed",
+    "mypy_source_files": 42,
+    "typescript": "passed",
+    "build": "passed"
+  }
+}

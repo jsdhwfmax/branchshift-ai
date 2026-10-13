@@ -1,0 +1,4 @@
+{
+  "numstat": "1\t1\tpyproject.toml\n6\t5\tsrc/pydantic_yaml/ext/semver.py\n14\t33\tsrc/pydantic_yaml/ext/versioned_model.py\n63\t84\tsrc/pydantic_yaml/mixin.py\n",
+  "patch_sha256": "c1d9c8d185177a3d78a55a2fd20c213bbf3c424471e2cdf90930d6900a8582be"
+}

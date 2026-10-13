@@ -1,0 +1,19 @@
+{
+  "authoring_method": "manual_codex_assisted",
+  "baseline_context_sha256": "137eb03d02d03cd42e01a54da8792d7a3de6ea6522579cd6080871237c2e969b",
+  "candidate_constraints_sha256": "09cb776346095a5716b5ef8fb1b655bd9f7dafa615adaf7a6f0bdb2028abb007",
+  "clean_original_checkout_required": true,
+  "command_sha256": "05c24cf6ff0eda89737a7ae70ba531e0c38b821b0f77034c93d7821013271566",
+  "commit_sha": "54ff4bad7bca758a9dd22a791b707a2b9c27159e",
+  "constraint_required": true,
+  "evidence_scope": "independent GitHub runner validation; not Nebius Sandbox evidence",
+  "expected_pydantic": "2.12.5",
+  "manual_iteration": 1,
+  "model_calls": 0,
+  "patch_sha256": "c1d9c8d185177a3d78a55a2fd20c213bbf3c424471e2cdf90930d6900a8582be",
+  "phase": "minimal",
+  "schema_version": 1,
+  "strategy_id": "minimal",
+  "timeout_seconds": 240,
+  "workdir": "/tmp/branchshift-external-case/repo"
+}

@@ -1,0 +1,690 @@
+warning: The top-level linter settings are deprecated in favour of their counterparts in the `lint` section. Please update the following options in `pyproject.toml`:
+  - 'select' -> 'lint.select'
+  - 'pydocstyle' -> 'lint.pydocstyle'
+F401 `.main.SemVer` imported but unused; consider using `importlib.util.find_spec` to test for availability
+  --> src/pydantic_yaml/__init__.py:32:9
+   |
+30 | try:
+31 |     from .main import (
+32 |         SemVer,
+   |         ^^^^^^
+33 |         VersionedYamlModel,
+34 |     )
+   |
+help: Remove unused import
+
+F401 `.main.VersionedYamlModel` imported but unused; consider using `importlib.util.find_spec` to test for availability
+  --> src/pydantic_yaml/__init__.py:33:9
+   |
+31 |     from .main import (
+32 |         SemVer,
+33 |         VersionedYamlModel,
+   |         ^^^^^^^^^^^^^^^^^^
+34 |     )
+   |
+help: Remove unused import
+
+D104 Missing docstring in public package
+--> src/pydantic_yaml/compat/__init__.py:1:1
+
+D404 First word of the docstring should not be "This"
+  --> src/pydantic_yaml/compat/old_enums.py:15:5
+   |
+13 |   @deprecated(version="0.5.0", reason="Use the `YamlStrEnum` class instead.")
+14 |   class YamlEnum(Enum):
+15 | /     """This class is DEPRECATED, please use `pydantic_yaml.YamlStrEnum` instead.
+16 | |
+17 | |     Enumeration that serializes as the proper underlying object type.
+18 | |
+19 | |     You can use this instead of `enum.Enum`, for example:
+20 | |         class MyEnum(str, YamlEnum):
+21 | |             val1 = "Value 1"
+22 | |             val2 = "Value 2"
+23 | |
+24 | |     Note
+25 | |     ----
+26 | |     This is actually a lie, it only supports `str` enums for now. Oops.
+27 | |     """
+   | |_______^
+28 |
+29 |       def __init_subclass__(cls):
+   |
+
+D105 Missing docstring in magic method
+  --> src/pydantic_yaml/compat/old_enums.py:29:9
+   |
+27 |     """
+28 |
+29 |     def __init_subclass__(cls):
+   |         ^^^^^^^^^^^^^^^^^
+30 |         if not isabstract(cls):
+31 |             register_str_like(cls)
+   |
+
+D105 Missing docstring in magic method
+  --> src/pydantic_yaml/compat/old_enums.py:33:9
+   |
+31 |             register_str_like(cls)
+32 |
+33 |     def __repr__(self) -> str:
+   |         ^^^^^^^^
+34 |         return repr(self.value)
+   |
+
+D105 Missing docstring in magic method
+  --> src/pydantic_yaml/compat/old_enums.py:36:9
+   |
+34 |         return repr(self.value)
+35 |
+36 |     def __str__(self) -> str:
+   |         ^^^^^^^
+37 |         return str(self.value)
+   |
+
+D401 First line of docstring should be in imperative mood: "Represents an object as a string in YAML."
+  --> src/pydantic_yaml/compat/representers.py:14:5
+   |
+13 |   def dump_as_str(dumper: yaml.Dumper, data: Any, method: Callable[[Any], str] = str):
+14 | /     """Represents an object as a string in YAML.
+15 | |
+16 | |     Parameters
+17 | |     ----------
+18 | |     dumper : yaml.Dumper
+19 | |         The dumper instance, such as `yaml.SafeDumper()`.
+20 | |     data
+21 | |         The object to dump. Ideally this is string-like.
+22 | |     method : callable
+23 | |         A method that converts `data` to a string. Default is `str`.
+24 | |
+25 | |     Returns
+26 | |     -------
+27 | |     node
+28 | |         The YAML internal node representation.
+29 | |     """
+   | |_______^
+30 |       return dumper.represent_str(method(data))
+   |
+
+D401 First line of docstring should be in imperative mood: "Represents an object as an integer in YAML."
+  --> src/pydantic_yaml/compat/representers.py:34:5
+   |
+33 |   def dump_as_int(dumper: yaml.Dumper, data: Any, method: Callable[[Any], int] = int):
+34 | /     """Represents an object as an integer in YAML.
+35 | |
+36 | |     Parameters
+37 | |     ----------
+38 | |     dumper : yaml.Dumper
+39 | |         The dumper instance, such as `yaml.SafeDumper()`.
+40 | |     data
+41 | |         The object to dump. Ideally this is int-like.
+42 | |     method : callable
+43 | |         A method that converts `data` to an integer. Default is `int`.
+44 | |
+45 | |     Returns
+46 | |     -------
+47 | |     node
+48 | |         The YAML internal node representation.
+49 | |     """
+   | |_______^
+50 |       return dumper.represent_int(method(data))
+   |
+
+D401 First line of docstring should be in imperative mood: "Registers `cls` to be dumped to YAML as a string."
+  --> src/pydantic_yaml/compat/representers.py:54:5
+   |
+53 |   def register_str_like(cls: CType, method: Callable[[Any], str] = str) -> CType:
+54 | /     """Registers `cls` to be dumped to YAML as a string.
+55 | |
+56 | |     Parameters
+57 | |     ----------
+58 | |     cls : Type
+59 | |         The class to represent.
+60 | |     method : callable
+61 | |         A method that converts objects of type `cls` to a string.
+62 | |         Default is `str`.
+63 | |
+64 | |     Returns
+65 | |     -------
+66 | |     cls
+67 | |         This is the same as the input `cls`.
+68 | |     """
+   | |_______^
+69 |       for x_cls in dumper_classes + representer_classes:
+70 |           x_cls.add_representer(cls, partial(dump_as_str, method=method))
+   |
+
+D401 First line of docstring should be in imperative mood: "Registers `cls` to be dumped to YAML as an integer."
+  --> src/pydantic_yaml/compat/representers.py:75:5
+   |
+74 |   def register_int_like(cls: CType, method: Callable[[Any], int] = int) -> CType:
+75 | /     """Registers `cls` to be dumped to YAML as an integer.
+76 | |
+77 | |     Parameters
+78 | |     ----------
+79 | |     cls : Type
+80 | |         The class to represent.
+81 | |     method : callable
+82 | |         A method that converts objects of type `cls` to an integer.
+83 | |         Default is `int`.
+84 | |
+85 | |     Returns
+86 | |     -------
+87 | |     cls
+88 | |         This is the same as the input `cls`.
+89 | |     """
+   | |_______^
+90 |       for x_cls in dumper_classes + representer_classes:
+91 |           x_cls.add_representer(cls, partial(dump_as_int, method=method))
+   |
+
+F401 [*] `typing.Union` imported but unused
+ --> src/pydantic_yaml/compat/types.py:5:33
+  |
+3 | from enum import Enum
+4 | from inspect import isabstract
+5 | from typing import Dict, Tuple, Union
+  |                                 ^^^^^
+6 |
+7 | from .representers import register_int_like, register_str_like
+  |
+help: Remove unused import: `typing.Union`
+
+D401 First line of docstring should be in imperative mood: "Adds a representer when defining a subclass."
+  --> src/pydantic_yaml/compat/types.py:17:9
+   |
+16 |     def __init_subclass__(cls):
+17 |         """Adds a representer when defining a subclass."""
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+18 |         res = super().__init_subclass__()
+19 |         if not isabstract(cls):
+   |
+
+D401 First line of docstring should be in imperative mood: "This just returns the wrapped string."
+  --> src/pydantic_yaml/compat/types.py:29:9
+   |
+28 |     def __str__(self) -> str:
+29 |         """This just returns the wrapped string."""
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+30 |         return super().__str__()
+   |
+
+D404 First word of the docstring should not be "This"
+  --> src/pydantic_yaml/compat/types.py:29:9
+   |
+28 |     def __str__(self) -> str:
+29 |         """This just returns the wrapped string."""
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+30 |         return super().__str__()
+   |
+
+D401 First line of docstring should be in imperative mood: "Implementation to prevent Enum from sabotaging us."
+  --> src/pydantic_yaml/compat/types.py:37:9
+   |
+36 |       def __getnewargs__(self) -> Tuple[str]:
+37 | /         """Implementation to prevent Enum from sabotaging us.
+38 | |
+39 | |         I'm not joking! See `_make_class_unpicklable()` from `enum.py`
+40 | |         """
+   | |___________^
+41 |           return super().__getnewargs__()
+   |
+
+D401 First line of docstring should be in imperative mood: "Adds a representer when defining a subclass."
+  --> src/pydantic_yaml/compat/types.py:48:9
+   |
+47 |     def __init_subclass__(cls):
+48 |         """Adds a representer when defining a subclass."""
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+49 |         res = super().__init_subclass__()
+50 |         if not isabstract(cls):
+   |
+
+D105 Missing docstring in magic method
+  --> src/pydantic_yaml/compat/types.py:59:9
+   |
+57 |         return int(v)
+58 |
+59 |     def __int__(self) -> int:
+   |         ^^^^^^^
+60 |         return super().__int__()
+   |
+
+D401 First line of docstring should be in imperative mood: "This returns the wrapped int."
+  --> src/pydantic_yaml/compat/types.py:63:9
+   |
+62 |     def __str__(self) -> str:
+63 |         """This returns the wrapped int."""
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+64 |         return super().__str__()
+   |
+
+D404 First word of the docstring should not be "This"
+  --> src/pydantic_yaml/compat/types.py:63:9
+   |
+62 |     def __str__(self) -> str:
+63 |         """This returns the wrapped int."""
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+64 |         return super().__str__()
+   |
+
+D401 First line of docstring should be in imperative mood: "Implementation to prevent Enum from sabotaging us."
+  --> src/pydantic_yaml/compat/types.py:71:9
+   |
+70 |       def __getnewargs__(self) -> Tuple[int]:
+71 | /         """Implementation to prevent Enum from sabotaging us.
+72 | |
+73 | |         I'm not joking! See `_make_class_unpicklable()` from `enum.py`
+74 | |         """
+   | |___________^
+75 |           return super().__getnewargs__()
+   |
+
+D105 Missing docstring in magic method
+  --> src/pydantic_yaml/compat/types.py:84:9
+   |
+82 |     """
+83 |
+84 |     def __init_subclass__(cls):
+   |         ^^^^^^^^^^^^^^^^^
+85 |         res = super().__init_subclass__()
+86 |         if not isabstract(cls):
+   |
+
+D401 First line of docstring should be in imperative mood: "This returns the wrapped string."
+  --> src/pydantic_yaml/compat/types.py:92:9
+   |
+91 |     def __str__(self) -> str:
+92 |         """This returns the wrapped string."""
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+93 |         return str.__str__(self)
+   |
+
+D404 First word of the docstring should not be "This"
+  --> src/pydantic_yaml/compat/types.py:92:9
+   |
+91 |     def __str__(self) -> str:
+92 |         """This returns the wrapped string."""
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+93 |         return str.__str__(self)
+   |
+
+D105 Missing docstring in magic method
+   --> src/pydantic_yaml/compat/types.py:106:9
+    |
+104 |     """
+105 |
+106 |     def __init_subclass__(cls):
+    |         ^^^^^^^^^^^^^^^^^
+107 |         res = super().__init_subclass__()
+108 |         if not isabstract(cls):
+    |
+
+D100 Missing docstring in public module
+--> src/pydantic_yaml/ext/semver.py:1:1
+
+D102 Missing docstring in public method
+  --> src/pydantic_yaml/ext/semver.py:42:9
+   |
+41 |     @no_type_check
+42 |     def __new__(cls, version: Optional[str], **kwargs) -> object:
+   |         ^^^^^^^
+43 |         return YamlStr.__new__(cls, cls.parse(**kwargs) if version is None else version)
+   |
+
+D102 Missing docstring in public method
+  --> src/pydantic_yaml/ext/semver.py:50:9
+   |
+49 |     @classmethod
+50 |     def parse(
+   |         ^^^^^
+51 |         self,
+52 |         major: int,
+   |
+
+D102 Missing docstring in public method
+  --> src/pydantic_yaml/ext/semver.py:66:9
+   |
+65 |     @classmethod
+66 |     def validate(cls, value: Union[str, "SemVer"]) -> "SemVer":
+   |         ^^^^^^^^
+67 |         vi = VersionInfo.parse(value)
+68 |         if not cls.allow_build and (vi.build is None):
+   |
+
+D102 Missing docstring in public method
+  --> src/pydantic_yaml/ext/semver.py:75:9
+   |
+74 |     @property
+75 |     def info(self) -> VersionInfo:
+   |         ^^^^
+76 |         return self._info
+   |
+
+D105 Missing docstring in magic method
+   --> src/pydantic_yaml/ext/semver.py:127:9
+    |
+125 |         raise AttributeError("attribute 'build' is readonly")
+126 |
+127 |     def __hash__(self) -> int:
+    |         ^^^^^^^^
+128 |         return super.__hash__(self)  # use string hashing
+    |
+
+D105 Missing docstring in magic method
+   --> src/pydantic_yaml/ext/semver.py:131:9
+    |
+130 |     @_comparator
+131 |     def __eq__(self, other: "SemVer"):
+    |         ^^^^^^
+132 |         return self._info == other._info
+    |
+
+D105 Missing docstring in magic method
+   --> src/pydantic_yaml/ext/semver.py:135:9
+    |
+134 |     @_comparator
+135 |     def __ne__(self, other: "SemVer"):
+    |         ^^^^^^
+136 |         return self._info != other._info
+    |
+
+D105 Missing docstring in magic method
+   --> src/pydantic_yaml/ext/semver.py:139:9
+    |
+138 |     @_comparator
+139 |     def __lt__(self, other: "SemVer"):
+    |         ^^^^^^
+140 |         return self._info < other._info
+    |
+
+D105 Missing docstring in magic method
+   --> src/pydantic_yaml/ext/semver.py:143:9
+    |
+142 |     @_comparator
+143 |     def __le__(self, other: "SemVer"):
+    |         ^^^^^^
+144 |         return self._info <= other._info
+    |
+
+D105 Missing docstring in magic method
+   --> src/pydantic_yaml/ext/semver.py:147:9
+    |
+146 |     @_comparator
+147 |     def __gt__(self, other: "SemVer"):
+    |         ^^^^^^
+148 |         return self._info > other._info
+    |
+
+D105 Missing docstring in magic method
+   --> src/pydantic_yaml/ext/semver.py:151:9
+    |
+150 |     @_comparator
+151 |     def __ge__(self, other: "SemVer"):
+    |         ^^^^^^
+152 |         return self._info >= other._info
+    |
+
+D100 Missing docstring in public module
+--> src/pydantic_yaml/ext/versioned_model.py:1:1
+
+D105 Missing docstring in magic method
+  --> src/pydantic_yaml/ext/versioned_model.py:60:9
+   |
+59 |     @classmethod
+60 |     def __pydantic_init_subclass__(cls, **kwargs) -> None:
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+61 |         super().__pydantic_init_subclass__(**kwargs)
+   |
+
+F401 `.ext.semver.SemVer` imported but unused; consider using `importlib.util.find_spec` to test for availability
+  --> src/pydantic_yaml/main.py:27:29
+   |
+26 | try:
+27 |     from .ext.semver import SemVer
+   |                             ^^^^^^
+28 |     from .ext.versioned_model import VersionedYamlModel
+   |
+help: Remove unused import: `.ext.semver.SemVer`
+
+F401 `.ext.versioned_model.VersionedYamlModel` imported but unused; consider using `importlib.util.find_spec` to test for availability
+  --> src/pydantic_yaml/main.py:28:38
+   |
+26 | try:
+27 |     from .ext.semver import SemVer
+28 |     from .ext.versioned_model import VersionedYamlModel
+   |                                      ^^^^^^^^^^^^^^^^^^
+29 |
+30 |     __all__.extend(["SemVer", "VersionedYamlModel"])
+   |
+help: Remove unused import: `.ext.versioned_model.VersionedYamlModel`
+
+D401 First line of docstring should be in imperative mood: "Checks whether YAML is requested by the user, depending on params."
+  --> src/pydantic_yaml/mixin.py:52:5
+   |
+50 |     path_suffix: Optional[str] = None,
+51 | ) -> bool:
+52 |     """Checks whether YAML is requested by the user, depending on params."""
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+53 |     is_yaml = False
+54 |     if content_type is not None:
+   |
+
+D105 Missing docstring in magic method
+  --> src/pydantic_yaml/mixin.py:93:9
+   |
+92 |     @no_type_check
+93 |     def __init_subclass__(cls, **kwargs) -> None:
+   |         ^^^^^^^^^^^^^^^^^
+94 |         super().__init_subclass__(**kwargs)
+95 |         # This runs before the native model schema is built. Retain the public
+   |
+
+D102 Missing docstring in public method
+   --> src/pydantic_yaml/mixin.py:169:9
+    |
+167 |     @no_type_check
+168 |     @classmethod
+169 |     def parse_raw(
+    |         ^^^^^^^^^
+170 |         cls: Type["Model"],
+171 |         b: StrBytes,
+    |
+
+D102 Missing docstring in public method
+   --> src/pydantic_yaml/mixin.py:221:9
+    |
+219 |     @no_type_check
+220 |     @classmethod
+221 |     def parse_file(
+    |         ^^^^^^^^^^
+222 |         cls: Type["Model"],
+223 |         path: Union[str, Path],
+    |
+
+D205 1 blank line required between summary line and description
+   --> src/pydantic_yaml/mixin.py:248:9
+    |
+246 |       @classmethod
+247 |       def __try_update_forward_refs__(cls, **localns: Any) -> None:
+248 | /         """
+249 | |         Same as update_forward_refs but will not raise exception
+250 | |         when forward references are not defined.
+251 | |         """
+    | |___________^
+252 |           if issubclass(cls, BaseModel):
+253 |               cls.model_rebuild(raise_errors=False, _types_namespace=localns or None)
+    |
+help: Insert single blank line
+
+D401 First line of docstring should be in imperative mood: "Same as update_forward_refs but will not raise exception"
+   --> src/pydantic_yaml/mixin.py:248:9
+    |
+246 |       @classmethod
+247 |       def __try_update_forward_refs__(cls, **localns: Any) -> None:
+248 | /         """
+249 | |         Same as update_forward_refs but will not raise exception
+250 | |         when forward references are not defined.
+251 | |         """
+    | |___________^
+252 |           if issubclass(cls, BaseModel):
+253 |               cls.model_rebuild(raise_errors=False, _types_namespace=localns or None)
+    |
+
+D100 Missing docstring in public module
+--> src/pydantic_yaml/model.py:1:1
+
+D101 Missing docstring in public class
+  --> src/pydantic_yaml/model.py:19:7
+   |
+19 | class YamlModel(YamlModelMixin, BaseModel):
+   |       ^^^^^^^^^
+20 |     __doc__ = _pre_doc + BaseModel.__doc__
+   |
+
+D106 Missing docstring in public nested class
+  --> src/pydantic_yaml/test/test_advanced_yaml.py:32:11
+   |
+30 |     ship_to: _Name = Field(alias="ship-to")
+31 |
+32 |     class Config:
+   |           ^^^^^^
+33 |         allow_population_by_field_name = True
+   |
+
+D202 [*] No blank lines allowed after function docstring (found 1)
+  --> src/pydantic_yaml/test/test_basic.py:9:5
+   |
+ 8 | def test_simple():
+ 9 |     """Tests the functionality from the README."""
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+10 |
+11 |     from pydantic_yaml import YamlStrEnum, YamlModel
+   |
+help: Remove blank line(s) after function docstring
+
+D202 [*] No blank lines allowed after function docstring (found 1)
+  --> src/pydantic_yaml/test/test_basic.py:43:5
+   |
+42 | def test_nested_models():
+43 |     """Test nested YAML models and inheritance."""
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+44 |
+45 |     from pydantic import BaseModel
+   |
+help: Remove blank line(s) after function docstring
+
+D202 [*] No blank lines allowed after function docstring (found 1)
+  --> src/pydantic_yaml/test/test_io.py:14:5
+   |
+12 | @no_type_check
+13 | def test_file_io(tmpdir: str):
+14 |     """Test file IO with temporary files (tmpdir is a pytest fixture)."""
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+15 |
+16 |     from pydantic import BaseModel
+   |
+help: Remove blank line(s) after function docstring
+
+D100 Missing docstring in public module
+--> src/pydantic_yaml/test/test_resursive.py:1:1
+
+D202 [*] No blank lines allowed after function docstring (found 1)
+  --> src/pydantic_yaml/test/test_resursive.py:22:5
+   |
+21 | def test_recursive_yaml():
+22 |     """Test how we react to (unsupported) recursive YAML documents."""
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+23 |
+24 |     file = Path(__file__).parent / "recursive.yaml"
+   |
+help: Remove blank line(s) after function docstring
+
+D106 Missing docstring in public nested class
+  --> src/pydantic_yaml/test/test_secret_types.py:42:11
+   |
+40 |     """
+41 |
+42 |     class Config:
+   |           ^^^^^^
+43 |         json_encoders = {
+44 |             SecretStr: lambda v: v.get_secret_value() if v else None,
+   |
+
+D103 Missing docstring in public function
+ --> src/pydantic_yaml/test/test_sorting.py:4:5
+  |
+4 | def test_sorting():
+  |     ^^^^^^^^^^^^
+5 |     from pydantic_yaml import YamlModel
+  |
+
+D101 Missing docstring in public class
+  --> src/pydantic_yaml/test/test_types.py:9:7
+   |
+ 9 | class XSE(YamlStrEnum):
+   |       ^^^
+10 |     a = "a"
+11 |     b = "b"
+   |
+
+D101 Missing docstring in public class
+  --> src/pydantic_yaml/test/test_types.py:14:7
+   |
+14 | class XIE(YamlIntEnum):
+   |       ^^^
+15 |     a = 1
+16 |     b = 2
+   |
+
+D101 Missing docstring in public class
+  --> src/pydantic_yaml/test/test_types.py:19:7
+   |
+19 | class XI(YamlInt):
+   |       ^^
+20 |     def __new__(cls, val):
+21 |         return super().__new__(cls, int(val))
+   |
+
+D102 Missing docstring in public method
+  --> src/pydantic_yaml/test/test_types.py:20:9
+   |
+19 | class XI(YamlInt):
+20 |     def __new__(cls, val):
+   |         ^^^^^^^
+21 |         return super().__new__(cls, int(val))
+   |
+
+D101 Missing docstring in public class
+  --> src/pydantic_yaml/test/test_types.py:24:7
+   |
+24 | class XS(YamlStr):
+   |       ^^
+25 |     def __new__(cls, val):
+26 |         return super().__new__(cls, f"My value is: {val!s}")
+   |
+
+D102 Missing docstring in public method
+  --> src/pydantic_yaml/test/test_types.py:25:9
+   |
+24 | class XS(YamlStr):
+25 |     def __new__(cls, val):
+   |         ^^^^^^^
+26 |         return super().__new__(cls, f"My value is: {val!s}")
+   |
+
+D202 [*] No blank lines allowed after function docstring (found 1)
+  --> src/pydantic_yaml/test/test_types.py:30:5
+   |
+29 | def test_str_enum():
+30 |     """Test for YamlStrEnum class."""
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+31 |
+32 |     x1 = XSE.a
+   |
+help: Remove blank line(s) after function docstring
+
+D100 Missing docstring in public module
+--> src/pydantic_yaml/test/test_versioned.py:1:1
+
+Found 65 errors.
+[*] 6 fixable with the `--fix` option.

@@ -1,0 +1,33 @@
+{
+  "protocol_id": "manual-native-control-20261013",
+  "authoring_method": "manual_codex_assisted",
+  "autonomous_score_eligible": false,
+  "upstream_commit": "54ff4bad7bca758a9dd22a791b707a2b9c27159e",
+  "maximum_candidate_iterations": 4,
+  "maximum_fresh_clean_revalidation_runs": 1,
+  "evaluated_model_calls": 0,
+  "third_party_host_runtime_execution": false,
+  "expected": {
+    "tests_collected": 15,
+    "tests_passed": 14,
+    "historical_xfail": 1,
+    "pydantic": "2.12.5",
+    "python": "3.12.15",
+    "pip_check": true,
+    "native_BaseModel": true,
+    "original_test_contract_unchanged": true,
+    "complete_frozen_environment_unchanged": true,
+    "same_patch_on_clean_revalidation": true
+  },
+  "limits": {
+    "edits": 40,
+    "new_lines_per_edit": 120,
+    "new_lines_total": 600,
+    "edit_bytes": 24000,
+    "artifact_MiB": 5,
+    "artifact_retention_days": 1
+  },
+  "failures_retained": true,
+  "new_live_model_calls_authorized_by_this_plan": false,
+  "interpretation": "A passing control establishes feasibility under bounds on this inspected case, not autonomous success, superiority, held-out generalization, or complete behavioral equivalence beyond the retained tests."
+}

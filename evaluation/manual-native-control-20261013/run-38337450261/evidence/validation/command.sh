@@ -1,0 +1,148 @@
+set -eu; cd /tmp/branchshift-external-case/repo; set -eu; printf '%s' 'ZGlmZiAtLWdpdCBhL3B5cHJvamVjdC50b21sIGIvcHlwcm9qZWN0LnRvbWwKLS0tIGEvcHlwcm9qZWN0LnRvbWwKKysrIGIvcHlwcm9qZWN0LnRvbWwKQEAgLTI2LDcgKzI2LDcgQEAKIF0KIGRlcGVuZGVuY2llcyA9IFsKICAgICAiaW1wb3J0bGliX21ldGFkYXRhIiwKLSAgICAicHlkYW50aWM+PTEuOCw8MiIsCisgICAgInB5ZGFudGljPj0yLDwzIiwKICAgICAjICJydWFtZWwueWFtbH49MC4xNy4yMSIsCiAgICAgImRlcHJlY2F0ZWR+PTEuMi41IiwKICAgICAidHlwZXMtRGVwcmVjYXRlZCIsCmRpZmYgLS1naXQgYS9zcmMvcHlkYW50aWNfeWFtbC9leHQvc2VtdmVyLnB5IGIvc3JjL3B5ZGFudGljX3lhbWwvZXh0L3NlbXZlci5weQotLS0gYS9zcmMvcHlkYW50aWNfeWFtbC9leHQvc2VtdmVyLnB5CisrKyBiL3NyYy9weWRhbnRpY195YW1sL2V4dC9zZW12ZXIucHkKQEAgLTEsNyArMSw3IEBACiBmcm9tIGZ1bmN0b29scyBpbXBvcnQgd3JhcHMKIGZyb20gdHlwaW5nIGltcG9ydCBBbnksIENhbGxhYmxlLCBPcHRpb25hbCwgVW5pb24sIG5vX3R5cGVfY2hlY2sKIAotZnJvbSBweWRhbnRpYyBpbXBvcnQgZXJyb3JzCitmcm9tIHB5ZGFudGljX2NvcmUgaW1wb3J0IGNvcmVfc2NoZW1hCiBmcm9tIHB5ZGFudGljX3lhbWwuY29tcGF0LnR5cGVzIGltcG9ydCBZYW1sU3RyCiBmcm9tIHNlbXZlciBpbXBvcnQgVmVyc2lvbkluZm8KIApAQCAtNTgsMTYgKzU4LDE3IEBACiAgICAgICAgIHJldHVybiBzdHIoVmVyc2lvbkluZm8obWFqb3IsIG1pbm9yLCBwYXRjaCwgcHJlcmVsZWFzZSwgYnVpbGQpKQogCiAgICAgQGNsYXNzbWV0aG9kCi0gICAgZGVmIF9fZ2V0X3ZhbGlkYXRvcnNfXyhjbHMpOgotICAgICAgICB5aWVsZCBjbHMudmFsaWRhdGUKKyAgICBkZWYgX19nZXRfcHlkYW50aWNfY29yZV9zY2hlbWFfXyhjbHMsIHNvdXJjZV90eXBlLCBoYW5kbGVyKToKKyAgICAgICAgIiIiVmFsaWRhdGUgc2VtYW50aWMgdmVyc2lvbnMgdGhyb3VnaCB0aGUgbmF0aXZlIFB5ZGFudGljIHYyIHNjaGVtYS4iIiIKKyAgICAgICAgcmV0dXJuIGNvcmVfc2NoZW1hLm5vX2luZm9fYWZ0ZXJfdmFsaWRhdG9yX2Z1bmN0aW9uKGNscy52YWxpZGF0ZSwgaGFuZGxlcihzdHIpKQogCiAgICAgQGNsYXNzbWV0aG9kCiAgICAgZGVmIHZhbGlkYXRlKGNscywgdmFsdWU6IFVuaW9uW3N0ciwgIlNlbVZlciJdKSAtPiAiU2VtVmVyIjoKICAgICAgICAgdmkgPSBWZXJzaW9uSW5mby5wYXJzZSh2YWx1ZSkKICAgICAgICAgaWYgbm90IGNscy5hbGxvd19idWlsZCBhbmQgKHZpLmJ1aWxkIGlzIE5vbmUpOgotICAgICAgICAgICAgcmFpc2UgZXJyb3JzLk5vdE5vbmVFcnJvcigpCisgICAgICAgICAgICByYWlzZSBWYWx1ZUVycm9yKCJ2YWx1ZSBpcyBub3QgTm9uZSIpCiAgICAgICAgIGlmIG5vdCBjbHMuYWxsb3dfcHJlcmVsZWFzZSBhbmQgKHZpLnByZXJlbGVhc2UgaXMgTm9uZSk6Ci0gICAgICAgICAgICByYWlzZSBlcnJvcnMuTm90Tm9uZUVycm9yKCkKKyAgICAgICAgICAgIHJhaXNlIFZhbHVlRXJyb3IoInZhbHVlIGlzIG5vdCBOb25lIikKICAgICAgICAgcmV0dXJuIGNscyh2YWx1ZSkKIAogICAgIEBwcm9wZXJ0eQpkaWZmIC0tZ2l0IGEvc3JjL3B5ZGFudGljX3lhbWwvZXh0L3ZlcnNpb25lZF9tb2RlbC5weSBiL3NyYy9weWRhbnRpY195YW1sL2V4dC92ZXJzaW9uZWRfbW9kZWwucHkKLS0tIGEvc3JjL3B5ZGFudGljX3lhbWwvZXh0L3ZlcnNpb25lZF9tb2RlbC5weQorKysgYi9zcmMvcHlkYW50aWNfeWFtbC9leHQvdmVyc2lvbmVkX21vZGVsLnB5CkBAIC0xLDcgKzEsNyBAQAogZnJvbSB0eXBpbmcgaW1wb3J0IE9wdGlvbmFsLCBUdXBsZSwgVHlwZQogaW1wb3J0IHdhcm5pbmdzCiAKLWZyb20gcHlkYW50aWMgaW1wb3J0IHZhbGlkYXRvcgorZnJvbSBweWRhbnRpYyBpbXBvcnQgZmllbGRfdmFsaWRhdG9yCiAKIGZyb20gcHlkYW50aWNfeWFtbC5tb2RlbCBpbXBvcnQgWWFtbE1vZGVsCiBmcm9tIC5zZW12ZXIgaW1wb3J0IFNlbVZlcgpAQCAtMjEsMTUgKzIxLDggQEAKIGRlZiBfZ2V0X21pbm1heF9yb2J1c3QoCiAgICAgY2xzOiBUeXBlWyJWZXJzaW9uZWRZYW1sTW9kZWwiXSwKICkgLT4gVHVwbGVbT3B0aW9uYWxbU2VtVmVyXSwgT3B0aW9uYWxbU2VtVmVyXV06Ci0gICAgbWluXywgbWF4XyA9IE5vbmUsIE5vbmUKLSAgICBmb3Igc3VwY2xzIGluIGNscy5tcm8oKToKLSAgICAgICAgQ29uZmlnID0gZ2V0YXR0cihzdXBjbHMsICJDb25maWciLCBOb25lKQotICAgICAgICBpZiBDb25maWcgaXMgbm90IE5vbmU6Ci0gICAgICAgICAgICBpZiBtaW5fIGlzIE5vbmU6Ci0gICAgICAgICAgICAgICAgbWluXyA9IGdldGF0dHIoQ29uZmlnLCAibWluX3ZlcnNpb24iLCBOb25lKQotICAgICAgICAgICAgaWYgbWF4XyBpcyBOb25lOgotICAgICAgICAgICAgICAgIG1heF8gPSBnZXRhdHRyKENvbmZpZywgIm1heF92ZXJzaW9uIiwgTm9uZSkKLSAgICByZXR1cm4gbWluXywgbWF4XworICAgIHZhbHVlcyA9IFtjbHMubW9kZWxfY29uZmlnLmdldChuYW1lKSBmb3IgbmFtZSBpbiAoIm1pbl92ZXJzaW9uIiwgIm1heF92ZXJzaW9uIildCisgICAgcmV0dXJuIHR1cGxlKE5vbmUgaWYgdmFsdWUgaXMgTm9uZSBlbHNlIFNlbVZlcih2YWx1ZSkgZm9yIHZhbHVlIGluIHZhbHVlcykKIAogCiBjbGFzcyBWZXJzaW9uZWRZYW1sTW9kZWwoWWFtbE1vZGVsKToKQEAgLTYzLDIwICs1Niw5IEBACiAKICAgICB2ZXJzaW9uOiBTZW1WZXIKIAotICAgIGRlZiBfX2luaXRfc3ViY2xhc3NfXyhjbHMpIC0+IE5vbmU6Ci0gICAgICAgICMgQ2hlY2sgQ29uZmlnIGNsYXNzIHR5cGVzCi0gICAgICAgIENvbmZpZyA9IGdldGF0dHIoY2xzLCAiQ29uZmlnIiwgTm9uZSkKLSAgICAgICAgaWYgQ29uZmlnIGlzIG5vdCBOb25lOgotICAgICAgICAgICAgIyBjaGVjayBvbmUgZmllbGQKLSAgICAgICAgICAgIG1pbnYgPSBnZXRhdHRyKENvbmZpZywgIm1pbl92ZXJzaW9uIiwgTm9uZSkKLSAgICAgICAgICAgIGlmIG1pbnYgaXMgbm90IE5vbmU6Ci0gICAgICAgICAgICAgICAgaWYgbm90IGlzaW5zdGFuY2UobWludiwgU2VtVmVyKToKLSAgICAgICAgICAgICAgICAgICAgc2V0YXR0cihDb25maWcsICJtaW5fdmVyc2lvbiIsIFNlbVZlcihtaW52KSkKLSAgICAgICAgICAgICMgY2hlY2sgb3RoZXIgZmllbGQKLSAgICAgICAgICAgIG1heHYgPSBnZXRhdHRyKENvbmZpZywgIm1heF92ZXJzaW9uIiwgTm9uZSkKLSAgICAgICAgICAgIGlmIG1heHYgaXMgbm90IE5vbmU6Ci0gICAgICAgICAgICAgICAgaWYgbm90IGlzaW5zdGFuY2UobWF4diwgU2VtVmVyKToKLSAgICAgICAgICAgICAgICAgICAgc2V0YXR0cihDb25maWcsICJtYXhfdmVyc2lvbiIsIFNlbVZlcihtYXh2KSkKKyAgICBAY2xhc3NtZXRob2QKKyAgICBkZWYgX19weWRhbnRpY19pbml0X3N1YmNsYXNzX18oY2xzLCAqKmt3YXJncykgLT4gTm9uZToKKyAgICAgICAgc3VwZXIoKS5fX3B5ZGFudGljX2luaXRfc3ViY2xhc3NfXygqKmt3YXJncykKIAogICAgICAgICAjIENoZWNrIHJhbmdlcwogICAgICAgICBtaW5fLCBtYXhfID0gX2dldF9taW5tYXhfcm9idXN0KGNscykKQEAgLTg0LDI2ICs2NiwyNSBAQAogICAgICAgICAgICAgcmFpc2UgVmFsdWVFcnJvcihmIk1pbmltdW0gdmVyc2lvbiBoaWdoZXIgdGhhbiBtYXhpbXVtOiB7bWluXyFyfSA+IHttYXhfIXJ9IikKIAogICAgICAgICAjIENoZWNrIHRoZSBkZWZhdWx0IHZhbHVlIG9mIHRoZSAidmVyc2lvbiIgZmllbGQKLSAgICAgICAgZmxkID0gY2xzLl9fZmllbGRzX19bInZlcnNpb24iXQorICAgICAgICBmbGQgPSBjbHMubW9kZWxfZmllbGRzWyJ2ZXJzaW9uIl0KICAgICAgICAgZCA9IGZsZC5kZWZhdWx0Ci0gICAgICAgIGlmIGQgaXMgTm9uZToKKyAgICAgICAgaWYgZmxkLmlzX3JlcXVpcmVkKCkgb3IgZCBpcyBOb25lOgogICAgICAgICAgICAgcGFzcwogICAgICAgICBlbHNlOgotICAgICAgICAgICAgX2Noa19iZXR3ZWVuKGQsIGxvPW1pbl8sIGhpPW1heF8pCisgICAgICAgICAgICBfY2hrX2JldHdlZW4oU2VtVmVyLnZhbGlkYXRlKGQpLCBsbz1taW5fLCBoaT1tYXhfKQogICAgICAgICAgICAgd2FybmluZ3Mud2FybigKICAgICAgICAgICAgICAgICBmIlJlY29tbWVuZGVkIHRvIGhhdmUgYHZlcnNpb25gIGJlIHJlcXVpcmVkLCBidXQgc2V0IGRlZmF1bHQge2Qhcn0iLAogICAgICAgICAgICAgICAgIFVzZXJXYXJuaW5nLAogICAgICAgICAgICAgKQogCi0gICAgICAgIGlmIG5vdCBpc3N1YmNsYXNzKGZsZC50eXBlXywgU2VtVmVyKToKLSAgICAgICAgICAgIHJhaXNlIFR5cGVFcnJvcihmIkZpZWxkIHR5cGUgZm9yIGB2ZXJzaW9uYCBtdXN0IGJlIFNlbVZlciwgZ290IHtmbGQudHlwZV8hcn0iKQorICAgICAgICBpZiBub3QgaXNpbnN0YW5jZShmbGQuYW5ub3RhdGlvbiwgdHlwZSkgb3Igbm90IGlzc3ViY2xhc3MoZmxkLmFubm90YXRpb24sIFNlbVZlcik6CisgICAgICAgICAgICByYWlzZSBUeXBlRXJyb3IoZiJGaWVsZCB0eXBlIGZvciBgdmVyc2lvbmAgbXVzdCBiZSBTZW1WZXIsIGdvdCB7ZmxkLmFubm90YXRpb24hcn0iKQogCi0gICAgQHZhbGlkYXRvcigidmVyc2lvbiIsIGFsd2F5cz1UcnVlKQorICAgIEBmaWVsZF92YWxpZGF0b3IoInZlcnNpb24iKQorICAgIEBjbGFzc21ldGhvZAogICAgIGRlZiBfY2hlY2tfc2VtdmVyKGNscywgdik6CiAgICAgICAgIG1pbl8sIG1heF8gPSBfZ2V0X21pbm1heF9yb2J1c3QoY2xzKQogICAgICAgICBfY2hrX2JldHdlZW4odiwgbG89bWluXywgaGk9bWF4XykKICAgICAgICAgcmV0dXJuIHYKIAotICAgIGNsYXNzIENvbmZpZzoKLSAgICAgICAgbWluX3ZlcnNpb24gPSBTZW1WZXIoIjAuMC4wIikKLSAgICAgICAgbWF4X3ZlcnNpb24gPSBOb25lCisgICAgbW9kZWxfY29uZmlnID0geyJtaW5fdmVyc2lvbiI6ICIwLjAuMCIsICJtYXhfdmVyc2lvbiI6IE5vbmUsICJ2YWxpZGF0ZV9kZWZhdWx0IjogVHJ1ZX0KZGlmZiAtLWdpdCBhL3NyYy9weWRhbnRpY195YW1sL21peGluLnB5IGIvc3JjL3B5ZGFudGljX3lhbWwvbWl4aW4ucHkKLS0tIGEvc3JjL3B5ZGFudGljX3lhbWwvbWl4aW4ucHkKKysrIGIvc3JjL3B5ZGFudGljX3lhbWwvbWl4aW4ucHkKQEAgLTEsMTMgKzEsMTcgQEAKICIiIk1vZHVsZSB0byBkZWZpbmUgdGhlIFlhbWxNb2RlbE1peGluLiIiIgogCiBmcm9tIHR5cGluZ19leHRlbnNpb25zIGltcG9ydCBMaXRlcmFsCitpbXBvcnQganNvbgoraW1wb3J0IHBpY2tsZQogaW1wb3J0IHdhcm5pbmdzCiBmcm9tIHBhdGhsaWIgaW1wb3J0IFBhdGgKIGZyb20gdHlwaW5nIGltcG9ydCAoCiAgICAgVFlQRV9DSEVDS0lORywKICAgICBBbnksCisgICAgQWJzdHJhY3RTZXQsCiAgICAgQ2FsbGFibGUsCi0gICAgQ2xhc3NWYXIsCisgICAgRGljdCwKKyAgICBNYXBwaW5nLAogICAgIE9wdGlvbmFsLAogICAgIFR5cGUsCiAgICAgVHlwZVZhciwKQEAgLTE1LDI0ICsxOSwyMCBAQAogICAgIGNhc3QsCiAgICAgbm9fdHlwZV9jaGVjaywKICkKLWZyb20gcHlkYW50aWMucGFyc2UgaW1wb3J0IFByb3RvY29sLCBsb2FkX2ZpbGUsIGxvYWRfc3RyX2J5dGVzCi1mcm9tIHB5ZGFudGljLm1haW4gaW1wb3J0IFJPT1RfS0VZLCBCYXNlTW9kZWwsIE1vZGVsTWV0YWNsYXNzLCBCYXNlQ29uZmlnCi1mcm9tIHB5ZGFudGljLmVycm9yX3dyYXBwZXJzIGltcG9ydCBFcnJvcldyYXBwZXIsIFZhbGlkYXRpb25FcnJvcgotZnJvbSBweWRhbnRpYy50eXBlcyBpbXBvcnQgU3RyQnl0ZXMKK2Zyb20gcHlkYW50aWMgaW1wb3J0IEJhc2VNb2RlbCwgVmFsaWRhdGlvbkVycm9yCiAKIGlmIFRZUEVfQ0hFQ0tJTkc6Ci0gICAgZnJvbSBweWRhbnRpYy50eXBpbmcgaW1wb3J0ICgKLSAgICAgICAgRGljdFN0ckFueSwKLSAgICAgICAgQWJzdHJhY3RTZXRJbnRTdHIsCi0gICAgICAgIE1hcHBpbmdJbnRTdHJBbnksCi0gICAgKQorICAgIERpY3RTdHJBbnkgPSBEaWN0W3N0ciwgQW55XQorICAgIEFic3RyYWN0U2V0SW50U3RyID0gQWJzdHJhY3RTZXRbVW5pb25baW50LCBzdHJdXQorICAgIE1hcHBpbmdJbnRTdHJBbnkgPSBNYXBwaW5nW1VuaW9uW2ludCwgc3RyXSwgQW55XQogCiAgICAgTW9kZWwgPSBUeXBlVmFyKCJNb2RlbCIsIGJvdW5kPSJCYXNlTW9kZWwiKQogCiBmcm9tIC5jb21wYXQueWFtbF9saWIgaW1wb3J0IHlhbWxfc2FmZV9kdW1wLCB5YW1sX3NhZmVfbG9hZAogCiAKLUV4dGVuZGVkUHJvdG8gPSBVbmlvbltQcm90b2NvbCwgTGl0ZXJhbFsieWFtbCJdXQorU3RyQnl0ZXMgPSBVbmlvbltzdHIsIGJ5dGVzXQorRXh0ZW5kZWRQcm90byA9IExpdGVyYWxbImpzb24iLCAicGlja2xlIiwgInlhbWwiXQogCiBZYW1sU3R5bGUgPSBVbmlvblsKICAgICBOb25lLApAQCAtNjcsNyArNjcsNyBAQAogICAgIHlhbWxfZHVtcHM6IENhbGxhYmxlWy4uLiwgc3RyXSA9IHlhbWxfc2FmZV9kdW1wICAjIHR5cGU6IGlnbm9yZQogCiAKLWNsYXNzIFlhbWxNb2RlbE1peGluKG1ldGFjbGFzcz1Nb2RlbE1ldGFjbGFzcyk6CitjbGFzcyBZYW1sTW9kZWxNaXhpbjoKICAgICAiIiJNaXhpbiB0byBhZGQgWUFNTCBjb21wYXRpYmlsaXR5IHRvIHlvdXIgY2xhc3MuCiAKICAgICBVc2FnZQpAQCAtODksMjYgKzg5LDE0IEBACiAgICAgdG8gYSBZQU1MIHN0cmluZy4KICAgICAiIiIKIAotICAgIGlmIFRZUEVfQ0hFQ0tJTkc6Ci0gICAgICAgIF9fY3VzdG9tX3Jvb3RfdHlwZV9fOiBDbGFzc1Zhcltib29sXSA9IEZhbHNlCi0gICAgICAgIF9fY29uZmlnX186IENsYXNzVmFyW1R5cGVbQmFzZUNvbmZpZ11dID0gWWFtbE1vZGVsTWl4aW5Db25maWcgICMgdHlwZTogaWdub3JlCi0KICAgICBAbm9fdHlwZV9jaGVjawotICAgIGRlZiBfX2luaXRfc3ViY2xhc3NfXyhjbHMpIC0+IE5vbmU6Ci0gICAgICAgIHN1cGVyKCkuX19pbml0X3N1YmNsYXNzX18oKQotCi0gICAgICAgICMgU2V0IHRoZSBjb25maWcgY2xhc3MKLSAgICAgICAgY2ZnOiBUeXBlW1lhbWxNb2RlbE1peGluQ29uZmlnXSA9IGNscy5fX2NvbmZpZ19fCi0gICAgICAgIGlmIG5vdCBpc3N1YmNsYXNzKGNmZywgWWFtbE1vZGVsTWl4aW5Db25maWcpOgotCi0gICAgICAgICAgICBjbGFzcyBUKGNmZywgWWFtbE1vZGVsTWl4aW5Db25maWcpOgotICAgICAgICAgICAgICAgIHBhc3MKLQotICAgICAgICAgICAgVC5fX2RvY19fID0gY2ZnLl9fZG9jX18KLSAgICAgICAgICAgIFQuX19uYW1lX18gPSBjZmcuX19uYW1lX18KLSAgICAgICAgICAgIFQuX19xdWFsbmFtZV9fID0gY2ZnLl9fcXVhbG5hbWVfXwotCi0gICAgICAgICAgICBjbHMuX19jb25maWdfXyA9IFQKKyAgICBkZWYgX19pbml0X3N1YmNsYXNzX18oY2xzLCAqKmt3YXJncykgLT4gTm9uZToKKyAgICAgICAgc3VwZXIoKS5fX2luaXRfc3ViY2xhc3NfXygqKmt3YXJncykKKyAgICAgICAgIyBUaGlzIHJ1bnMgYmVmb3JlIHRoZSBuYXRpdmUgbW9kZWwgc2NoZW1hIGlzIGJ1aWx0LiBSZXRhaW4gdGhlIHB1YmxpYworICAgICAgICAjIGxlZ2FjeSBDb25maWcgc3BlbGxpbmcgdXNlZCBieSBleGlzdGluZyBjYWxsZXJzLCB3aXRoIGEgdjIgc2V0dGluZy4KKyAgICAgICAgY2ZnID0gZ2V0YXR0cihjbHMsICJtb2RlbF9jb25maWciLCB7fSkKKyAgICAgICAgaWYgImFsbG93X3BvcHVsYXRpb25fYnlfZmllbGRfbmFtZSIgaW4gY2ZnOgorICAgICAgICAgICAgY2ZnLnNldGRlZmF1bHQoInBvcHVsYXRlX2J5X25hbWUiLCBjZmdbImFsbG93X3BvcHVsYXRpb25fYnlfZmllbGRfbmFtZSJdKQogCiAgICAgZGVmIHlhbWwoCiAgICAgICAgIHNlbGYsCkBAIC0xNDksMjUgKzEzNywyNCBAQAogICAgICAgICBpbmRlbnQsIGVuY29kaW5nLCBrd2FyZ3MKICAgICAgICAgICAgIEFkZGl0aW9uYWwgYXJndW1lbnRzIGZvciB0aGUgZHVtcGVyLgogICAgICAgICAiIiIKLSAgICAgICAgZGF0YTogIkRpY3RTdHJBbnkiID0gc2VsZi5kaWN0KCAgIyB0eXBlOiBpZ25vcmUKKyAgICAgICAgaWYgc2tpcF9kZWZhdWx0cyBpcyBub3QgTm9uZToKKyAgICAgICAgICAgIHdhcm5pbmdzLndhcm4oInNraXBfZGVmYXVsdHMgaXMgZGVwcmVjYXRlZDsgdXNlIGV4Y2x1ZGVfdW5zZXQiLCBEZXByZWNhdGlvbldhcm5pbmcpCisgICAgICAgICAgICBleGNsdWRlX3Vuc2V0ID0gc2tpcF9kZWZhdWx0cworICAgICAgICBkYXRhOiAiRGljdFN0ckFueSIgPSBzZWxmLm1vZGVsX2R1bXAoICAjIHR5cGU6IGlnbm9yZQorICAgICAgICAgICAgbW9kZT0icHl0aG9uIiwKICAgICAgICAgICAgIGluY2x1ZGU9aW5jbHVkZSwKICAgICAgICAgICAgIGV4Y2x1ZGU9ZXhjbHVkZSwKICAgICAgICAgICAgIGJ5X2FsaWFzPWJ5X2FsaWFzLAotICAgICAgICAgICAgc2tpcF9kZWZhdWx0cz1za2lwX2RlZmF1bHRzLAogICAgICAgICAgICAgZXhjbHVkZV91bnNldD1leGNsdWRlX3Vuc2V0LAogICAgICAgICAgICAgZXhjbHVkZV9kZWZhdWx0cz1leGNsdWRlX2RlZmF1bHRzLAogICAgICAgICAgICAgZXhjbHVkZV9ub25lPWV4Y2x1ZGVfbm9uZSwKKyAgICAgICAgICAgIHNlcmlhbGl6ZV9hc19hbnk9VHJ1ZSwKICAgICAgICAgKQogCi0gICAgICAgIGlmIHNlbGYuX19jdXN0b21fcm9vdF90eXBlX186Ci0gICAgICAgICAgICBkYXRhID0gZGF0YVtST09UX0tFWV0KLSAgICAgICAgICAgIHdhcm5pbmdzLndhcm4oCi0gICAgICAgICAgICAgICAgIkV4cGxpY2l0IGN1c3RvbSByb290IGJlaGF2aW9yIG5vdCB5ZXQgaW1wbGVtZW50ZWQgZm9yIHB5ZGFudGljX3lhbWwuIgotICAgICAgICAgICAgICAgICIgVGhpcyBtYXkgbm90IHdvcmsgYXMgZXhwZWN0ZWQuIElmIHNvLCBwbGVhc2UgY3JlYXRlIGEgR2l0SHViIGlzc3VlOiIKLSAgICAgICAgICAgICAgICAiIGh0dHBzOi8vZ2l0aHViLmNvbS9Ob3dhbklsZmlkZW1lL3B5ZGFudGljLXlhbWwvaXNzdWVzL25ldyIKLSAgICAgICAgICAgICkKLSAgICAgICAgY2ZnID0gY2FzdChZYW1sTW9kZWxNaXhpbkNvbmZpZywgc2VsZi5fX2NvbmZpZ19fKQotICAgICAgICByZXR1cm4gY2ZnLnlhbWxfZHVtcHMoCisgICAgICAgICMgUHl0aG9uLW1vZGUgZHVtcGluZyBwcmVzZXJ2ZXMgdGhlIGV4aXN0aW5nIFlBTUwgcmVwcmVzZW50ZXJzLCBpbmNsdWRpbmcKKyAgICAgICAgIyBtYXNrZWQgc2VjcmV0cy4gSlNPTiBlbmNvZGVycyByZW1haW4gaW5kZXBlbmRlbnQgZnJvbSBZQU1MIHNlcmlhbGl6YXRpb24uCisgICAgICAgIGR1bXBlciA9IHR5cGUoc2VsZikubW9kZWxfY29uZmlnLmdldCgieWFtbF9kdW1wcyIsIFlhbWxNb2RlbE1peGluQ29uZmlnLnlhbWxfZHVtcHMpCisgICAgICAgIHJldHVybiBkdW1wZXIoCiAgICAgICAgICAgICBkYXRhLAogICAgICAgICAgICAgc29ydF9rZXlzPXNvcnRfa2V5cywKICAgICAgICAgICAgIGRlZmF1bHRfZmxvd19zdHlsZT1kZWZhdWx0X2Zsb3dfc3R5bGUsCkBAIC0xOTgsMjQgKzE4NSwzNSBAQAogICAgICAgICAjIGV2ZW4gaWYgSlNPTiBpcyBwYXNzZWQuIEl0IHdpbGwgYmUgc2xvd2VyLCBob3dldmVyLgogICAgICAgICBpZiBpc195YW1sOgogICAgICAgICAgICAgdHJ5OgotICAgICAgICAgICAgICAgIGNmZyA9IGNhc3QoWWFtbE1vZGVsTWl4aW5Db25maWcsIGNscy5fX2NvbmZpZ19fKQotICAgICAgICAgICAgICAgIG9iaiA9IGNmZy55YW1sX2xvYWRzKGIpCisgICAgICAgICAgICAgICAgbG9hZGVyID0gY2xzLm1vZGVsX2NvbmZpZy5nZXQoInlhbWxfbG9hZHMiLCBZYW1sTW9kZWxNaXhpbkNvbmZpZy55YW1sX2xvYWRzKQorICAgICAgICAgICAgICAgIG9iaiA9IGxvYWRlcihiKQogICAgICAgICAgICAgZXhjZXB0IFJlY3Vyc2lvbkVycm9yIGFzIGU6CiAgICAgICAgICAgICAgICAgcmFpc2UgVmFsdWVFcnJvcigiWUFNTCBmaWxlcyB3aXRoIHJlY3Vyc2l2ZSByZWZlcmVuY2VzIGFyZSB1bnN1cHBvcnRlZC4iKSBmcm9tIGUKICAgICAgICAgICAgIGV4Y2VwdCBWYWxpZGF0aW9uRXJyb3I6CiAgICAgICAgICAgICAgICAgcmFpc2UKICAgICAgICAgICAgIGV4Y2VwdCBFeGNlcHRpb24gYXMgZToKLSAgICAgICAgICAgICAgICByYWlzZSBWYWxpZGF0aW9uRXJyb3IoW0Vycm9yV3JhcHBlcihlLCBsb2M9Uk9PVF9LRVkpXSwgY2xzKSBmcm9tIGUKKyAgICAgICAgICAgICAgICByYWlzZSBWYWxpZGF0aW9uRXJyb3IuZnJvbV9leGNlcHRpb25fZGF0YShjbHMuX19uYW1lX18sIFt7CisgICAgICAgICAgICAgICAgICAgICJ0eXBlIjogInZhbHVlX2Vycm9yIiwgImxvYyI6ICgiX19yb290X18iLCksICJpbnB1dCI6IGIsCisgICAgICAgICAgICAgICAgICAgICJjdHgiOiB7ImVycm9yIjogVmFsdWVFcnJvcihzdHIoZSkpfSwKKyAgICAgICAgICAgICAgICB9XSkgZnJvbSBlCiAgICAgICAgIGVsc2U6Ci0gICAgICAgICAgICBvYmogPSBsb2FkX3N0cl9ieXRlcygKLSAgICAgICAgICAgICAgICBiLAotICAgICAgICAgICAgICAgIHByb3RvPXByb3RvLAotICAgICAgICAgICAgICAgIGNvbnRlbnRfdHlwZT1jb250ZW50X3R5cGUsCi0gICAgICAgICAgICAgICAgZW5jb2Rpbmc9ZW5jb2RpbmcsCi0gICAgICAgICAgICAgICAgYWxsb3dfcGlja2xlPWFsbG93X3BpY2tsZSwKLSAgICAgICAgICAgICAgICBqc29uX2xvYWRzPWNscy5fX2NvbmZpZ19fLmpzb25fbG9hZHMsCi0gICAgICAgICAgICApCi0gICAgICAgIHJlcyA9IGNscy5wYXJzZV9vYmoob2JqKSAgIyB0eXBlOiBpZ25vcmUKKyAgICAgICAgICAgIGlmIHByb3RvIGlzIE5vbmUgYW5kIGNvbnRlbnRfdHlwZToKKyAgICAgICAgICAgICAgICBpZiBjb250ZW50X3R5cGUuZW5kc3dpdGgoKCJqc29uIiwgImphdmFzY3JpcHQiKSk6CisgICAgICAgICAgICAgICAgICAgIHByb3RvID0gImpzb24iCisgICAgICAgICAgICAgICAgZWxpZiBhbGxvd19waWNrbGUgYW5kIGNvbnRlbnRfdHlwZS5lbmRzd2l0aCgicGlja2xlIik6CisgICAgICAgICAgICAgICAgICAgIHByb3RvID0gInBpY2tsZSIKKyAgICAgICAgICAgICAgICBlbHNlOgorICAgICAgICAgICAgICAgICAgICByYWlzZSBUeXBlRXJyb3IoZiJVbmtub3duIGNvbnRlbnQtdHlwZToge2NvbnRlbnRfdHlwZX0iKQorICAgICAgICAgICAgaWYgcHJvdG8gaW4gKE5vbmUsICJqc29uIik6CisgICAgICAgICAgICAgICAgbG9hZGVyID0gY2xzLm1vZGVsX2NvbmZpZy5nZXQoImpzb25fbG9hZHMiLCBqc29uLmxvYWRzKQorICAgICAgICAgICAgICAgIG9iaiA9IGxvYWRlcihiLmRlY29kZShlbmNvZGluZykgaWYgaXNpbnN0YW5jZShiLCBieXRlcykgZWxzZSBiKQorICAgICAgICAgICAgZWxpZiBwcm90byA9PSAicGlja2xlIjoKKyAgICAgICAgICAgICAgICBpZiBub3QgYWxsb3dfcGlja2xlOgorICAgICAgICAgICAgICAgICAgICByYWlzZSBSdW50aW1lRXJyb3IoIlRyeWluZyB0byBkZWNvZGUgd2l0aCBwaWNrbGUgd2l0aCBhbGxvd19waWNrbGU9RmFsc2UiKQorICAgICAgICAgICAgICAgIG9iaiA9IHBpY2tsZS5sb2FkcyhiIGlmIGlzaW5zdGFuY2UoYiwgYnl0ZXMpIGVsc2UgYi5lbmNvZGUoZW5jb2RpbmcpKQorICAgICAgICAgICAgZWxzZToKKyAgICAgICAgICAgICAgICByYWlzZSBUeXBlRXJyb3IoZiJVbmtub3duIHByb3RvY29sOiB7cHJvdG99IikKKyAgICAgICAgcmVzID0gY2xzLm1vZGVsX3ZhbGlkYXRlKG9iaikKICAgICAgICAgcmV0dXJuIGNhc3QoIk1vZGVsIiwgcmVzKQogCiAgICAgQG5vX3R5cGVfY2hlY2sKQEAgLTIzNSwzMSArMjMzLDE1IEBACiAgICAgICAgIGlmIChjb250ZW50X3R5cGUgaXMgTm9uZSkgYW5kIChwYXRoLnN1ZmZpeCBpbiBbIi55bWwiLCAiLnlhbWwiXSk6CiAgICAgICAgICAgICBjb250ZW50X3R5cGUgPSAiYXBwbGljYXRpb24veWFtbCIKIAotICAgICAgICAjIENoZWNrIHdoZXRoZXIgd2UncmUgc3BlY2lmaWNhbGx5IGFza2VkIHRvIHBhcnNlIFlBTUwKLSAgICAgICAgaXNfeWFtbCA9IGlzX3lhbWxfcmVxdWVzdGVkKGNvbnRlbnRfdHlwZT1jb250ZW50X3R5cGUsIHByb3RvPXByb3RvLCBwYXRoX3N1ZmZpeD1wYXRoLnN1ZmZpeCkKLQotICAgICAgICAjIFRoZSBmaXJzdCBjb2RlIHBhdGggZXhwbGljaXRseSBjaGVja3MgWUFNTCBjb21wYXRpYmlsaXR5LgotICAgICAgICAjIFdlIG9mZmxvYWQgdGhlIHJlc3QgdG8gUHlkYW50aWMuCi0gICAgICAgIGlmIGlzX3lhbWw6Ci0gICAgICAgICAgICBiID0gcGF0aC5yZWFkX2J5dGVzKCkKLSAgICAgICAgICAgIHJldHVybiBjbHMucGFyc2VfcmF3KAotICAgICAgICAgICAgICAgIGIsCi0gICAgICAgICAgICAgICAgY29udGVudF90eXBlPWNvbnRlbnRfdHlwZSwKLSAgICAgICAgICAgICAgICBlbmNvZGluZz1lbmNvZGluZywKLSAgICAgICAgICAgICAgICBwcm90bz1wcm90bywKLSAgICAgICAgICAgICAgICBhbGxvd19waWNrbGU9YWxsb3dfcGlja2xlLAotICAgICAgICAgICAgKQotICAgICAgICBlbHNlOgotICAgICAgICAgICAgb2JqID0gbG9hZF9maWxlKAotICAgICAgICAgICAgICAgIHBhdGgsCi0gICAgICAgICAgICAgICAgcHJvdG89cHJvdG8sCi0gICAgICAgICAgICAgICAgY29udGVudF90eXBlPWNvbnRlbnRfdHlwZSwKLSAgICAgICAgICAgICAgICBlbmNvZGluZz1lbmNvZGluZywKLSAgICAgICAgICAgICAgICBhbGxvd19waWNrbGU9YWxsb3dfcGlja2xlLAotICAgICAgICAgICAgICAgIGpzb25fbG9hZHM9Y2xzLl9fY29uZmlnX18uanNvbl9sb2FkcywKLSAgICAgICAgICAgICkKLSAgICAgICAgICAgIHJlcyA9IGNscy5wYXJzZV9vYmoob2JqKSAgIyB0eXBlOiBpZ25vcmUKLSAgICAgICAgICAgIHJldHVybiBjYXN0KCJNb2RlbCIsIHJlcykKKyAgICAgICAgaWYgY29udGVudF90eXBlIGlzIE5vbmU6CisgICAgICAgICAgICBpZiBwYXRoLnN1ZmZpeCBpbiAoIi5qcyIsICIuanNvbiIpOgorICAgICAgICAgICAgICAgIHByb3RvID0gImpzb24iCisgICAgICAgICAgICBlbGlmIHBhdGguc3VmZml4ID09ICIucGtsIjoKKyAgICAgICAgICAgICAgICBwcm90byA9ICJwaWNrbGUiCisgICAgICAgIHJldHVybiBjbHMucGFyc2VfcmF3KAorICAgICAgICAgICAgcGF0aC5yZWFkX2J5dGVzKCksIGNvbnRlbnRfdHlwZT1jb250ZW50X3R5cGUsIGVuY29kaW5nPWVuY29kaW5nLAorICAgICAgICAgICAgcHJvdG89cHJvdG8sIGFsbG93X3BpY2tsZT1hbGxvd19waWNrbGUsCisgICAgICAgICkKIAogICAgIEBjbGFzc21ldGhvZAogICAgIGRlZiBfX3RyeV91cGRhdGVfZm9yd2FyZF9yZWZzX18oY2xzLCAqKmxvY2FsbnM6IEFueSkgLT4gTm9uZToKQEAgLTI2Nyw4ICsyNDksNSBAQAogICAgICAgICBTYW1lIGFzIHVwZGF0ZV9mb3J3YXJkX3JlZnMgYnV0IHdpbGwgbm90IHJhaXNlIGV4Y2VwdGlvbgogICAgICAgICB3aGVuIGZvcndhcmQgcmVmZXJlbmNlcyBhcmUgbm90IGRlZmluZWQuCiAgICAgICAgICIiIgotICAgICAgICB0cnk6Ci0gICAgICAgICAgICBpZiBpc3N1YmNsYXNzKGNscywgQmFzZU1vZGVsKToKLSAgICAgICAgICAgICAgICBzdXBlcigpLl9fdHJ5X3VwZGF0ZV9mb3J3YXJkX3JlZnNfXygqKmxvY2FsbnMpICAjIHR5cGU6IGlnbm9yZQotICAgICAgICBleGNlcHQgQXR0cmlidXRlRXJyb3I6Ci0gICAgICAgICAgICBwYXNzCisgICAgICAgIGlmIGlzc3ViY2xhc3MoY2xzLCBCYXNlTW9kZWwpOgorICAgICAgICAgICAgY2xzLm1vZGVsX3JlYnVpbGQocmFpc2VfZXJyb3JzPUZhbHNlLCBfdHlwZXNfbmFtZXNwYWNlPWxvY2FsbnMgb3IgTm9uZSkK' | base64 -d > /tmp/branchshift.patch; repo_root=$(git rev-parse --show-toplevel); repo_prefix=$(git rev-parse --show-prefix); if [ -n "$repo_prefix" ]; then git -C "$repo_root" apply --check --directory="${repo_prefix%/}" /tmp/branchshift.patch; git -C "$repo_root" apply --directory="${repo_prefix%/}" /tmp/branchshift.patch; else git apply --check /tmp/branchshift.patch; git apply /tmp/branchshift.patch; fi; set +e; .venv/bin/python -m pip install --disable-pip-version-check -e '.[pyyaml,semver]' 'pydantic>=2,<3' pytest ruff > /tmp/branchshift-install.out 2>&1; install_exit=$?; .venv/bin/python -I -c 'try:
+    import configparser, hashlib, json, os, pathlib, tomllib
+    root = pathlib.Path.cwd()
+    files = {}
+    total = 0
+    ignored = {'"'"'.git'"'"', '"'"'.venv'"'"', '"'"'node_modules'"'"', '"'"'__pycache__'"'"', '"'"'.pytest_cache'"'"', '"'"'.mypy_cache'"'"'}
+    for directory, dirs, names in os.walk(root):
+        dirs[:] = sorted(name for name in dirs if name not in ignored)
+        for name in sorted(names):
+            path = pathlib.Path(directory) / name
+            relative = path.relative_to(root)
+            protected = (any(part in {'"'"'test'"'"', '"'"'tests'"'"', '"'"'__tests__'"'"'} for part in relative.parts)
+                         or name == '"'"'conftest.py'"'"' or name.startswith('"'"'test_'"'"')
+                         or name.endswith('"'"'_test.py'"'"'))
+            if not protected:
+                continue
+            if path.is_symlink():
+                raise ValueError('"'"'Symlinked test files are unsupported'"'"')
+            total += path.stat().st_size
+            if total > 2_000_000 or len(files) >= 500:
+                raise ValueError('"'"'Test contract exceeds bounded evidence limits'"'"')
+            files[relative.as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
+    configuration = {}
+    manifest = root / '"'"'pyproject.toml'"'"'
+    if manifest.exists():
+        parsed = tomllib.loads(manifest.read_text())
+        configuration['"'"'pyproject.toml'"'"'] = parsed.get('"'"'tool'"'"', {}).get('"'"'pytest'"'"', {})
+    for name in ('"'"'pytest.ini'"'"', '"'"'.pytest.ini'"'"', '"'"'tox.ini'"'"', '"'"'setup.cfg'"'"'):
+        path = root / name
+        if path.exists():
+            parser = configparser.ConfigParser(interpolation=None)
+            parser.read_string(path.read_text())
+            configuration[name] = {section: dict(parser[section]) for section in parser.sections()
+                                   if section in {'"'"'pytest'"'"', '"'"'tool:pytest'"'"'}}
+    payload = json.dumps({'"'"'files'"'"': files, '"'"'configuration'"'"': configuration}, sort_keys=True).encode()
+    digest = hashlib.sha256(payload).hexdigest()
+    print('"'"'__BRANCHSHIFT_CONTRACT_BEFORE='"'"' + digest)
+
+except Exception as exc:
+    print('"'"'__BRANCHSHIFT_CONTRACT_BEFORE_ERROR='"'"' + type(exc).__name__ + '"'"': '"'"' + str(exc).replace('"'"'\n'"'"', '"'"' '"'"')[:300])
+    raise SystemExit(1)
+'; rm -f /tmp/branchshift-pytest.xml; .venv/bin/python -m pytest -q --tb=short --disable-warnings --junitxml=/tmp/branchshift-pytest.xml > /tmp/branchshift-pytest.out 2>&1; test_exit=$?; .venv/bin/python -m pip check > /tmp/branchshift-pip.out 2>&1; pip_exit=$?; .venv/bin/python -m ruff check . > /tmp/branchshift-ruff.out 2>&1; ruff_exit=$?; if [ "$install_exit" -ne 0 ]; then tail -c 1500 /tmp/branchshift-install.out; fi; tail -c 1500 /tmp/branchshift-pytest.out; if [ "$pip_exit" -ne 0 ]; then tail -c 500 /tmp/branchshift-pip.out; fi; if [ "$ruff_exit" -ne 0 ]; then tail -c 1000 /tmp/branchshift-ruff.out; fi; printf '\n__BRANCHSHIFT_TEST_EXIT=%s\n__BRANCHSHIFT_PIP_EXIT=%s\n__BRANCHSHIFT_RUFF_EXIT=%s\n__BRANCHSHIFT_INSTALL_EXIT=%s\n' "$test_exit" "$pip_exit" "$ruff_exit" "$install_exit"; .venv/bin/python -I -c 'try:
+    import json, xml.etree.ElementTree as ET
+    root=ET.parse('"'"'/tmp/branchshift-pytest.xml'"'"').getroot()
+    expected = {'"'"'src.pydantic_yaml.test.test_advanced_yaml::test_yaml_refs[\\n# Thanks to https://stackoverflow.com/a/2063741\\nbill-to: &id001\\n    given  : Chris\\n    family : Dumars\\nship-to: *id001\\n-UsesRefs]'"'"': '"'"'passed'"'"', '"'"'src.pydantic_yaml.test.test_basic::test_nested_models'"'"': '"'"'passed'"'"', '"'"'src.pydantic_yaml.test.test_basic::test_readme'"'"': '"'"'passed'"'"', '"'"'src.pydantic_yaml.test.test_basic::test_simple'"'"': '"'"'passed'"'"', '"'"'src.pydantic_yaml.test.test_io::test_file_io'"'"': '"'"'passed'"'"', '"'"'src.pydantic_yaml.test.test_resursive::test_recursive_yaml'"'"': '"'"'passed'"'"', '"'"'src.pydantic_yaml.test.test_secret_types::test_secret_types_no_rt'"'"': '"'"'passed'"'"', '"'"'src.pydantic_yaml.test.test_secret_types::test_secret_types_roundtrippable'"'"': '"'"'skipped'"'"', '"'"'src.pydantic_yaml.test.test_sorting::test_sorting'"'"': '"'"'passed'"'"', '"'"'src.pydantic_yaml.test.test_types::test_int'"'"': '"'"'passed'"'"', '"'"'src.pydantic_yaml.test.test_types::test_int_enum'"'"': '"'"'passed'"'"', '"'"'src.pydantic_yaml.test.test_types::test_str'"'"': '"'"'passed'"'"', '"'"'src.pydantic_yaml.test.test_types::test_str_enum'"'"': '"'"'passed'"'"', '"'"'src.pydantic_yaml.test.test_versioned::test_versioned_docs'"'"': '"'"'passed'"'"', '"'"'src.pydantic_yaml.test.test_versioned::test_versioned_yaml'"'"': '"'"'passed'"'"'}
+    cases = []
+    outcomes = {}
+    for case in root.iter('"'"'testcase'"'"'):
+        if len(cases) >= 500:
+            raise ValueError('"'"'Test outcomes exceed 500 cases'"'"')
+        identity = case.get('"'"'classname'"'"', '"'"''"'"') + '"'"'::'"'"' + case.get('"'"'name'"'"', '"'"'unknown'"'"')
+        if identity in outcomes:
+            raise ValueError('"'"'Duplicate testcase identity'"'"')
+        status = ('"'"'failed'"'"' if case.find('"'"'failure'"'"') is not None or case.find('"'"'error'"'"') is not None
+                  else '"'"'skipped'"'"' if case.find('"'"'skipped'"'"') is not None else '"'"'passed'"'"')
+        outcomes[identity] = status
+        cases.append(case)
+    serialized = json.dumps(outcomes, sort_keys=True, separators=('"'"','"'"', '"'"':'"'"'))
+    if len(serialized.encode()) > 16_000:
+        raise ValueError('"'"'Test outcomes exceed 16000 bytes'"'"')
+    failed = sum(status == '"'"'failed'"'"' for status in outcomes.values())
+    skipped = sum(status == '"'"'skipped'"'"' for status in outcomes.values())
+    changed = []
+    preserved = expected is not None and set(expected) == set(outcomes) and failed == 0
+    if expected is not None:
+        for identity in sorted(set(expected) | set(outcomes)):
+            before, after = expected.get(identity), outcomes.get(identity)
+            allowed = (before == '"'"'passed'"'"' and after == '"'"'passed'"'"'
+                       or before == '"'"'skipped'"'"' and after in {'"'"'skipped'"'"', '"'"'passed'"'"'})
+            if not allowed:
+                preserved = False
+                if len(changed) < 3:
+                    changed.append({'"'"'test'"'"': identity[:180], '"'"'expected'"'"': before, '"'"'actual'"'"': after})
+    print('"'"'__BRANCHSHIFT_TESTS_COLLECTED='"'"' + str(len(cases)))
+    print('"'"'__BRANCHSHIFT_TESTS_PASSED='"'"' + str(len(cases) - failed - skipped))
+    print('"'"'__BRANCHSHIFT_TESTS_FAILED='"'"' + str(failed))
+    print('"'"'__BRANCHSHIFT_TESTS_SKIPPED='"'"' + str(skipped))
+    print('"'"'__BRANCHSHIFT_TEST_OUTCOMES='"'"' + serialized)
+    print('"'"'__BRANCHSHIFT_TEST_OUTCOMES_PRESERVED='"'"' + str(int(preserved)))
+    print('"'"'__BRANCHSHIFT_TEST_OUTCOMES_CHANGED='"'"' + json.dumps(changed, separators=('"'"','"'"', '"'"':'"'"')))
+    failures = []
+    seen = set()
+    for case in cases:
+        issue = case.find('"'"'failure'"'"')
+        if issue is None:
+            issue = case.find('"'"'error'"'"')
+        if issue is None:
+            continue
+        message = (issue.get('"'"'message'"'"') or '"'"''"'"'.join(issue.itertext()).strip())[:600]
+        if message in seen:
+            continue
+        seen.add(message)
+        name = (case.get('"'"'classname'"'"', '"'"''"'"') + '"'"'::'"'"' + case.get('"'"'name'"'"', '"'"'unknown'"'"'))[:180]
+        failures.append({'"'"'test'"'"': name, '"'"'message'"'"': message})
+        if len(failures) == 3:
+            break
+    print('"'"'__BRANCHSHIFT_FAILURES='"'"' + json.dumps(failures, separators=('"'"','"'"', '"'"':'"'"')))
+
+except Exception as exc:
+    print('"'"'__BRANCHSHIFT_METRICS_ERROR='"'"' + type(exc).__name__ + '"'"': '"'"' + str(exc).replace('"'"'\n'"'"', '"'"' '"'"')[:300])
+    raise SystemExit(1)
+'; .venv/bin/python -I -c 'try:
+    import importlib.metadata; version=importlib.metadata.version('"'"'pydantic'"'"'); print('"'"'__BRANCHSHIFT_PYDANTIC_MAJOR='"'"'+version.split('"'"'.'"'"')[0])
+except Exception as exc:
+    print('"'"'__BRANCHSHIFT_RUNTIME_ERROR='"'"' + type(exc).__name__ + '"'"': '"'"' + str(exc).replace('"'"'\n'"'"', '"'"' '"'"')[:300])
+    raise SystemExit(1)
+'; .venv/bin/python -I -c 'try:
+    import configparser, hashlib, json, os, pathlib, tomllib
+    root = pathlib.Path.cwd()
+    files = {}
+    total = 0
+    ignored = {'"'"'.git'"'"', '"'"'.venv'"'"', '"'"'node_modules'"'"', '"'"'__pycache__'"'"', '"'"'.pytest_cache'"'"', '"'"'.mypy_cache'"'"'}
+    for directory, dirs, names in os.walk(root):
+        dirs[:] = sorted(name for name in dirs if name not in ignored)
+        for name in sorted(names):
+            path = pathlib.Path(directory) / name
+            relative = path.relative_to(root)
+            protected = (any(part in {'"'"'test'"'"', '"'"'tests'"'"', '"'"'__tests__'"'"'} for part in relative.parts)
+                         or name == '"'"'conftest.py'"'"' or name.startswith('"'"'test_'"'"')
+                         or name.endswith('"'"'_test.py'"'"'))
+            if not protected:
+                continue
+            if path.is_symlink():
+                raise ValueError('"'"'Symlinked test files are unsupported'"'"')
+            total += path.stat().st_size
+            if total > 2_000_000 or len(files) >= 500:
+                raise ValueError('"'"'Test contract exceeds bounded evidence limits'"'"')
+            files[relative.as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
+    configuration = {}
+    manifest = root / '"'"'pyproject.toml'"'"'
+    if manifest.exists():
+        parsed = tomllib.loads(manifest.read_text())
+        configuration['"'"'pyproject.toml'"'"'] = parsed.get('"'"'tool'"'"', {}).get('"'"'pytest'"'"', {})
+    for name in ('"'"'pytest.ini'"'"', '"'"'.pytest.ini'"'"', '"'"'tox.ini'"'"', '"'"'setup.cfg'"'"'):
+        path = root / name
+        if path.exists():
+            parser = configparser.ConfigParser(interpolation=None)
+            parser.read_string(path.read_text())
+            configuration[name] = {section: dict(parser[section]) for section in parser.sections()
+                                   if section in {'"'"'pytest'"'"', '"'"'tool:pytest'"'"'}}
+    payload = json.dumps({'"'"'files'"'"': files, '"'"'configuration'"'"': configuration}, sort_keys=True).encode()
+    digest = hashlib.sha256(payload).hexdigest()
+    print('"'"'__BRANCHSHIFT_CONTRACT_AFTER='"'"' + digest)
+
+except Exception as exc:
+    print('"'"'__BRANCHSHIFT_CONTRACT_AFTER_ERROR='"'"' + type(exc).__name__ + '"'"': '"'"' + str(exc).replace('"'"'\n'"'"', '"'"' '"'"')[:300])
+    raise SystemExit(1)
+'; exit 0

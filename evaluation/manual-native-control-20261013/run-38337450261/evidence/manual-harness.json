@@ -1,0 +1,18 @@
+{
+  "authoring_method": "manual_codex_assisted",
+  "clean_repeat_limit": 1,
+  "counting_owner": "Human-controlled execution ledger; no automatic retries",
+  "harness_sha256": "c1fa4392d5ee9f32576ccb3bb08c920a9a066fe0ae5ca17958499fa172945dbb",
+  "iteration_limit": 4,
+  "manual_iteration": 1,
+  "manual_metadata_validated": true,
+  "manual_role": "candidate",
+  "model_calls": 0,
+  "model_calls_scope": "evaluated_nebius_provider_only",
+  "prior_qualified_receipt": null,
+  "protocol_sha256": {
+    "run_candidate.py": "e4759438d5b2b962abbb2999b032388b28b4a47e0f38ebf76395bbdfe5aad456",
+    "run_comparator.py": "607953f48e8beb23e0795ecf252e1a2d4fd39fe8b775431a630f06a04c50eb54"
+  },
+  "source_commit": "58ff031d8208c3e54511d26fa3c64ba4e1b0616e"
+}
